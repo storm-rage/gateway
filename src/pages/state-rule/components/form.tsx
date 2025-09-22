@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-30 16:39:44
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-08-08 16:19:38
+ * @LastEditTime: 2025-09-22 14:23:02
  * @Description
  */
 import "./form.less"
@@ -97,7 +97,7 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
       id: currentId || selectRowInfo?.id,
       modelId,
       enabled: true,
-      formula: JSON.stringify(formula),
+      formula: formula,
       pointName: "df",
     }
     const res = await addRule(params, type)
