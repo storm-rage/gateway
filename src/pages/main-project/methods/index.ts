@@ -1,0 +1,59 @@
+/*
+ * @Author: chenmeifeng
+ * @Date: 2024-12-16 10:47:55
+ * @LastEditors: chenmeifeng
+ * @LastEditTime: 2025-06-13 14:40:59
+ * @Description:
+ */
+import { doBaseServer, doNoParamServer } from "@/api/serve-funs"
+// import { STATION_DATA_MAP } from "@/store/atom-station"
+import { IPageInfo } from "@/types/i-table.ts"
+import { validOperate, validResErr } from "@/utils/util-funs"
+
+import { IUserListParam } from "../types"
+import { TModalType } from "@/types/i-config"
+import { AxiosResponse } from "axios"
+import { dealDownload4Response } from "@/utils/file-funs"
+
+// 执行数据查询
+export async function getPjctSchData(_, formData) {
+  const params = {
+    RegionComId: formData?.RegionComId,
+  }
+  const res = await doBaseServer("getProjectCompany", params)
+  if (validResErr(res)) return null
+  return { records: res || [], total: res.length }
+}
+
+export const addPjctMethods = async (data: any, type: TModalType) => {
+  const api = type == "add" ? "insertPjtCompany" : "updatePjtCompany"
+  const params = {
+    ...data,
+  }
+  const res = await doBaseServer<any>(api, params)
+  return validOperate(res)
+}
+
+export const delPjctMethods = async (data: any) => {
+  const res = await doBaseServer<any>("delPjtCompany", data)
+  return validOperate(res)
+}
+
+export const exportData = async (data) => {
+  const params = {
+    id: data.RegionComId,
+  }
+  doBaseServer<any, AxiosResponse>("pjtExportData", params).then((data) => {
+    dealDownload4Response(data, "导出表.xlsx")
+  })
+}
+export const exportTemplate = async () => {
+  doBaseServer<any, AxiosResponse>("pjtExportTemplate").then((data) => {
+    dealDownload4Response(data, "导出表.xlsx")
+  })
+}
+
+export const importFile = async (formData) => {
+  const res = await doBaseServer("pjtImportData", formData)
+  return validOperate(res)
+}

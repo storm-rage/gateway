@@ -1,0 +1,31 @@
+.app-header {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  .app-header-left {
+    width: 13em;
+    width: 13em;
+    height: 100%;
+    background-image: url(/src/assets/images/login_logo.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+  .app-header-right {
+    flex: 1;
+    margin-right: 2em;
+    display: flex;
+    justify-content: space-between;
+    color: var(--white-color);
+    .header-user {
+      // float: right;
+      .user-name {
+        padding: 0 0.5em;
+        height: 2em;
+        line-height: 2em;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+.state-rule-form {
+  height: 70vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  .state-rform-rule {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    .rule-top {
+      display: flex;
+      align-items: center;
+      .condition {
+        padding: .5em 1em;
+        margin: 0 0.5rem;
+        cursor: pointer;
+        background-color: #a0b9f8;
+        border-radius: .8em;
+        &.span-active {
+          background-color: #3E70EE;
+        }
+      }
+    }
+    .rule-content-detail {
+      flex: 1;
+      overflow: hidden;
+    }
+  }
+}

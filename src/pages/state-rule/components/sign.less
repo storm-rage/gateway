@@ -1,0 +1,32 @@
+.state-sign-form {
+  padding: 1em;
+  border: 1px solid #3E70EE;
+  .condition {
+    display: flex;
+    .condition-item {
+      .condition-name {
+        padding: .5em 1em;
+        margin: 0 0.5rem;
+        cursor: pointer;
+        background-color: #a0b9f8;
+        border-radius: .8em;
+        &.active {
+          background-color: #3E70EE;
+        }
+      }
+    }
+    .add-rule-btn {
+      border: 1px dashed #3E70EE;
+    }
+  }
+  .condition-content {
+    .rule-item {
+      margin-bottom: 1em;
+      display: flex;
+      align-items: center;
+      .type {
+        margin: 0 1em;
+      }
+    }
+  }
+}

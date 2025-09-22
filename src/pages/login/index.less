@@ -1,0 +1,182 @@
+.login-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-image: url(@/assets/images/login_bg1.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+    .login_logo {
+        position: absolute;
+        top: 5%;
+        left: 5%;
+    }
+    
+    .login_bg {
+        position: absolute;
+        top: 50%;
+        left: 5%;
+        transform: translateY(-50%);
+    }
+    
+    .login-form-wrapper {
+        position: absolute;
+        top: 50%;
+        right: 14%;
+        transform: translateY(-50%);
+    }
+    
+    .login-title {
+        font-size: 28px;
+        font-weight: bold;
+        color: #fff;
+        letter-spacing: 5px;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .login-form {
+        width: 640px;
+        height: 595px;
+        background: transparent url("@/assets/images/login_form.png") no-repeat center;
+        background-size: 100%;
+        padding: 0 90px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .login-form-title {
+        font-size: 30px;
+        font-weight: bold;
+        color: #fff;
+        letter-spacing: 5px;
+        text-align: center;
+        padding: 27px;
+    }
+    
+    .login-formitem {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* .captcha {
+        margin-left: 15px;
+        text-align: center;
+        font-family: REEJI-PinboGB;
+        color: rgba(201,232,255,0.54);
+        padding: 10px 20px;
+        font-size: 26px;
+        background: rgba(255,255,255,0.27);
+        border-radius: 6px;
+    } */
+    .captcha {
+        width: 121px;
+        height: 60px;
+        border-radius: 6px;
+        overflow: hidden;
+        text-align: center;
+        line-height: 60px;
+        font-size: 20px;
+        background: rgba(255,255,255,0.27);
+    
+        &>img {
+            height: 100%;
+            width: auto;
+        }
+    }
+    
+    /* 登录输入框样式 */
+    .login-input {
+        height: 60px;
+        color: #fff;
+        background: rgba(72,154,255,0.49);
+        border-radius: 6px;
+    }
+    
+    input.login-input.ant-input:-internal-autofill-selected {
+        background-color: rgba(72,154,255,0.49)!important;
+    }
+    
+    .login-input.ant-input {
+        padding-left: 35px;
+    }
+    .login-input.ant-input-affix-wrapper >input.ant-input {
+        padding-left: 25px;
+    }
+    
+    .login-input.ant-input-affix-wrapper {
+        font-size: 18px;
+    }
+    
+    .login-input.ant-input-affix-wrapper .anticon.ant-input-password-icon {
+        color: #fff;
+    }
+    
+    .login-input.ant-input-outlined.ant-input-status-error:not(.ant-input-disabled):focus, 
+    .login-input.ant-input-outlined.ant-input-status-error:not(.ant-input-disabled):focus-within {
+        box-shadow: none;
+    }
+    .login-input.ant-input-outlined:focus, .login-input.ant-input-outlined:focus-within {
+        box-shadow: none;
+    }
+    
+    .login-input.ant-input::-webkit-input-placeholder,
+    .login-input .ant-input::-webkit-input-placeholder {
+      color: #fff; 
+      font-size: 16px;
+    }
+    .login-input.ant-input:-moz-placeholder,
+    .login-input .ant-input:-moz-placeholder {
+      color: #fff; /* 老版本的 Firefox  */
+      font-size: 16px;
+    }
+    .login-input.ant-input::-moz-placeholder,
+    .login-input .ant-input::-moz-placeholder {
+      color: #fff; /* 新版本的 Firefox  */
+      font-size: 16px;
+    }
+    .login-input.ant-input:-ms-input-placeholder,
+    .login-input .ant-input:-ms-input-placeholder {
+      color: #fff; /* 老版本的 IE  */
+      font-size: 16px;
+    }
+    
+    .login-input.ant-input-outlined {
+        border-right: 1px solid #2068C5;
+    }
+    
+    .login-space {
+        display: flex;
+    
+        &>.ant-space-item:first-child {
+            flex: 1;
+    
+            &>.ant-form-item {
+                margin-bottom: 0;
+            }
+        }
+    }
+    
+    .login-checkbox .ant-checkbox .ant-checkbox-inner{
+        border-radius: 100%;
+    }
+    
+    .ant-checkbox:not(.ant-checkbox-disabled) .ant-checkbox-inner {
+        border-color: #489aff;
+    }
+    
+    .login-btn.ant-btn-primary {
+        font-family: Microsoft YaHei, Microsoft YaHei;
+        width: 100%;
+        margin: 0;
+        font-size: 20px;
+        height: 60px;
+        background: #3067FF;
+        border-radius: 6px;
+        border: 1px solid #183F82;
+        box-shadow: none;
+    }
+}
