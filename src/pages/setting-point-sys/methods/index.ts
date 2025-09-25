@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2024-01-08 13:50:48
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-09-22 10:17:02
+ * @LastEditTime: 2025-09-22 14:51:38
  * @Description:
  */
 import { doBaseServer, doNoParamServer } from "@/api/serve-funs"
@@ -12,7 +12,7 @@ import { TDeviceType } from "@/types/i-config"
 import { IDvsMeasurePointData, IDvsModelMap, IStnDvsType4LocalStorage } from "@/types/i-device"
 import { IPageInfo } from "@/types/i-table"
 import { getDeviceModelMap, getDvsMeasurePointsData, getDvsMeasurePointsPageData } from "@/utils/device-funs"
-import { getStorage, validOperate, validResErr } from "@/utils/util-funs"
+import { getIntersection, getStorage, validOperate, validResErr } from "@/utils/util-funs"
 
 import { IPointSysInfo, IStPiontSysListParam, TStPiontSysFormField } from "../types"
 import { dealDownload4Response } from "@/utils/file-funs"
@@ -54,13 +54,18 @@ export async function onSetPointSysSchFormChg(
   const theFormInst = formInst?.getInst()
   if (chgedKey === "stationId") {
     const oneTypeModelList = await getStAllDeviceModel(chgedVal)
+    const deviceTypesOfSt = getStorage<IStnDvsType4LocalStorage[]>(StorageStnDvsType)
+    const deviceTypes = getStorage(StorageDeviceType) || []
+    const items = deviceTypesOfSt.find((e) => e.stationId == chgedVal)
+    const deviceTypeOptions = getIntersection(items?.deviceTypes || [], chgedVal, deviceTypes)
     theFormInst?.setFieldsValue({
       modelId: oneTypeModelList?.length ? oneTypeModelList[0].value : undefined,
     })
-    return { modelId: { options: oneTypeModelList } }
+    return { modelId: { options: oneTypeModelList }, deviceType: { options: deviceTypeOptions } }
   }
   if (chgedKey === "deviceType") {
-    const dvsPoint = await getModel(chgedVal)
+    const stnId = theFormInst?.getFieldValue("stationId")
+    const dvsPoint = await getModel(chgedVal, stnId)
     theFormInst?.setFieldsValue({
       modelId: dvsPoint?.length ? dvsPoint[0].value : undefined,
     })
@@ -69,9 +74,9 @@ export async function onSetPointSysSchFormChg(
   }
   return {}
 }
-export const getModel = async (deviceTypes) => {
+export const getModel = async (deviceTypes, stationId = null) => {
   const dvsTypes = Array.isArray(deviceTypes) ? deviceTypes?.join(",") : deviceTypes
-  const res = await doBaseServer("getAllDeviceModel", { deviceType: dvsTypes })
+  const res = await doBaseServer("getAllDeviceModel", { deviceType: dvsTypes, stationId })
   if (validResErr(res)) return []
   const models = res?.map((i) => {
     return {

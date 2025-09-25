@@ -482,3 +482,14 @@ export const getUserInfo = async () => {
   if (validResErr(res)) return null
   return { roleId: res.roleId, info: res }
 }
+
+export const getIntersection = (data = [], stationIds, dvsTypes = []) => {
+  if (!data.length) return []
+  const newData = data.map((item) => ({
+    label: dvsTypes?.find((i) => i.code === item)?.name || item,
+    value: item,
+    stationIds,
+  }))
+
+  return newData
+}

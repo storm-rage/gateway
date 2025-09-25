@@ -20,4 +20,4 @@ export interface IStPiontSysListParam {
   systemId?: number
 }
 
-export type TStPiontSysFormField = "stationId" | "modelId" | "pointTypes" | "systemId"
+export type TStPiontSysFormField = "stationId" | "modelId" | "pointTypes" | "systemId" | "deviceType"

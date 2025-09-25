@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-29 16:26:37
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-08-14 14:50:37
+ * @LastEditTime: 2025-09-22 16:34:00
  * @Description:
  */
 import { doBaseServer } from "@/api/serve-funs"
@@ -12,11 +12,12 @@ import { getStorage, isEmpty, showMsg, validOperate, validResErr } from "@/utils
 import { AxiosResponse } from "axios"
 import { IPageSearch, ISearchFr, IStateRuleList } from "../types"
 import { getCurDeviceModel } from "@/pages/setting-power-line/methods"
-import { getTypeStationList } from "@/utils/device-funs"
+import { getStAllDeviceModel, getTypeStationList } from "@/utils/device-funs"
 import { IPageInfo } from "@/types/i-table"
 import { StorageStnDvsType, StorageDeviceType } from "@/configs/storage-cfg"
 import { IStnDvsType4LocalStorage } from "@/types/i-device"
 import { IPageData } from "@/types/i-config"
+import { getModel } from "@/pages/setting-point-sys/methods"
 
 export async function onSetStRuleSchFormChg(
   changedValue: ISearchFr,
@@ -26,23 +27,24 @@ export async function onSetStRuleSchFormChg(
   if (!["stationId", "deviceType"].includes(chgedKey) || isEmpty(chgedVal)) return {}
   const theFormInst = formInst?.getInst()
   if (chgedKey === "stationId") {
+    const oneTypeModelList = await getStAllDeviceModel(chgedVal)
     const deviceTypesOfSt = getStorage<IStnDvsType4LocalStorage[]>(StorageStnDvsType)
     const deviceTypes = getStorage(StorageDeviceType) || []
     const items = deviceTypesOfSt.find((e) => e.stationId == chgedVal)
     const deviceTypeOptions = getIntersection(items?.deviceTypes || [], chgedVal, deviceTypes)
-    return { deviceType: { options: deviceTypeOptions }, modelId: { options: [] } }
+    theFormInst?.setFieldsValue({
+      modelId: oneTypeModelList?.length ? oneTypeModelList[0].value : undefined,
+    })
+    return { modelId: { options: oneTypeModelList }, deviceType: { options: deviceTypeOptions } }
   }
   if (chgedKey === "deviceType") {
-    theFormInst?.setFieldsValue({ modelId: null })
-    const res = await doBaseServer("getAllDeviceModel", { deviceType: chgedVal })
-    if (validResErr(res)) return { modelId: { options: [] } }
-    const models = res?.map((i) => {
-      return {
-        value: i.id,
-        label: i.model,
-      }
+    const stnId = theFormInst?.getFieldValue("stationId")
+    const dvsPoint = await getModel(chgedVal, stnId)
+    theFormInst?.setFieldsValue({
+      modelId: dvsPoint?.length ? dvsPoint[0].value : undefined,
     })
-    return { modelId: { options: models } }
+
+    return { modelId: { options: dvsPoint } }
   }
   return {}
 }
@@ -60,7 +62,7 @@ export const getStateRuleData = async (pageInfo?: IPageInfo, formData?: ISearchF
   }
   const res = await doBaseServer<IPageSearch, IPageData<IStateRuleList>>("getMngFormulaPage", params)
   if (validResErr(res)) return null
-  const formula = res.records?.[0]?.formula ? JSON.parse(res.records?.[0]?.formula) : []
+  const formula = res.records?.[0]?.formula || []
   const sortedByState = sortByState([...formula], "subStateCode")
   console.log(sortedByState, "sortedByState")
 

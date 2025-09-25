@@ -68,18 +68,18 @@ export const ST_STATION_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
       style: { minWidth: "10em" },
     },
   },
-  // {
-  //   type: SelectWithAll,
-  //   name: "deviceType",
-  //   label: "设备类型",
-  //   props: {
-  //     options: [],
-  //     disabled: false,
-  //     // mode: "multiple",
-  //     allowClear: true,
-  //     placeholder: "全部",
-  //   },
-  // },
+  {
+    type: SelectWithAll,
+    name: "deviceType",
+    label: "设备类型",
+    props: {
+      options: [],
+      disabled: false,
+      // mode: "multiple",
+      allowClear: true,
+      placeholder: "全部",
+    },
+  },
   {
     type: SelectWithAll,
     name: "modelId",
