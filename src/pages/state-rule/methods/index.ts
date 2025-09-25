@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-29 16:26:37
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-09-22 16:34:00
+ * @LastEditTime: 2025-09-25 16:48:04
  * @Description:
  */
 import { doBaseServer } from "@/api/serve-funs"
@@ -101,7 +101,7 @@ export const delStateRule = async (data = [], currentInfo) => {
     pointName: "df",
     modelId: currentInfo.modelId,
     id: currentInfo.id,
-    formula: JSON.stringify(list),
+    formula: list,
   }
   const delPrams = {
     idList: [currentInfo.id],
