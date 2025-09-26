@@ -65,7 +65,7 @@ export const ST_STATION_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
       disabled: false,
       needId: true,
       placeholder: "全部",
-      style: { minWidth: "10em" },
+      style: { minWidth: "8em" },
     },
   },
   {
@@ -101,6 +101,7 @@ export const ST_STATION_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
       needFirst: false,
       disabled: false,
       mode: "multiple",
+      style: { minWidth: "6em" },      
     },
   },
   {
