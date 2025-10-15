@@ -21,7 +21,7 @@ export const configApiMap: IApiMapItem = {
     desc: "配置管理-查询所有场站类型",
   },
   getDeviceStdState: {
-    url: `${SERVE_NAME}/config/deviceStdState`,
+    url: `${SERVE_NAME}/config/deviceStdNewState`,
     method: "get",
     desc: "配置管理-查询所有设备的标准状态",
     repeat_request: true,

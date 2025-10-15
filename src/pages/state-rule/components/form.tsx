@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-30 16:39:44
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-09-22 14:23:02
+ * @LastEditTime: 2025-10-15 11:13:35
  * @Description
  */
 import "./form.less"
@@ -16,7 +16,10 @@ import StateSignForm from "./sign"
 import EditRuleModel from "./point"
 import { addRule, processExpression } from "../methods"
 import { stateInfo } from "../types"
-import { showMsg } from "@/utils/util-funs"
+import { getStorage, showMsg } from "@/utils/util-funs"
+import { useAtomValue } from "jotai"
+import { AtomConfigMap } from "@/store/atom-config"
+import { StorageDeviceStdState } from "@/configs/storage-cfg"
 const CONDITION_OPTIONS = [
   { label: "或", value: "||" },
   { label: "与", value: "&&" },
@@ -40,6 +43,8 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
   const [formItemConfigs, setFormItemConfigs] = useState({})
   const [curCondition, setCurCondition] = useState("sign")
   const [condition, setCondition] = useState("||")
+  const [stateInfos, setStateInfos] = useState([])
+  const [chooseState, setChooseState] = useState(null)
 
   const btnClkRef = useRef((type: "ok" | "close") => {
     if (type === "ok") {
@@ -69,9 +74,8 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
     // 如果点击按钮是新增，先判断列表返回的长度，长度小于1，则新增，反之修改
     // 如果点击按钮是修改，把当前的数据更新到tableSource中
     const type = editType === "add" && !tableSource?.length ? "add" : "edit"
-    const { duration, priority, subStateCode, subStateName, mainStateCode, mainStateName } = formRef.current
-      .getInst()
-      ?.getFieldsValue()
+    const { subStateName, mainStateName } = chooseState
+    const { duration, priority, subStateCode, mainStateCode } = formRef.current.getInst()?.getFieldsValue()
     const signInfo = getSignInfo(signRef.current.signInfo)
     if (!pointRef.current?.pointRule && !Object.keys(signRef.current.signInfo || {})?.length) {
       showMsg("至少存在一种规则")
@@ -107,21 +111,89 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
     const disabled = editType !== "add"
     return st_rule_model_form(disabled)
   }, [editType])
+
+  const formChange = (changedValues) => {
+    if (changedValues.mainStateCode) {
+      const formIns = formRef.current.getInst()
+      const { mainStateCode } = changedValues
+      const mainState = stateInfos?.find((i) => i.value === mainStateCode)
+      formIns.setFieldsValue({
+        mainStateName: mainState?.label,
+        subStateCode: undefined,
+        subStateName: undefined,
+      })
+      setChooseState((prev) => {
+        return { ...prev, mainStateName: mainState?.label }
+      })
+      setFormItemConfigs((prev) => {
+        return {
+          ...prev,
+          subStateCode: {
+            options: mainState?.children,
+          },
+        }
+      })
+    } else if (changedValues.subStateCode) {
+      const formIns = formRef.current.getInst()
+      const { mainStateCode } = formIns.getFieldsValue()
+      const subState = stateInfos
+        ?.find((i) => i.value === mainStateCode)
+        ?.children?.find((i) => i.value === changedValues.subStateCode)
+      formIns.setFieldsValue({
+        subStateName: subState?.label,
+      })
+      setChooseState((prev) => {
+        return { ...prev, subStateName: subState?.label }
+      })
+    }
+  }
   useEffect(() => {
     if (editType === "edit" && selectRowInfo) {
       const formIns = formRef.current.getInst()
       const { duration, priority, subStateCode, subStateName, mainStateCode, mainStateName, ruleBefore } = selectRowInfo
+      const subStationOptions = stateInfos?.find((i) => i.value === mainStateCode)?.children
+      setFormItemConfigs((prev) => {
+        return {
+          ...prev,
+          subStateCode: {
+            options: subStationOptions,
+          },
+        }
+      })
       formIns.setFieldsValue({ duration, priority, subStateCode, subStateName, mainStateCode, mainStateName })
+      setChooseState({ mainStateName, subStateName })
+
       const ruleBeforeStr = processExpression(ruleBefore)
       const cdtion = ruleBeforeStr?.endsWith("||") || ruleBeforeStr.endsWith("&&") ? ruleBeforeStr.slice(-2) : "||"
       setCondition(cdtion || "||")
     }
-  }, [editType, selectRowInfo])
+  }, [editType, selectRowInfo, stateInfos])
+  useEffect(() => {
+    const deviceStdStateMap = getStorage(StorageDeviceStdState)
+    const mainStates = deviceStdStateMap?.filter((i) => i.deviceType === deviceType && i.stateType === "MAIN")
+    const subStates = deviceStdStateMap?.filter((i) => i.deviceType === deviceType && i.stateType === "SUB")
+    const result = mainStates?.map((i) => {
+      return {
+        label: i.stateDesc,
+        value: i.state,
+        children: subStates
+          ?.filter((j) => j.parentId === i.id)
+          ?.map((j) => {
+            return {
+              label: j.stateDesc,
+              value: j.state,
+            }
+          }),
+      }
+    })
+    setStateInfos(result)
+    setFormItemConfigs({ mainStateCode: { options: result } })
+  }, [deviceType])
   return (
     <div className="state-rule-form">
       <CustomForm
         ref={formRef}
-        // formOptions={{ onValuesChange: formChange }}
+        formOptions={{ onValuesChange: formChange }}
         itemOptionConfig={formItemConfigs}
         itemOptions={columns}
         onSearch={onFinish}

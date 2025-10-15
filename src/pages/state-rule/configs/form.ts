@@ -7,61 +7,62 @@
  */
 import { ISearchFormProps } from "@/components/custom-form/types"
 import CustonInput from "@/components/custom-input"
+import SelectWithAll from "@/components/select-with-all"
 
 export const st_rule_model_form = (disabled): ISearchFormProps["itemOptions"] => {
   return [
     {
-      type: CustonInput,
-      name: "mainStateName",
-      label: "大状态名称",
-      formItemProps: {
-        labelCol: { span: 8 },
-        rules: [{ required: true, message: "请输入大状态" }],
-      },
-      props: {
-        style: { minWidth: "8em" },
-        disabled,
-      },
-    },
-    {
-      type: CustonInput,
+      type: SelectWithAll,
       name: "mainStateCode",
-      label: "大状态编码",
+      label: "大状态",
       formItemProps: {
         labelCol: { span: 8 },
-        rules: [{ required: true, message: "请输入大状态编码" }],
+        rules: [{ required: true, message: "请选择大状态" }],
       },
       props: {
         style: { minWidth: "8em" },
         disabled,
       },
     },
+    // {
+    //   type: CustonInput,
+    //   name: "mainStateCode",
+    //   label: "大状态编码",
+    //   formItemProps: {
+    //     labelCol: { span: 8 },
+    //     rules: [{ required: true, message: "请输入大状态编码" }],
+    //   },
+    //   props: {
+    //     style: { minWidth: "8em" },
+    //     disabled: true,
+    //   },
+    // },
     {
-      type: CustonInput,
-      name: "subStateName",
-      label: "小状态名称",
-      formItemProps: {
-        labelCol: { span: 8 },
-        rules: [{ required: true, message: "请输入小状态名称" }],
-      },
-      props: {
-        style: { minWidth: "8em" },
-        disabled,
-      },
-    },
-    {
-      type: CustonInput,
+      type: SelectWithAll,
       name: "subStateCode",
-      label: "小状态编码",
+      label: "小状态",
       formItemProps: {
         labelCol: { span: 8 },
-        rules: [{ required: true, message: "请输入小状态编码" }],
+        rules: [{ required: true, message: "请选择小状态" }],
       },
       props: {
         style: { minWidth: "8em" },
         disabled,
       },
     },
+    // {
+    //   type: CustonInput,
+    //   name: "subStateCode",
+    //   label: "小状态编码",
+    //   formItemProps: {
+    //     labelCol: { span: 8 },
+    //     rules: [{ required: true, message: "请输入小状态编码" }],
+    //   },
+    //   props: {
+    //     style: { minWidth: "8em" },
+    //     disabled: true,
+    //   },
+    // },
     {
       type: CustonInput,
       name: "priority",
