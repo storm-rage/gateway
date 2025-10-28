@@ -75,6 +75,7 @@ export function MODEL_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserList>): 
   const { onClick } = config
   return [
     { dataIndex: "index", title: "序号", width: 60, align: "center" },
+    { dataIndex: "id", title: "型号ID" },
     { dataIndex: "model", title: "型号编码" },
     { dataIndex: "deviceTypeName", title: "设备类型" },
     { dataIndex: "manufacturer", title: "厂商" },

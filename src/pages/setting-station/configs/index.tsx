@@ -67,6 +67,7 @@ export const ST_STATION_SYS_COLUMNS: ColumnsType<IStationIndexInfo> = [
   { dataIndex: "row_idx", title: "序号", width: 60 },
   { dataIndex: "fullName", title: "全称" },
   { dataIndex: "shortName", title: "简称" },
+  { dataIndex: "id", title: "场站ID" },
   { dataIndex: "stationCode", title: "场站编码" },
   { dataIndex: "stationTypeName", title: "场站类型" },
   { dataIndex: "parentComName", title: "项目公司" },
