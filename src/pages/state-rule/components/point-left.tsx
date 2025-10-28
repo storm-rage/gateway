@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-31 17:30:24
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-08-12 10:34:38
+ * @LastEditTime: 2025-10-28 10:01:49
  * @Description:
  */
 import "./point-left.less"
@@ -29,12 +29,13 @@ const test = [
     tags: {},
   },
 ]
+const pageSizeOptions = [50, 100, 500, 1000]
 export default function EditRulePoint(props: IProps) {
   const [currentCheck, setCurrentCheck] = useState([])
   const [dataSource, setDataSource] = useState([])
   const [total, setTotal] = useState(0)
   const [pageInfo, setPageInfo] = useState({
-    pageSize: 20,
+    pageSize: 50,
     pageNum: 1,
   })
   const [showSearch, setShowSearch] = useState(false)
@@ -79,7 +80,7 @@ export default function EditRulePoint(props: IProps) {
   useEffect(() => {
     if (!actualPoints?.length) return
     setTotal(actualPoints.length)
-    setDataSource(actualPoints.slice(0, 28))
+    setDataSource(actualPoints.slice(0, 50))
   }, [actualPoints])
   return (
     <div className="st-rule-point">
@@ -104,6 +105,7 @@ export default function EditRulePoint(props: IProps) {
           total={total}
           pageSize={pageInfo.pageSize}
           showSizeChanger={true}
+          pageSizeOptions={pageSizeOptions}
           onChange={changeNum}
         />
         <Button
