@@ -25,6 +25,7 @@ export const RULE_ALARM = "alarm"
 export const RULE_FIVE = "five"
 export const RULE_CUSTOMIZE = "customize"
 export const STATE_RULE = "state"
+export const CONTROL_RULE = "control"
 
 export const MANAGE = "manage"
 export const MANAGE_USER = "user"

@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-29 15:39:54
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-08-08 15:53:37
+ * @LastEditTime: 2025-10-30 10:17:59
  * @Description:
  */
 /*
@@ -74,7 +74,7 @@ export default function DeviceManage() {
     setTimeout(() => {
       const formInst = formRef.current?.getInst()
       formInst?.submit()
-    }, 500)
+    }, 1000)
   }, [stationOptions4Id])
 
   // 选择框
