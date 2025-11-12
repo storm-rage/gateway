@@ -486,3 +486,47 @@ export const staticMngApiMap: IApiMapItem = {
     desc: "删除",
   },
 }
+
+// 控制规则
+export const controlRuleApi: IApiMapItem = {
+  ctlRuleSelectPage: {
+    url: `${SERVE_NAME}/command/selectPage`,
+    method: "post",
+    desc: "查询",
+  },
+  updatectlRules: {
+    url: `${SERVE_NAME}/command/upateBatch`,
+    method: "post",
+    desc: "修改",
+  },
+  insertctlRule: {
+    url: `${SERVE_NAME}/command/add`,
+    method: "post",
+    desc: "添加",
+  },
+  delctlRule: {
+    url: `${SERVE_NAME}/command/delete`,
+    method: "post",
+    desc: "删除",
+  },
+  ctlRuleExportTemplate: {
+    url: `${SERVE_NAME}/command/importTemplate`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出",
+  },
+  ctlRuleExportData: {
+    url: `${SERVE_NAME}/command/export`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出",
+  },
+  ctlRuleImportData: {
+    url: `${SERVE_NAME}/command/import`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入",
+  },
+}

@@ -21,6 +21,7 @@ import {
   deviceApiMap,
   eamDvsApi,
   staticMngApiMap,
+  controlRuleApi,
 } from "./api-devicemng"
 import { userMngApi } from "./api-user"
 import { alarmFiveRuleApi, alarmRuleApi, mftAlarmApi, stateRuleApi } from "./api-alarm"
@@ -50,6 +51,7 @@ const API_LIST = {
   staticMngApiMap,
   stateRuleApi,
   dvsSignalApiMap,
+  controlRuleApi,
 }
 
 const API_MAP = (function () {

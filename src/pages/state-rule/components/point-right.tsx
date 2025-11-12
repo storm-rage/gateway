@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2024-09-06 16:21:45
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-08-01 15:21:20
+ * @LastEditTime: 2025-10-30 10:43:47
  * @Description:
  */
 import "./point-right.less"
@@ -17,6 +17,14 @@ interface IProps {
   defaultValue?: Array<number>
   onChange?: (val: any) => void
 }
+const ruleExample = [
+  { name: "(风机理论功率 - 实际有功)绝对值＞30%理论功率", value: "(Theorypower-GridsideActivePower)>0.3*Theorypower" },
+  { name: "5min内设备风速无变化（极差为0）", value: "WindSpeed1@5m@MAX-WindSpeed1@5m@MIN==0" },
+  { name: "5min内设备风速无数据", value: "WindSpeed1@5m@COUNT==0" },
+  { name: "瞬时设备风速无数据", value: "WindSpeed1==null" },
+  { name: "5min内风速大于3", value: "WindSpeed1@5m@MIN > 3" },
+  { name: "状态等于0，或（状态等于9，且偏航状态等于6）", value: "(status == 0 || (status == 9 && yawStatus == 6))" },
+]
 export default function RuleQuotaInput(props: IProps) {
   const { info } = props
   const inputRef = useRef(null)
@@ -94,7 +102,19 @@ export default function RuleQuotaInput(props: IProps) {
         })}
       </div>
       <TextArea rows={4} ref={inputRef} onBlur={getCursorPosition} value={inputVal} onChange={changeValue}></TextArea>
-      {/* <Input ref={inputRef} onBlur={getCursorPosition} value={inputVal} onChange={changeValue}></Input> */}
+      <div>
+        <span>规则示例，如下：</span>
+        {ruleExample.map((item, idx) => {
+          return (
+            <div key={item.name}>
+              <span>
+                ({idx + 1}){item.name}：
+              </span>
+              <span>{item.value}</span>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

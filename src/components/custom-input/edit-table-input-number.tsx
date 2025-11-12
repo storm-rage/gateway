@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2024-01-05 17:05:03
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-05-19 17:12:19
+ * @LastEditTime: 2025-10-30 10:11:27
  * @Description: 表格输入数字框
  */
 import "./edit-table-input-number.less"
@@ -35,7 +35,7 @@ const EditableNumberCell = (props) => {
   return (
     <div className="custom-table-input">
       {show ? (
-        <InputNumber ref={inputRef} value={value} onChange={onChange} onBlur={onBlur} />
+        <InputNumber style={{ width: "100%" }} ref={inputRef} value={value} onChange={onChange} onBlur={onBlur} />
       ) : (
         <div className="input-span" onClick={showInput.current}>
           {value}
