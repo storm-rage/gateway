@@ -5,7 +5,11 @@
  * @LastEditTime: 2025-05-15 17:05:37
  * @Description:
  */
-import { loginOutAtom, userInfoAtom } from "@/store/atom-auth"
+import { loginOutAtom, userInfoAtom, AtomCheckToken } from "@/store/atom-auth"
+import { useEffect } from "react"
+import { useRefresh } from "@hooks/use-refresh.ts"
+import { MS_MINU } from "@configs/time-constant.ts"
+
 import "./index.less"
 import MainMenu from "./main-menu"
 import { useAtomValue, useSetAtom } from "jotai"
@@ -19,6 +23,15 @@ const items: MenuProps["items"] = [
 export default function Header() {
   const userInfo = useAtomValue(userInfoAtom)
   const logout = useSetAtom(loginOutAtom)
+  const setCheckToken = useSetAtom(AtomCheckToken)
+    const [reload, setReload] = useRefresh(MS_MINU)
+
+  useEffect(() => {
+    if (!reload) return
+    // 跳过登录就注释
+    setCheckToken().then(() => setReload(false))
+  }, [reload, setCheckToken])
+
   const onClick = ({ key }) => {
     if (key === "1") {
       logout()
