@@ -116,12 +116,12 @@ export const calculateTbData = (
 
 export const editDisableList = (flag: boolean) => {
   return {
-    interval: { disabled: flag },
-    actualAirDensity: { disabled: flag },
-    standardAirDensity: { disabled: flag },
+    interval: { disabled: false },
+    actualAirDensity: { disabled: false },
+    standardAirDensity: { disabled: false },
     standardTemperature: { disabled: flag }, // 标准温度
     actualTemperature: { disabled: flag },
-    step: { disabled: flag },
+    step: { disabled: false },
   }
 }
 
@@ -130,7 +130,7 @@ export const calItAndStep = (arr: ICurvePiontList[], deviceTypeDifferentKey: any
   const length = arr.length
   const min = length ? arr[0][deviceTypeDifferentKey] : 2
   const max = length ? arr[length - 1][deviceTypeDifferentKey] : 25
-  const step = length > 1 ? arr[1][deviceTypeDifferentKey] - min : (length === 1 ? arr[0][deviceTypeDifferentKey] : 1)
+  const step = length > 1 ? arr[1][deviceTypeDifferentKey] - min : (length === 1 ? arr[0][deviceTypeDifferentKey] : 0.5)
   // const step = +max - +min + 1 < arr.length ? 0.5 : 1
   return { min, max, step }
 }
