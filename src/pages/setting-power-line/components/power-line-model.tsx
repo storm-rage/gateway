@@ -101,6 +101,9 @@ const PwLnModel = forwardRef<IPerateRef, IPwrLineMdlProps>((props, ref) => {
         }
       })
       setDataSource([...mngWtPowercurvePointLists])
+      if(!mngWtPowercurvePointLists.length) {
+        editType === "edit" && setDataSource([...calculateTbData(2, 25, 0.5, selectRowInfo.id, deviceTypeDifferentKey)])
+      }
 
       // 编辑初始化
       console.log(deviceTypeDifferentKey, "deviceTypeDifferentKey")
@@ -124,7 +127,7 @@ const PwLnModel = forwardRef<IPerateRef, IPwrLineMdlProps>((props, ref) => {
       formInsts?.setFieldsValue({ step: 0.5, interval: [2, 25] })
       setDataSource([...calculateTbData(2, 25, 0.5, null, deviceTypeDifferentKey)]) // 资源区间上下限为[2,25], 风速步长默认0.5
     }
-    setFormItemConfig((prevState) => ({ ...prevState, ...editDisableList(editType !== "add") }))
+    setFormItemConfig((prevState) => ({ ...prevState, ...editDisableList(editType == "see") }))
     setFormItemConfig((prevState) => ({
       ...prevState,
       stationId: { options: hasWTDvTypeStation, disabled: editType !== "add" },
@@ -160,7 +163,11 @@ const PwLnModel = forwardRef<IPerateRef, IPwrLineMdlProps>((props, ref) => {
       const { interval, step } = formRef.current.getFormValues() || { interval: [2, 25], step: 0.5 }
       const min = interval?.[0] || 0
       const max = interval?.[1] || 25
-      setDataSource([...calculateTbData(min, max, step, null, deviceTypeDifferentKey)])
+      if(editType === "edit") {
+       setDataSource([...calculateTbData(Number(min), Number(max), Number(step), selectRowInfo.id, deviceTypeDifferentKey)])
+      } else if(editType === "add") {
+       setDataSource([...calculateTbData(Number(min), Number(max), Number(step), null, deviceTypeDifferentKey)])
+      }
     } else if (formInst && changedValue.stationId) {
       await allAsyncPromise(changedValue.stationId, actualDvsType)
     }

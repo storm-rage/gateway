@@ -116,12 +116,12 @@ export const calculateTbData = (
 
 export const editDisableList = (flag: boolean) => {
   return {
-    interval: { disabled: false },
-    actualAirDensity: { disabled: false },
-    standardAirDensity: { disabled: false },
+    interval: { disabled: flag },
+    actualAirDensity: { disabled: flag },
+    standardAirDensity: { disabled: flag },
     standardTemperature: { disabled: flag }, // 标准温度
     actualTemperature: { disabled: flag },
-    step: { disabled: false },
+    step: { disabled: flag },
   }
 }
 
