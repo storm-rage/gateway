@@ -58,6 +58,11 @@ export const STATE_RULE_SCH_FORM_BTNS: ISearchFormProps["buttons"] = [
   SCH_BTN,
   { name: "add", label: "新增", permission: "model:power:add" },
   {
+    name: "batchApply",
+    label: "批量应用",
+    permission: "model:power:batchApply",
+  },
+  {
     name: "batchDel",
     label: "批量删除",
     permission: "model:power:batchDelete",
