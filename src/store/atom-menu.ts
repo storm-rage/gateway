@@ -43,6 +43,8 @@ const currentRolePermission = [
   "model:power:edit",
   "model:power:export",
   "model:power:import",
+  "model:power:batchApply",
+  "model:power:batchDelete",
   "model:powerPlan:add",
   "model:powerPlan:batchDelete",
   "model:powerPlan:export",
