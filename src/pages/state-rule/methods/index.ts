@@ -92,6 +92,19 @@ export const addRule = async (params, editType = "add") => {
   const res = await doBaseServer(api, params)
   console.log(res, "sdf")
 }
+export const handleBatchDel = async (data= [], checkedItemsIds =[]) => {
+  const list = data?.filter((i) => !checkedItemsIds.includes(i.idx))
+  const api = "updateMngFormula"
+  const params = {
+    pointName: "df",
+    modelId: list[0].modelId,
+    id: list[0].id,
+    formula: list,
+  }
+  console.log(params, "params")
+  const res = await doBaseServer(api, params)
+  return validOperate(res)
+}
 
 export const delStateRule = async (data = [], currentInfo) => {
   // 如果过滤后的数字长度小于1，那么删除这条数据

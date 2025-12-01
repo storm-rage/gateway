@@ -29,6 +29,7 @@ import { AtomStation } from "@/store/atom-station"
 import { showMsg } from "@/utils/util-funs"
 import {
   delStateRule,
+  handleBatchDel,
   exportTemplate,
   getStateRuleData,
   importFile,
@@ -88,6 +89,11 @@ export default function DeviceManage() {
   )
 
   const onSchValueChgRef = async (changedValue: ISearchFr) => {
+    //清空选中的数据
+    setSelectedRowKeys([])
+    setSelectRowInfo(null)
+    setCurrentId(undefined)
+
     if (changedValue.modelId) {
       setModelId(changedValue.modelId)
     }
@@ -117,6 +123,11 @@ export default function DeviceManage() {
       if (!selectedRowKeys.length) {
         showMsg("请至少选择一条！")
         return
+      }      
+      let obj:stateInfo = null
+      if(rowSelection.selectedRowKeys.length == 1) {
+        obj = dataSource.find(item => item.idx == rowSelection.selectedRowKeys[0])
+        setSelectRowInfo(obj)
       }
       setIsModalOpen("deleted")
     } else if (type === "import") {
@@ -164,7 +175,12 @@ export default function DeviceManage() {
     // 执行
     if (type === "delete_ok") {
       // const dvsType = selectRowInfo?.deviceType || selectedRows?.[0].deviceType
-      const res = await delStateRule(dataSource, selectRowInfo)
+      let res = null
+      if(rowSelection.selectedRowKeys.length > 1) {
+        res = await handleBatchDel(dataSource, rowSelection.selectedRowKeys)
+      } else {
+        res = await delStateRule(dataSource, selectRowInfo)
+      }
       if (!res) return
       setSelectRowInfo(null)
       setIsModalOpen("")
