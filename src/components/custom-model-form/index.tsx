@@ -27,10 +27,11 @@ export interface IOperateProps {
   layout?: "horizontal" | "vertical" | "inline"
   FORM_ITEMS: ISearchFormProps["itemOptions"]
   formSelectChange?: (changeVals, setFormConfigs) => void
+  initialValues?: any
 }
 
 const CustomAddModal = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
-  const { buttonClick, editType, layout = "horizontal", selectRowInfo, FORM_ITEMS, formSelectChange } = props
+  const { buttonClick, editType, layout = "horizontal", selectRowInfo, FORM_ITEMS, formSelectChange, initialValues } = props
   const formRef = useRef<IFormInst | null>(null)
   //组件数据集合
   const [formList, setFormItemConfig] = useState({})
@@ -48,6 +49,12 @@ const CustomAddModal = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
     allAsyncPromise().then((r) => r)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  useEffect(() => {
+    if (initialValues && formRef.current) {
+      const formInst = formRef.current.getInst()
+      formInst?.setFieldsValue(initialValues)
+    }
+}, []);
   const allAsyncPromise = async () => {}
 
   const onFinish = (formValue) => {

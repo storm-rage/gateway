@@ -16,20 +16,25 @@
 import "./index.less"
 
 import usePageSearch from "@hooks/use-page-search.ts"
+import { AtomConfigMap } from "@/store/atom-config"
 import { useAtomValue } from "jotai"
 import React, { useEffect, useRef, useState } from "react"
+
+import { getModel } from "@/pages/setting-point-sys/methods"
 
 import CustomForm from "@/components/custom-form"
 import { IFormInst } from "@/components/custom-form/types.ts"
 import CustomModal from "@/components/custom-modal"
 import RemoveContent from "@/components/custom-modal/components/remove-content"
 import CustomTable from "@/components/custom-table"
+import CustomAddModal, { IOperateProps, IPerateRef } from "@/components/custom-model-form"
 import useTableSelection from "@/hooks/use-table-selection"
 import { AtomStation } from "@/store/atom-station"
 import { showMsg } from "@/utils/util-funs"
 import {
   delStateRule,
   handleBatchDel,
+  handleBatchApply,
   exportTemplate,
   getStateRuleData,
   importFile,
@@ -45,7 +50,7 @@ import {
 } from "./methods/index"
 import { TDeviceType } from "@/types/i-config"
 import FileImport from "@/components/custom-upload/upload"
-import { STATE_ATT_COLUMNS, STATE_RULE_FORM_ITEMS, STATE_RULE_SCH_FORM_BTNS } from "./configs"
+import { STATE_ATT_COLUMNS, STATE_RULE_FORM_ITEMS, STATE_RULE_SCH_FORM_BTNS, formItemFuc } from "./configs"
 import { ISearchFr, IStateRuleList, TStTbActInfo, stateInfo } from "./types"
 import { getCurDeviceModel } from "../setting-power-line/methods"
 import StateRuleForm, { IStRuleFormProps } from "./components/form"
@@ -61,11 +66,17 @@ export default function DeviceManage() {
   const [isModalOpen, setIsModalOpen] = useState("")
   const [isEditOrAdd, setIsEditOrAdd] = useState<"add" | "edit" | "see">("add")
   const [importModal, setImportModal] = useState(false)
+  const [batchApplyModal, setBatchApplyModal] = useState(false)
   // 设置选中的一条数据
   const [selectRowInfo, setSelectRowInfo] = useState<stateInfo>()
   const [currentId, setCurrentId] = useState(undefined) // 当前列表的id
 
+  const [modalFormDvsType, setModalFormDvsType] = useState("")
+
   const { stationOptions4Id } = useAtomValue(AtomStation)
+
+  const { deviceSystemMap, deviceTypeMap } = useAtomValue(AtomConfigMap).map
+  
   const [deviceType, setDeviceType] = useState<TDeviceType>()
   const [modelId, setModelId] = useState<number>(null)
   const [searchDvsTyps, setSearchDvsTyps] = useState<TDeviceType>("WT") // 点击查询时候的设备类型
@@ -91,6 +102,7 @@ export default function DeviceManage() {
   const onSchValueChgRef = async (changedValue: ISearchFr) => {
     //清空选中的数据
     setSelectedRowKeys([])
+    setSelectedRows([])
     setSelectRowInfo(null)
     setCurrentId(undefined)
 
@@ -109,6 +121,8 @@ export default function DeviceManage() {
       setIsEditOrAdd(key)
     }
   }
+  const [modalFormItemConfig, setModalFormItemConfig] = useState({});
+
   async function onFormAction(type) {
     setSelectRowInfo(null)
     setCurrentId(undefined)
@@ -118,6 +132,22 @@ export default function DeviceManage() {
       setCurrentId(dataSource?.[0]?.id)
       setIsModalOpen(type)
       setIsEditOrAdd("add")
+    } else if(type === "batchApply") {
+      const currentFormData = formRef.current?.getFormValues()
+      if(!rowSelection.selectedRowKeys.length) {
+        return showMsg("请选择至少一条数据！")
+      }
+      if (currentFormData?.deviceType) {
+        setModalFormDvsType(currentFormData.deviceType)
+        
+        await formSelectChange.current(
+          { deviceType: currentFormData.deviceType },
+          setModalFormItemConfig
+        )
+        setSearchDvsTyps(currentFormData.deviceType)
+      }
+      setBatchApplyModal(true)
+
     } else if (type === "batchDel") {
       // 批量删除
       if (!selectedRowKeys.length) {
@@ -162,6 +192,36 @@ export default function DeviceManage() {
     setSelectRowInfo(null)
     if (type === "close") return setIsModalOpen("")
   }
+const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
+    console.log("applyBtnClkRef===", type, data, 'modelId===',modelId)
+    if (type === "ok") {
+      
+      setBatchApplyModal(false)
+      //todo:先查询对应设备型号的modelId的规则列表，然后在选中的规则组装起来,
+      // 如果需要继续支持多选设备型号，需要多次请求对应型号的规则数据，问题点接口按分页返回数据，不同分页可能存在相同数据
+      let res = await getStateRuleData({current: 1, pageSize: 50}, {modelId: data.modelId})//data.modelId为单选，如果是多选则是数组需要另外处理
+      const selectedData = dataSource
+        .filter(item => 
+          selectedRowKeys.includes(item.idx)
+        ).map(item => ({
+            ...item,
+            modelId: res.records[0].modelId,
+            id: res.records[0].id
+        }))
+      console.log('res===', res, selectedData)
+      let targetArr = [
+        ...res.records,
+        ...selectedData.filter(selectedItem => 
+          !res.records.some(record => record.idx === selectedItem.idx)
+        )
+      ];
+
+      handleBatchApply([...targetArr], rowSelection.selectedRowKeys, data.modelId)
+    }
+    if (type === "close") {
+      setBatchApplyModal(false)
+    }
+  }
 
   const searchTable = async () => {
     await onSearch()
@@ -191,6 +251,28 @@ export default function DeviceManage() {
     setSelectRowInfo(null)
     if (type === "close") return setIsModalOpen("")
   }
+  const formSelectChange = useRef(async (changeVal, setFormConfigs) => {
+    if (changeVal?.deviceType && changeVal?.deviceType !== modalFormDvsType) {
+      const models = await getModel(changeVal?.deviceType)
+      
+      const chgOptions = { modelId: { options: models } }
+      setFormConfigs((prevState) => ({ ...prevState, ...chgOptions }))
+      setModalFormDvsType(changeVal?.deviceType)
+    }
+  })
+
+
+  const [currentModelOptions, setCurrentModelOptions] = useState([]);
+
+  useEffect(() => {
+    const fetchModelOptions = async () => {
+    const models = await getModel(searchDvsTyps);
+      setCurrentModelOptions(models);
+    };
+  if (searchDvsTyps) {
+    fetchModelOptions();
+  }
+  },[searchDvsTyps, batchApplyModal])
 
   return (
     <div className="page-wrap power-line">
@@ -255,6 +337,31 @@ export default function DeviceManage() {
         onCancel={() => setImportModal(false)}
         Component={FileImport}
         componentProps={{ btnClick: btnClick.current }}
+      />
+      <CustomModal
+        width="30%"
+        title="批量应用"
+        destroyOnClose
+        open={batchApplyModal}
+        footer={null}
+        onCancel={() => setBatchApplyModal(false)}
+        Component={CustomAddModal}
+        componentProps={{ 
+          buttonClick: applyBtnClkRef,
+          editType: "add",
+          formSelectChange: formSelectChange.current,
+          FORM_ITEMS: formItemFuc({
+              systems: deviceSystemMap,
+              deviceTypes: deviceTypeMap,
+              currentDvsType:  {
+                deviceType: searchDvsTyps,
+                modelId: currentModelOptions
+              },
+            }),
+          initialValues: {
+            deviceType: searchDvsTyps,
+           },
+         }}
       />
     </div>
   )

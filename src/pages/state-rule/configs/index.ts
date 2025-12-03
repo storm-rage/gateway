@@ -107,3 +107,39 @@ export function STATE_ATT_COLUMNS(
     ),
   ]
 }
+export function formItemFuc({ systems, deviceTypes, currentDvsType }): ISearchFormProps["itemOptions"] {
+  const validModelOptions = (currentDvsType.modelId || []).filter(option => 
+    option && 
+    ((typeof option === 'object' && option.value !== undefined && option.value !== null) || 
+     (typeof option !== 'object'))
+  );
+  return [
+    {
+      type: SelectWithAll,
+      name: "deviceType",
+      label: "设备类型",
+      formItemProps: {
+        labelCol: { span: 6 },
+        rules: [{ required: true, message: "请选择设备类型" }],
+      },
+      props: {
+        options: deviceTypes,
+      },
+    },
+    {
+      type: SelectWithAll,
+      name: "modelId",
+      label: "设备型号",
+      formItemProps: {
+        labelCol: { span: 6 },
+        rules: [{ required: true, message: "请选择设备型号" }],
+      },
+      props: {
+        options: validModelOptions,
+        // mode: "multiple",
+        // maxTagCount: 1,
+        // allowClear: false,
+      },
+    },
+  ]
+}

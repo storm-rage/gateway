@@ -92,6 +92,17 @@ export const addRule = async (params, editType = "add") => {
   const res = await doBaseServer(api, params)
   console.log(res, "sdf")
 }
+export const handleBatchApply = async (data= [], checkedItemsIds =[], modelId) => {
+  const api = "updateMngFormula"
+  const params = {
+    pointName: "df",
+    modelId: modelId,
+    id: data[0].id,
+    formula: data,
+  }
+  const res = await doBaseServer(api, params)
+  return validOperate(res)
+}
 export const handleBatchDel = async (data= [], checkedItemsIds =[]) => {
   const list = data?.filter((i) => !checkedItemsIds.includes(i.idx))
   const api = "updateMngFormula"
