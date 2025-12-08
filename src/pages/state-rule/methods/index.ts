@@ -108,8 +108,8 @@ export const handleBatchDel = async (data= [], checkedItemsIds =[]) => {
   const api = "updateMngFormula"
   const params = {
     pointName: "df",
-    modelId: list[0].modelId,
-    id: list[0].id,
+    modelId: data[0].modelId,
+    id: data[0].id,
     formula: list,
   }
   console.log(params, "params")
