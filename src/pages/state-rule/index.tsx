@@ -240,13 +240,17 @@ const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
       let targetArr = [
         ...res.records.map(removeUnwantedFields),
         ...selectedData.map(removeUnwantedFields)
-      ]
-      let type = res.records.length > 0 ? 'edit' : 'add'
+      ].map(item => ({
+        ...item,
+        id: res.id,
+        modelId: data.modelId
+      }))
+      let type = res.id ? 'edit' : 'add'
       let params = {
         id: currentId,
         modelId: data.modelId,
         enabled: true,
-        formula: targetArr,
+        formula: [...res.records, ...selectedData].map(removeUnwantedFields),
         inputPoints: extractVariables(targetArr),
         pointName: "df",
       }

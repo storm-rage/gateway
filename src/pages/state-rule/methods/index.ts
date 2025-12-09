@@ -74,7 +74,7 @@ export const getStateRuleData = async (pageInfo?: IPageInfo, formData?: ISearchF
       idx: idx + 1,
     }
   })
-  return { records: records || [], total: res.total }
+  return { records: records || [], total: res.total, id: res.records?.[0]?.id }
 }
 const getIntersection = (data = [], stationIds, dvsTypes = []) => {
   if (!data.length) return []
