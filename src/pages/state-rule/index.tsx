@@ -192,6 +192,29 @@ export default function DeviceManage() {
     setSelectRowInfo(null)
     if (type === "close") return setIsModalOpen("")
   }
+const extractVariables = (formula:any) => { 
+    const variableRegex = /[a-zA-Z_][a-zA-Z0-9@_.]*/g; 
+    const keywords = ['ABS', 'null', 'true', 'false'];
+    const allVariables = new Set<string>();
+
+    formula?.length && formula.forEach((item: any) => {
+      if (item.rule) {
+        const matches = item.rule.match(variableRegex);
+        
+        // 过滤出有效的变量名
+        const variables = matches?.filter((match: string) => 
+          !keywords.includes(match) &&           // 不是关键字
+          isNaN(Number(match)) &&                // 不是纯数字
+          !/[+\-*/=<>!&|]/.test(match)           // 不包含运算符
+        ) || [];
+        
+        // 将变量添加到集合中（自动去重）
+        variables.forEach(variable => allVariables.add(variable));
+      }
+    });
+    
+    return Array.from(allVariables).join(',');
+  }
 const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
     console.log("applyBtnClkRef===", type, data, 'modelId===',modelId)
     if (type === "ok") {
@@ -205,18 +228,30 @@ const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
           selectedRowKeys.includes(item.idx)
         ).map(item => ({
             ...item,
-            modelId: res.records[0].modelId,
-            id: res.records[0].id
+            modelId: data.modelId,
+            // id: res.records[0].id
         }))
-      console.log('res===', res, selectedData)
+        console.log('selectedData===', selectedData)
+      //如果得到的res.records为空，则说明没有规则数据，则需要调用新增，把规则数据添加到fomula中
+      const removeUnwantedFields = (item) => {
+      const { id, idx, index, modelId, ...rest } = item;
+        return rest;
+      }
       let targetArr = [
-        ...res.records,
-        ...selectedData.filter(selectedItem => 
-          !res.records.some(record => record.idx === selectedItem.idx)
-        )
-      ];
+        ...res.records.map(removeUnwantedFields),
+        ...selectedData.map(removeUnwantedFields)
+      ]
+      let type = res.records.length > 0 ? 'edit' : 'add'
+      let params = {
+        id: currentId,
+        modelId: data.modelId,
+        enabled: true,
+        formula: targetArr,
+        inputPoints: extractVariables(targetArr),
+        pointName: "df",
+      }
 
-      handleBatchApply([...targetArr], rowSelection.selectedRowKeys, data.modelId)
+      handleBatchApply([...targetArr], rowSelection.selectedRowKeys, data.modelId, type, params)
     }
     if (type === "close") {
       setBatchApplyModal(false)

@@ -92,15 +92,20 @@ export const addRule = async (params, editType = "add") => {
   const res = await doBaseServer(api, params)
   console.log(res, "sdf")
 }
-export const handleBatchApply = async (data= [], checkedItemsIds =[], modelId) => {
-  const api = "updateMngFormula"
+export const handleBatchApply = async (data= [], checkedItemsIds =[], modelId, type = "edit", param) => {
+  const api = type == "edit" ? "updateMngFormula" : 'addMngFormula'//如果目标设备型号下的recods为空，那么就添加
   const params = {
     pointName: "df",
     modelId: modelId,
     id: data[0].id,
     formula: data,
   }
-  const res = await doBaseServer(api, params)
+  let res = null
+  if(type == "edit") {
+      res = await doBaseServer(api, params)
+  } else {
+      res = await doBaseServer(api, param)
+  }
   return validOperate(res)
 }
 export const handleBatchDel = async (data= [], checkedItemsIds =[]) => {
