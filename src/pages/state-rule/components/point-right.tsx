@@ -23,7 +23,8 @@ const ruleExample = [
   { name: "5min内设备风速无数据", value: "WindSpeed1@5m@COUNT==0" },
   { name: "瞬时设备风速无数据", value: "WindSpeed1==null" },
   { name: "5min内风速大于3", value: "WindSpeed1@5m@MIN > 3" },
-  { name: "状态等于0，或（状态等于9，且偏航状态等于6）", value: "(status == 0 || (status == 9 && yawStatus == 6))" },
+  { name: "状态等于0，或（状态等于9，且偏航状态等于6）", value: "(Turstatus == 0 || (Turstatus == 9 && yawStatus == 6))" },
+    { name: "状态等于1，或状态等于2，或状态等于3", value: "Turstatus in (1,2,3)" },
 ]
 export default function RuleQuotaInput(props: IProps) {
   const { info } = props

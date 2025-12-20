@@ -15,8 +15,8 @@ export interface IPointSysInfo extends IDvsMeasurePointData {
 export type TStationIdxSchFormField = "stationId"
 export interface IStPiontSysListParam {
   stationId?: number
-  deviceIds: number
+  modelIds: number
   controlType: number
 }
 
-export type TStPiontSysFormField = "stationId" | "deviceIds" | "controlType"
+export type TStPiontSysFormField = "stationId" | "modelIds" | "controlType"

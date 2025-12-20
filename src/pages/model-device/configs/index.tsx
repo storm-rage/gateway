@@ -97,6 +97,7 @@ export const DEVICE_ATT_COLUMNS: ColumnsType<IDeviceListData> = [
   { dataIndex: "deviceCode", title: "设备编码", width: 120 },
   { dataIndex: "name", title: "设备", width: 120 },
   { dataIndex: "model", title: "设备型号", width: 180 },
+  { dataIndex: "modelId", title: "型号ID", width: 120 },
   { dataIndex: "periodName", title: "期次", width: 120 },
   { dataIndex: "lineName", title: "线路", width: 120 },
   { dataIndex: "operationDate", title: "运营时间", width: 120 },
@@ -224,7 +225,8 @@ export function DEVICE_ATT_EDIT_COLUMNS(
     { dataIndex: "index", title: "序号", width: 60 },
     { dataIndex: "stationName", title: "场站", width: 120 },
     { dataIndex: "deviceTypeName", title: "设备类型", width: 120 },
-  { dataIndex: "id", title: "设备ID", width: 120 },      
+    { dataIndex: "id", title: "设备ID", width: 120 }, 
+    { dataIndex: "modelId", title: "型号ID", width: 120 },         
     {
       dataIndex: "deviceCode",
       title: "设备编码",

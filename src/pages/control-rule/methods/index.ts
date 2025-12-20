@@ -10,7 +10,7 @@ import { IFormInst, TFormItemConfig } from "@/components/custom-form/types"
 import { IPageData } from "@/types/i-config"
 import { IDvsMeasurePointData } from "@/types/i-device"
 import { IPageInfo } from "@/types/i-table"
-import { queryDevicesByParams } from "@/utils/device-funs"
+import { queryDevicesByParams, getStAllDeviceModel } from "@/utils/device-funs"
 import { validOperate, validResErr } from "@/utils/util-funs"
 
 import { IPointSysInfo, IStPiontSysListParam, TStPiontSysFormField } from "../types"
@@ -23,7 +23,7 @@ export async function getCtlRuleSchData(pageInfo?: IPageInfo, formData?) {
   const params = {
     pageSize: pageInfo.pageSize,
     pageNum: pageInfo.current,
-    deviceIds: formData?.deviceIds,
+    modelIds: formData?.modelIds,
     stationId: formData?.stationId,
     controlType: formData?.controlType,
   }
@@ -41,10 +41,18 @@ export async function onSetPointSysSchFormChg(
 ): Promise<TFormItemConfig<TStPiontSysFormField>> {
   const [chgedKey, chgedVal] = Object.entries(changedValue || {})?.[0] || []
   if (!["stationId"].includes(chgedKey)) return {}
+  // if (chgedKey === "stationId") {
+  //   const deviceList = await queryDevicesByParams({ stationId: chgedVal })
+  //   const list = deviceList?.map((item) => ({ label: item.deviceName, value: item.deviceId }))
+  //   return { deviceIds: { options: list } }
+  // }
+  const theFormInst = formInst?.getInst()
   if (chgedKey === "stationId") {
-    const deviceList = await queryDevicesByParams({ stationId: chgedVal })
-    const list = deviceList?.map((item) => ({ label: item.deviceName, value: item.deviceId }))
-    return { deviceIds: { options: list } }
+    const modelList = await getStAllDeviceModel(chgedVal)
+    theFormInst?.setFieldsValue({
+      modelIds: modelList?.length ? [modelList[0].value] : [],
+    })
+    return { modelIds: { options: modelList } }
   }
   return {}
 }

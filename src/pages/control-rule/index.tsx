@@ -35,6 +35,7 @@ import {
   saveRuleData,
   getControlType,
 } from "./methods"
+import { getStAllDeviceModel } from "@/utils/device-funs"
 import { IPointSysInfo, IStPiontSysListParam, TStationIdxSchFormField } from "./types"
 import FileImport from "@/components/custom-upload/upload"
 import CustomModal from "@/components/custom-modal"
@@ -170,11 +171,23 @@ export default function SettingStation() {
     setFormItemConfig((prevState) => ({ ...prevState, ...chgOptions }))
   }
   const formSelectChange = useRef(async (changeVal, setFormConfigs) => {
-    if (changeVal?.stationCode) {
-      const deviceId = await getDevices(changeVal?.stationCode)
-      const chgOptions = { deviceId: { options: deviceId } }
-      setFormConfigs((prevState) => ({ ...prevState, ...chgOptions }))
-    }
+    // if (changeVal?.stationCode) {
+    //   const deviceId = await getDevices(changeVal?.stationCode)
+    //   const chgOptions = { deviceId: { options: deviceId } }
+    //   setFormConfigs((prevState) => ({ ...prevState, ...chgOptions }))
+    // }    
+    if (changeVal?.stationId) {
+      const modelList = await getStAllDeviceModel(changeVal.stationId);
+      const chgOptions = {
+        modelId: {
+        options: modelList,
+        ...(modelList?.length ? { value: modelList[0].value } : {})
+      }
+    };
+    // console.log(chgOptions, "chgOptions");
+    setFormConfigs((prevState) => ({ ...prevState, ...chgOptions }));
+  }    
+
   })
   // 新增和编辑
   const btnClkRef = async (type: "ok" | "close", data?) => {

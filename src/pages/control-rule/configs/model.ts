@@ -17,7 +17,7 @@ export function formItemFuc({ controlType }): ISearchFormProps["itemOptions"] {
   return [
     {
       type: StationTreeSelect,
-      name: "stationCode",
+      name: "stationId",
       label: "场站",
       formItemProps: {
         labelCol: { span: 6 },
@@ -25,18 +25,21 @@ export function formItemFuc({ controlType }): ISearchFormProps["itemOptions"] {
       },
       props: {
         style: { width: "100%" },
+        needId: true,
+        needFirst: true,
       },
     },
     {
       type: SelectWithAll,
-      name: "deviceId",
-      label: "设备",
+      name: "modelId",
+      label: "型号",
       formItemProps: {
         labelCol: { span: 6 },
-        rules: [{ required: true, message: "请选择设备" }],
+        rules: [{ required: true, message: "请选择型号" }],
       },
       props: {
         options: [],
+        needFirst: true,
         // mode: "multiple",
       },
     },
@@ -71,6 +74,18 @@ export function formItemFuc({ controlType }): ISearchFormProps["itemOptions"] {
       formItemProps: {
         labelCol: { span: 6 },
         rules: [{ required: true, message: "请输入新控制值" }],
+      },
+      props: {
+        style: { width: "100%" },
+      },
+    },
+    {
+      type: CustonInput,
+      name: "newIo",
+      label: "新测点编码",
+      formItemProps: {
+        labelCol: { span: 6 },
+        rules: [{ required: false, message: "请输入新测点编码" }],
       },
       props: {
         style: { width: "100%" },

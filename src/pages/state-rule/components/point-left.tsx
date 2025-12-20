@@ -35,7 +35,7 @@ export default function EditRulePoint(props: IProps) {
   const [dataSource, setDataSource] = useState([])
   const [total, setTotal] = useState(0)
   const [pageInfo, setPageInfo] = useState({
-    pageSize: 50,
+    pageSize: 500,
     pageNum: 1,
   })
   const [showSearch, setShowSearch] = useState(false)
