@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-29 16:26:37
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-09-25 16:48:04
+ * @LastEditTime: 2026-01-08 15:26:02
  * @Description:
  */
 import { doBaseServer } from "@/api/serve-funs"
@@ -86,14 +86,39 @@ const getIntersection = (data = [], stationIds, dvsTypes = []) => {
 
   return newData
 }
+export const extractVariables = (formula: any) => {
+  const variableRegex = /[a-zA-Z_][a-zA-Z0-9@_.]*/g
+  const keywords = ["ABS", "null", "true", "false"]
+  const allVariables = new Set<string>()
 
+  formula?.length &&
+    formula.forEach((item: any) => {
+      if (item.rule) {
+        const matches = item.rule.match(variableRegex)
+
+        // 过滤出有效的变量名
+        const variables =
+          matches?.filter(
+            (match: string) =>
+              !keywords.includes(match) && // 不是关键字
+              isNaN(Number(match)) && // 不是纯数字
+              !/[+\-*/=<>!&|]/.test(match), // 不包含运算符
+          ) || []
+
+        // 将变量添加到集合中（自动去重）
+        variables.forEach((variable) => allVariables.add(variable))
+      }
+    })
+
+  return Array.from(allVariables).join(",")
+}
 export const addRule = async (params, editType = "add") => {
   const api = editType === "add" ? "addMngFormula" : "updateMngFormula"
   const res = await doBaseServer(api, params)
-  console.log(res, "sdf")
+  return res
 }
-export const handleBatchApply = async (data= [], checkedItemsIds =[], modelId, type = "edit", param) => {
-  const api = type == "edit" ? "updateMngFormula" : 'addMngFormula'//如果目标设备型号下的recods为空，那么就添加
+export const handleBatchApply = async (data = [], checkedItemsIds = [], modelId, type = "edit", param) => {
+  const api = type == "edit" ? "updateMngFormula" : "addMngFormula" //如果目标设备型号下的recods为空，那么就添加
   const params = {
     pointName: "df",
     modelId: modelId,
@@ -101,14 +126,14 @@ export const handleBatchApply = async (data= [], checkedItemsIds =[], modelId, t
     formula: data,
   }
   let res = null
-  if(type == "edit") {
-      res = await doBaseServer(api, params)
+  if (type == "edit") {
+    res = await doBaseServer(api, params)
   } else {
-      res = await doBaseServer(api, param)
+    res = await doBaseServer(api, param)
   }
   return validOperate(res)
 }
-export const handleBatchDel = async (data= [], checkedItemsIds =[]) => {
+export const handleBatchDel = async (data = [], checkedItemsIds = []) => {
   const list = data?.filter((i) => !checkedItemsIds.includes(i.idx))
   const api = "updateMngFormula"
   const params = {

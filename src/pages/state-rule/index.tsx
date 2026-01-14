@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-29 15:39:54
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-10-30 10:17:59
+ * @LastEditTime: 2026-01-09 16:51:20
  * @Description:
  */
 /*
@@ -54,6 +54,7 @@ import { STATE_ATT_COLUMNS, STATE_RULE_FORM_ITEMS, STATE_RULE_SCH_FORM_BTNS, for
 import { ISearchFr, IStateRuleList, TStTbActInfo, stateInfo } from "./types"
 import { getCurDeviceModel } from "../setting-power-line/methods"
 import StateRuleForm, { IStRuleFormProps } from "./components/form"
+import TemplateChoose from "./components/template"
 
 const rowSelectProps = {
   needInfo: true,
@@ -76,10 +77,11 @@ export default function DeviceManage() {
   const { stationOptions4Id } = useAtomValue(AtomStation)
 
   const { deviceSystemMap, deviceTypeMap } = useAtomValue(AtomConfigMap).map
-  
+
   const [deviceType, setDeviceType] = useState<TDeviceType>()
   const [modelId, setModelId] = useState<number>(null)
   const [searchDvsTyps, setSearchDvsTyps] = useState<TDeviceType>("WT") // 点击查询时候的设备类型
+  const [templateModal, setTemplateModal] = useState(false)
 
   useEffect(() => {
     // reverseParseSign(11)
@@ -121,7 +123,7 @@ export default function DeviceManage() {
       setIsEditOrAdd(key)
     }
   }
-  const [modalFormItemConfig, setModalFormItemConfig] = useState({});
+  const [modalFormItemConfig, setModalFormItemConfig] = useState({})
 
   async function onFormAction(type) {
     setSelectRowInfo(null)
@@ -132,31 +134,27 @@ export default function DeviceManage() {
       setCurrentId(dataSource?.[0]?.id)
       setIsModalOpen(type)
       setIsEditOrAdd("add")
-    } else if(type === "batchApply") {
+    } else if (type === "batchApply") {
       const currentFormData = formRef.current?.getFormValues()
-      if(!rowSelection.selectedRowKeys.length) {
+      if (!rowSelection.selectedRowKeys.length) {
         return showMsg("请选择至少一条数据！")
       }
       if (currentFormData?.deviceType) {
         setModalFormDvsType(currentFormData.deviceType)
-        
-        await formSelectChange.current(
-          { deviceType: currentFormData.deviceType },
-          setModalFormItemConfig
-        )
+
+        await formSelectChange.current({ deviceType: currentFormData.deviceType }, setModalFormItemConfig)
         setSearchDvsTyps(currentFormData.deviceType)
       }
       setBatchApplyModal(true)
-
     } else if (type === "batchDel") {
       // 批量删除
       if (!selectedRowKeys.length) {
         showMsg("请至少选择一条！")
         return
-      }      
-      let obj:stateInfo = null
-      if(rowSelection.selectedRowKeys.length == 1) {
-        obj = dataSource.find(item => item.idx == rowSelection.selectedRowKeys[0])
+      }
+      let obj: stateInfo = null
+      if (rowSelection.selectedRowKeys.length == 1) {
+        obj = dataSource.find((item) => item.idx == rowSelection.selectedRowKeys[0])
         setSelectRowInfo(obj)
       }
       setIsModalOpen("deleted")
@@ -165,6 +163,8 @@ export default function DeviceManage() {
       // const res = await
     } else if (type === "export") {
       exportTemplate(formData)
+    } else if (type === "templateAdd") {
+      setTemplateModal(true)
     }
   }
   const btnClick = useRef(async (type, formData) => {
@@ -184,68 +184,72 @@ export default function DeviceManage() {
       // const res = await insertWtPowerCurve(data, isEditOrAdd)
       // if (!res) return
       setIsModalOpen("")
+      setTemplateModal(false)
       setSelectRowInfo(null)
       // setSelectedRowKeys([])
       // setSelectedRows([])
       return searchTable()
     }
     setSelectRowInfo(null)
-    if (type === "close") return setIsModalOpen("")
+    if (type === "close") {
+      setIsModalOpen("")
+      setTemplateModal(false)
+    }
   }
-const extractVariables = (formula:any) => { 
-    const variableRegex = /[a-zA-Z_][a-zA-Z0-9@_.]*/g; 
-    const keywords = ['ABS', 'null', 'true', 'false'];
-    const allVariables = new Set<string>();
+  const extractVariables = (formula: any) => {
+    const variableRegex = /[a-zA-Z_][a-zA-Z0-9@_.]*/g
+    const keywords = ["ABS", "null", "true", "false"]
+    const allVariables = new Set<string>()
 
-    formula?.length && formula.forEach((item: any) => {
-      if (item.rule) {
-        const matches = item.rule.match(variableRegex);
-        
-        // 过滤出有效的变量名
-        const variables = matches?.filter((match: string) => 
-          !keywords.includes(match) &&           // 不是关键字
-          isNaN(Number(match)) &&                // 不是纯数字
-          !/[+\-*/=<>!&|]/.test(match)           // 不包含运算符
-        ) || [];
-        
-        // 将变量添加到集合中（自动去重）
-        variables.forEach(variable => allVariables.add(variable));
-      }
-    });
-    
-    return Array.from(allVariables).join(',');
+    formula?.length &&
+      formula.forEach((item: any) => {
+        if (item.rule) {
+          const matches = item.rule.match(variableRegex)
+
+          // 过滤出有效的变量名
+          const variables =
+            matches?.filter(
+              (match: string) =>
+                !keywords.includes(match) && // 不是关键字
+                isNaN(Number(match)) && // 不是纯数字
+                !/[+\-*/=<>!&|]/.test(match), // 不包含运算符
+            ) || []
+
+          // 将变量添加到集合中（自动去重）
+          variables.forEach((variable) => allVariables.add(variable))
+        }
+      })
+
+    return Array.from(allVariables).join(",")
   }
-const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
-    console.log("applyBtnClkRef===", type, data, 'modelId===',modelId)
+  const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
+    console.log("applyBtnClkRef===", type, data, "modelId===", modelId)
     if (type === "ok") {
-      
       setBatchApplyModal(false)
       //todo:先查询对应设备型号的modelId的规则列表，然后在选中的规则组装起来,
       // 如果需要继续支持多选设备型号，需要多次请求对应型号的规则数据，问题点接口按分页返回数据，不同分页可能存在相同数据
-      let res = await getStateRuleData({current: 1, pageSize: 50}, {modelId: data.modelId})//data.modelId为单选，如果是多选则是数组需要另外处理
+      let res = await getStateRuleData({ current: 1, pageSize: 50 }, { modelId: data.modelId }) //data.modelId为单选，如果是多选则是数组需要另外处理
       const selectedData = dataSource
-        .filter(item => 
-          selectedRowKeys.includes(item.idx)
-        ).map(item => ({
-            ...item,
-            modelId: data.modelId,
-            // id: res.records[0].id
+        .filter((item) => selectedRowKeys.includes(item.idx))
+        .map((item) => ({
+          ...item,
+          modelId: data.modelId,
+          // id: res.records[0].id
         }))
-        console.log('selectedData===', selectedData)
+      console.log("selectedData===", selectedData)
       //如果得到的res.records为空，则说明没有规则数据，则需要调用新增，把规则数据添加到fomula中
       const removeUnwantedFields = (item) => {
-      const { id, idx, index, modelId, ...rest } = item;
-        return rest;
+        const { id, idx, index, modelId, ...rest } = item
+        return rest
       }
-      let targetArr = [
-        ...res.records.map(removeUnwantedFields),
-        ...selectedData.map(removeUnwantedFields)
-      ].map(item => ({
-        ...item,
-        id: res.id,
-        modelId: data.modelId
-      }))
-      let type = res.id ? 'edit' : 'add'
+      let targetArr = [...res.records.map(removeUnwantedFields), ...selectedData.map(removeUnwantedFields)].map(
+        (item) => ({
+          ...item,
+          id: res.id,
+          modelId: data.modelId,
+        }),
+      )
+      let type = res.id ? "edit" : "add"
       let params = {
         id: currentId,
         modelId: data.modelId,
@@ -275,7 +279,7 @@ const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
     if (type === "delete_ok") {
       // const dvsType = selectRowInfo?.deviceType || selectedRows?.[0].deviceType
       let res = null
-      if(rowSelection.selectedRowKeys.length > 1) {
+      if (rowSelection.selectedRowKeys.length > 1) {
         res = await handleBatchDel(dataSource, rowSelection.selectedRowKeys)
       } else {
         res = await delStateRule(dataSource, selectRowInfo)
@@ -293,25 +297,24 @@ const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
   const formSelectChange = useRef(async (changeVal, setFormConfigs) => {
     if (changeVal?.deviceType && changeVal?.deviceType !== modalFormDvsType) {
       const models = await getModel(changeVal?.deviceType)
-      
+
       const chgOptions = { modelId: { options: models } }
       setFormConfigs((prevState) => ({ ...prevState, ...chgOptions }))
       setModalFormDvsType(changeVal?.deviceType)
     }
   })
 
-
-  const [currentModelOptions, setCurrentModelOptions] = useState([]);
+  const [currentModelOptions, setCurrentModelOptions] = useState([])
 
   useEffect(() => {
     const fetchModelOptions = async () => {
-    const models = await getModel(searchDvsTyps);
-      setCurrentModelOptions(models);
-    };
-  if (searchDvsTyps) {
-    fetchModelOptions();
-  }
-  },[searchDvsTyps, batchApplyModal])
+      const models = await getModel(searchDvsTyps)
+      setCurrentModelOptions(models)
+    }
+    if (searchDvsTyps) {
+      fetchModelOptions()
+    }
+  }, [searchDvsTyps, batchApplyModal])
 
   return (
     <div className="page-wrap power-line">
@@ -339,7 +342,7 @@ const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
       />
       <CustomModal<IStRuleFormProps>
         width="80%"
-        title={isModalOpen === "edit" ? " 编辑" : "查看"}
+        title={isModalOpen === "see" ? "查看" : "编辑"}
         destroyOnClose
         open={isModalOpen === "add" || isModalOpen === "edit" || isModalOpen === "see"}
         footer={null}
@@ -378,6 +381,22 @@ const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
         componentProps={{ btnClick: btnClick.current }}
       />
       <CustomModal
+        width="80%"
+        title="模版选择"
+        destroyOnClose
+        open={templateModal}
+        footer={null}
+        onCancel={() => setTemplateModal(false)}
+        Component={TemplateChoose}
+        componentProps={{
+          modelId,
+          deviceType: searchDvsTyps,
+          tableSource: dataSource,
+          templateModal,
+          btnClkCallback: btnClkRef,
+        }}
+      />
+      <CustomModal
         width="30%"
         title="批量应用"
         destroyOnClose
@@ -385,22 +404,22 @@ const applyBtnClkRef = async (type: "ok" | "close", data?: any) => {
         footer={null}
         onCancel={() => setBatchApplyModal(false)}
         Component={CustomAddModal}
-        componentProps={{ 
+        componentProps={{
           buttonClick: applyBtnClkRef,
           editType: "add",
           formSelectChange: formSelectChange.current,
           FORM_ITEMS: formItemFuc({
-              systems: deviceSystemMap,
-              deviceTypes: deviceTypeMap,
-              currentDvsType:  {
-                deviceType: searchDvsTyps,
-                modelId: currentModelOptions
-              },
-            }),
+            systems: deviceSystemMap,
+            deviceTypes: deviceTypeMap,
+            currentDvsType: {
+              deviceType: searchDvsTyps,
+              modelId: currentModelOptions,
+            },
+          }),
           initialValues: {
             deviceType: searchDvsTyps,
-           },
-         }}
+          },
+        }}
       />
     </div>
   )

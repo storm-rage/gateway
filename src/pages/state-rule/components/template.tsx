@@ -1,0 +1,275 @@
+/*
+ *@Author: chenmeifeng
+ *@Date: 2023-10-19 15:30:40
+ * @LastEditors: chenmeifeng
+ * @LastEditTime: 2026-01-09 10:08:26
+ *@Description: 删除内容
+ */
+
+import "./template.less"
+import { Button, Space } from "antd"
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
+
+import SelectOrdinary from "@/components/select-ordinary"
+import TEMPLATE_OPTION from "../configs/point-json"
+import { TDeviceType } from "@/types/i-config"
+import { getDvsMeasurePointsData } from "@/utils/device-funs"
+import { IDvsMeasurePointData } from "@/types/i-device"
+import CustomTable from "@/components/custom-table"
+import { TEMPLATE_ADD_COLUMNS, TEMPLATE_RESULT_COLUMNS } from "../configs/template"
+import { showMsg } from "@/utils/util-funs"
+import { stateInfo } from "../types"
+import { addRule, extractVariables } from "../methods"
+import StateRuleForm, { IStRuleFormProps } from "./form"
+import CustomModal from "@/components/custom-modal"
+interface TemplateChooseRef {}
+interface IProps {
+  deviceType: TDeviceType
+  modelId: number
+  tableSource: Array<stateInfo>
+  templateModal: boolean
+  btnClkCallback: (type) => void
+}
+interface dataList {
+  id: string
+  originKey: string
+  desc: string
+  actualKey: string
+  exist: boolean
+}
+const filterOption = (input, option) => ((option?.label as string) ?? "").toLowerCase().includes(input.toLowerCase())
+const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
+  const { deviceType = "WT", modelId, tableSource, templateModal, btnClkCallback } = props
+  const stepChgRef = useRef(() => {})
+  const [currentStep, setCurrentStep] = useState(1)
+  const [template, setTemplate] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [exitPointList, setExitPointList] = useState<IDvsMeasurePointData[]>([])
+  const [dataSourceList, setDataSourceList] = useState<dataList[]>([])
+  const [column, setColumn] = useState([])
+  const [replacePointsRes, setReplacePointsRes] = useState<any>([])
+  const [isModalOpen, setIsModalOpen] = useState("")
+  const [selectRowInfo, setSelectRowInfo] = useState<stateInfo>()
+
+  const setDataSource = ({ record, value, valkey }) => {
+    const newData = [...dataSourceList]
+    const index = newData.findIndex((item) => record.id === item.id)
+    const item = newData[index]
+    newData.splice(index, 1, {
+      ...item,
+      actualKey: value,
+    })
+    setDataSourceList(newData)
+  }
+
+  // 向外暴露的接口
+  useImperativeHandle(ref, () => ({
+    setStep: stepChgRef.current,
+  }))
+
+  const btnClk = (type: "save" | "close" | "reset" | "next" | "last") => {
+    if (type === "next") {
+      if (!template) return
+      if (currentStep === 2 && !validateNone()) return
+      if (currentStep === 2) getRepalcePoints()
+      setCurrentStep((prev) => prev + 1)
+    } else if (type === "reset") {
+      if (currentStep === 1) setTemplate("")
+      if (currentStep === 2) getInitDataSource()
+    } else if (type === "save") {
+      saveTemplate()
+    } else if (type === "last") {
+      setCurrentStep((prev) => prev - 1)
+    } else if (type === "close") {
+      btnClkCallback?.("close")
+    }
+  }
+  const getUnrepeatKeys = (str) => {
+    const arr = []
+    str.split(",")?.forEach((i) => {
+      if (i) {
+        arr.push(i.split("@")[0])
+      }
+    })
+    return [...new Set(arr)]
+  }
+
+  const currentTemplate = useMemo(() => {
+    return TEMPLATE_OPTION[deviceType].find((i) => i.value === template)
+  }, [template])
+  const getPoints = async () => {
+    setLoading(true)
+    const res = await getDvsMeasurePointsData({ modelId: modelId, pointTypes: "1,2" })
+    setExitPointList(res)
+    setLoading(false)
+  }
+  const getInitDataSource = () => {
+    const point = getUnrepeatKeys(currentTemplate.input_points) || []
+    const timestamp = new Date().getTime()
+    const result = point?.map((i) => {
+      const info = exitPointList.find((j) => j.pointName === i)
+      return {
+        id: i + timestamp,
+        originKey: i,
+        desc: info?.pointDesc,
+        actualKey: i,
+        exist: info ? true : false,
+      }
+    })
+    const res = JSON.parse(JSON.stringify(result))
+    setDataSourceList(res)
+  }
+
+  const validateNone = () => {
+    const length = dataSourceList?.filter((i) => !i.actualKey)?.length
+    if (!length) return true
+    showMsg("状态配置测点存在未配置的测点，请检查")
+    return false
+  }
+  function replaceRuleFields(rule: string, list: dataList[]): string {
+    let result = rule
+
+    // 按长度降序排序，避免短字段名替换影响长字段名
+    const sortedList = [...list].sort((a, b) => b.originKey.length - a.originKey.length)
+
+    for (const item of sortedList) {
+      // 使用正则表达式匹配字段名，确保匹配完整的单词，避免部分匹配
+      const regex = new RegExp(`\\b${item.originKey}\\b`, "g")
+      result = result.replace(regex, item.actualKey)
+    }
+
+    return result
+  }
+  const getRepalcePoints = async () => {
+    const formula = JSON.parse(JSON.stringify(currentTemplate.formula))
+    const replaceResult = formula?.reduce((acc, cur, idx) => {
+      const rule = replaceRuleFields(cur.rule, dataSourceList)
+      cur.rule = rule
+      cur.id = idx
+      acc.push(cur)
+      return acc
+    }, [])
+    setReplacePointsRes(replaceResult)
+  }
+
+  const saveTemplate = async () => {
+    const type = !tableSource?.length ? "add" : "edit"
+
+    const editTypeForm = type === "edit" ? tableSource?.concat(replacePointsRes) : []
+    const formula = type === "add" ? replacePointsRes : editTypeForm
+    const params = {
+      id: tableSource?.[0]?.id,
+      modelId,
+      enabled: true,
+      formula: formula,
+      inputPoints: extractVariables(formula),
+      pointName: "df",
+    }
+    try {
+      await addRule(params, type)
+      btnClkCallback?.("ok")
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  const onTbAction = (record, { key }) => {
+    console.log(key, "type")
+    setSelectRowInfo(record)
+    setIsModalOpen(key)
+    // if (type === "edit")
+  }
+  const btnClkRef = (type, info) => {
+    setIsModalOpen("")
+    if (type === "ok") {
+      const index = replacePointsRes.findIndex((i) => i.id === selectRowInfo.id)
+      const beforeArr = replacePointsRes.slice(0, index)
+      const afterArr = replacePointsRes.slice(index + 1)
+      console.log([...beforeArr, info, ...afterArr])
+
+      setReplacePointsRes([...beforeArr, { ...info, id: selectRowInfo.id }, ...afterArr])
+    }
+  }
+  useEffect(() => {
+    if (template && currentTemplate) {
+      getInitDataSource()
+    }
+  }, [template, currentTemplate, exitPointList])
+
+  useEffect(() => {
+    setColumn(TEMPLATE_ADD_COLUMNS(setDataSource, exitPointList))
+  }, [dataSourceList, exitPointList])
+
+  useEffect(() => {
+    if (modelId) getPoints()
+  }, [modelId])
+
+  useEffect(() => {
+    if (templateModal) {
+      setReplacePointsRes([])
+    }
+  }, [templateModal])
+
+  return (
+    <div className="template-wrap">
+      <div className="template-content">
+        {currentStep === 1 ? (
+          <div className="step-one">
+            <span>选择模板：</span>
+            <SelectOrdinary options={TEMPLATE_OPTION[deviceType]} value={template} onChange={(e) => setTemplate(e)} />
+          </div>
+        ) : currentStep === 2 ? (
+          <CustomTable rowKey="id" limitHeight columns={column} dataSource={dataSourceList} pagination={false} />
+        ) : (
+          <CustomTable
+            rowKey="id"
+            limitHeight
+            columns={TEMPLATE_RESULT_COLUMNS({ onClick: onTbAction })}
+            dataSource={replacePointsRes}
+            pagination={false}
+          />
+        )}
+      </div>
+      <div className="step-footer">
+        <Space>
+          {currentStep === 3 ? (
+            <>
+              <Button size="small" children={"上一步"} onClick={() => btnClk("last")} />
+              <Button size="small" type="primary" children="保存" disabled={loading} onClick={() => btnClk("save")} />
+            </>
+          ) : (
+            <>
+              <Button size="small" children={"下一步"} disabled={loading} onClick={() => btnClk("next")} />
+              <Button size="small" children={"重置"} onClick={() => btnClk("reset")} />
+            </>
+          )}
+
+          <Button size="small" children={"取消"} onClick={() => btnClk("close")} />
+        </Space>
+      </div>
+      <CustomModal<IStRuleFormProps>
+        width="80%"
+        title={isModalOpen === "see" ? "查看" : "编辑"}
+        destroyOnClose
+        open={isModalOpen === "edit" || isModalOpen === "see"}
+        footer={null}
+        onCancel={() => {
+          setIsModalOpen("")
+          setSelectRowInfo(null)
+        }}
+        Component={StateRuleForm}
+        componentProps={{
+          tableSource: tableSource,
+          buttonClick: btnClkRef,
+          editType: "edit",
+          deviceType: deviceType,
+          modelId: modelId,
+          selectRowInfo: selectRowInfo,
+          showBottom: false,
+          currentId: null,
+        }}
+      />
+    </div>
+  )
+})
+
+export default TemplateChoose

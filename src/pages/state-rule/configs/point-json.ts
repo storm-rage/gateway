@@ -1,0 +1,68 @@
+export default {
+  WT: [
+    {
+      label: "测试模板1",
+      value: "1",
+      formula: [
+        {
+          rule: "Turstatus == ？？ && GridsideActivePower >5",
+          duration: 5,
+          priority: 1,
+          ruleBefore: '("102" in signState) ',
+          subStateCode: "1",
+          subStateName: "正常发电",
+          mainStateCode: "1",
+          mainStateName: "正常发电",
+        },
+        {
+          rule: "Turstatus == ？？ && GridsideActivePower@MIN >5 || GridsideActivePower@MAX <5",
+          duration: 5,
+          priority: 1,
+          ruleBefore: "",
+          subStateCode: "2",
+          subStateName: "限功率",
+          mainStateCode: "2",
+          mainStateName: "限功率",
+        },
+        {
+          rule: "wind == 1 && dovt",
+          duration: 5,
+          priority: 1,
+          ruleBefore: "",
+          subStateCode: "3",
+          subStateName: "限功率",
+          mainStateCode: "2",
+          mainStateName: "限功率",
+        },
+      ],
+      input_points: "Turstatus,GridsideActivePower@MIN,wind,dovt",
+    },
+    {
+      label: "测试模板2",
+      value: "2",
+      formula: [
+        {
+          rule: "wind == ？？ && TotProdActiveEnergy >5",
+          duration: 5,
+          priority: 1,
+          ruleBefore: "",
+          subStateCode: "1",
+          subStateName: "正常发电",
+          mainStateCode: "1",
+          mainStateName: "正常发电",
+        },
+        {
+          rule: "YC02 == ？？ && TotProdActiveEnergy@MIN >5",
+          duration: 5,
+          priority: 1,
+          ruleBefore: "",
+          subStateCode: "2",
+          subStateName: "限功率",
+          mainStateCode: "2",
+          mainStateName: "限功率",
+        },
+      ],
+      input_points: "YC02,TotProdActiveEnergy,wind@MIN",
+    },
+  ],
+}

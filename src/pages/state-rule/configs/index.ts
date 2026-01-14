@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-29 15:40:06
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-08-04 17:11:01
+ * @LastEditTime: 2026-01-12 16:57:50
  * @Description:
  */
 import { ISearchFormProps } from "@/components/custom-form/types"
@@ -63,6 +63,11 @@ export const STATE_RULE_SCH_FORM_BTNS: ISearchFormProps["buttons"] = [
     permission: "model:power:batchApply",
   },
   {
+    name: "templateAdd",
+    label: "模板新增",
+    permission: "model:power:batchApply",
+  },
+  {
     name: "batchDel",
     label: "批量删除",
     permission: "model:power:batchDelete",
@@ -97,6 +102,8 @@ export function STATE_ATT_COLUMNS(
     { dataIndex: "subStateCode", title: "小状态编码" },
     { dataIndex: "priority", title: "判定优先级" },
     { dataIndex: "duration", title: "持续时长（s）" },
+    { dataIndex: "rule", title: "测点规则" },
+    { dataIndex: "ruleBefore", title: "挂牌规则" },
     ...getTableActColumn<stateInfo, TStTbActInfo>(
       TABLE_ACTION,
       (record) => ({
@@ -108,11 +115,12 @@ export function STATE_ATT_COLUMNS(
   ]
 }
 export function formItemFuc({ systems, deviceTypes, currentDvsType }): ISearchFormProps["itemOptions"] {
-  const validModelOptions = (currentDvsType.modelId || []).filter(option => 
-    option && 
-    ((typeof option === 'object' && option.value !== undefined && option.value !== null) || 
-     (typeof option !== 'object'))
-  );
+  const validModelOptions = (currentDvsType.modelId || []).filter(
+    (option) =>
+      option &&
+      ((typeof option === "object" && option.value !== undefined && option.value !== null) ||
+        typeof option !== "object"),
+  )
   return [
     {
       type: SelectWithAll,

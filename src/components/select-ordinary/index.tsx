@@ -7,8 +7,12 @@
  */
 import { CaretRightOutlined } from "@ant-design/icons"
 import { Select } from "antd"
+import { DefaultOptionType } from "antd/es/select"
 import { useEffect } from "react"
-
+function filterFun(inputValue: string, option?: DefaultOptionType) {
+  if (option?.value === "-all-" || typeof option?.label !== "string") return false
+  return option?.label?.includes(inputValue.trim())
+}
 export default function SelectOrdinary(props) {
   const { value, allowClear = true, mode, onChange, options, labelInValue, style, ...selectProps } = props || {}
   const handleSelect = (chooseValue) => {
@@ -25,6 +29,7 @@ export default function SelectOrdinary(props) {
       className="select-with"
       optionFilterProp="children"
       popupMatchSelectWidth={false}
+      filterOption={filterFun}
       maxTagCount={1}
       value={value}
       mode={mode}

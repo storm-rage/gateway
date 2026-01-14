@@ -2,7 +2,7 @@
  * @Author: chenmeifeng
  * @Date: 2025-07-30 16:39:44
  * @LastEditors: chenmeifeng
- * @LastEditTime: 2025-10-15 11:13:35
+ * @LastEditTime: 2026-01-08 17:02:51
  * @Description
  */
 import "./form.less"
@@ -14,7 +14,7 @@ import { Button, Select, Space } from "antd"
 import { IDeviceSignal, TDeviceType } from "@/types/i-config"
 import StateSignForm from "./sign"
 import EditRuleModel from "./point"
-import { addRule, processExpression } from "../methods"
+import { addRule, extractVariables, processExpression } from "../methods"
 import { stateInfo } from "../types"
 import { getStorage, showMsg } from "@/utils/util-funs"
 import { useAtomValue } from "jotai"
@@ -27,15 +27,16 @@ const CONDITION_OPTIONS = [
 export interface IStRuleFormProps {
   tableSource: Array<stateInfo>
   editType: "edit" | "add" | "see"
-  buttonClick: (type) => void
+  buttonClick: (type, info?) => void
   deviceType: TDeviceType
   modelId: number
   selectRowInfo?: stateInfo
+  showBottom?: boolean
   currentId?: number
 }
 export interface IStRuleFormRefs {}
 const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref) => {
-  const { modelId, deviceType, editType, currentId, selectRowInfo, tableSource, buttonClick } = props
+  const { modelId, deviceType, editType, currentId, showBottom = true, selectRowInfo, tableSource, buttonClick } = props
 
   const signRef = useRef(null)
   const pointRef = useRef(null)
@@ -70,30 +71,7 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
   const changeCondition = (e) => {
     setCurCondition(e)
   }
-  const extractVariables = (formula:any) => { 
-    const variableRegex = /[a-zA-Z_][a-zA-Z0-9@_.]*/g; 
-    const keywords = ['ABS', 'null', 'true', 'false'];
-    const allVariables = new Set<string>();
 
-    formula?.length && formula.forEach((item: any) => {
-      if (item.rule) {
-        const matches = item.rule.match(variableRegex);
-        
-        // 过滤出有效的变量名
-        const variables = matches?.filter((match: string) => 
-          !keywords.includes(match) &&           // 不是关键字
-          isNaN(Number(match)) &&                // 不是纯数字
-          !/[+\-*/=<>!&|]/.test(match)           // 不包含运算符
-        ) || [];
-        
-        // 将变量添加到集合中（自动去重）
-        variables.forEach(variable => allVariables.add(variable));
-      }
-    });
-    
-    return Array.from(allVariables).join(',');
-  }
- 
   const onFinish = async () => {
     // 如果点击按钮是新增，先判断列表返回的长度，长度小于1，则新增，反之修改
     // 如果点击按钮是修改，把当前的数据更新到tableSource中
@@ -116,6 +94,11 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
       ruleBefore: signInfo ? signInfo + ` ${pointRef.current?.pointRule ? condition : ""}` : "",
       ruleBeforeInfo: JSON.stringify(signRef.current.signInfo),
       condition: condition,
+    }
+
+    if (!showBottom) {
+      buttonClick?.("ok", oneFormula)
+      return
     }
 
     const editTypeForm =
