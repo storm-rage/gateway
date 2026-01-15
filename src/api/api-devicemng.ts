@@ -530,3 +530,39 @@ export const controlRuleApi: IApiMapItem = {
     desc: "导入",
   },
 }
+
+// 电气图管理
+export const eleDiagramApiMap: IApiMapItem = {
+  getSvgFileList: {
+    url: `${SERVE_NAME}/static/stationSvg/getSvgFileList`,
+    method: "get",
+    desc: "查询",
+  },
+  deleteFile: {
+    url: `${SERVE_NAME}/static/deleteFile`,
+    method: "post",
+    desc: "删除",
+  },
+  upload: {
+    url: `${SERVE_NAME}/static/upload`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入",
+  },
+  download: {
+    url: `${SERVE_NAME}/static/download`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出",
+  },
+}
+// 音频管理
+export const audioApiMap: IApiMapItem = {
+  getAudioFileList: {
+    url: `${SERVE_NAME}/static/stationSvg/getAudioFileList`,
+    method: "get",
+    desc: "查询",
+  },
+}

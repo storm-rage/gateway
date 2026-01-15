@@ -78,9 +78,10 @@ export interface IDeviceSignal {
 }
 
 export type TModalType = "add" | "update" | "deleted" | "edit"
-export type TFormType = "add" | "batchDelete" | "export" | "import" | "template" | "edit"
+export type TFormType = "add" | "batchDelete" | "export" | "import" | "template" | "edit" | "delete"
 
 export interface IPageData<data> {
   records: data[]
+  length: number
   total: number
 }

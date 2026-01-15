@@ -88,6 +88,9 @@ const currentRolePermission = [
   "manage:user:batchDelete",
   "manage:static:add",
   "manage:static:batchDelete",
+  "manage:eleDiagram:search",
+  "manage:eleDiagram:delete",
+  "manage:audio:search",
 ]
 
 // 菜单按钮权限

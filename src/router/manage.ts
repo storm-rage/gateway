@@ -7,7 +7,7 @@
  */
 import { lazy } from "react"
 import { ITreeMenuItem } from "./interface"
-import { MANAGE_ROLE, MANAGE_STATIC, MANAGE_USER } from "./variables"
+import { MANAGE_ROLE, MANAGE_STATIC, MANAGE_USER, MANAGE_ELEDIAGRAM, MANAGE_AUDIO } from "./variables"
 
 const MenuManage: ITreeMenuItem[] = [
   {
@@ -24,6 +24,16 @@ const MenuManage: ITreeMenuItem[] = [
     key: MANAGE_STATIC,
     title: "静态数据管理",
     element: lazy(() => import("@pages/staticMng")),
+  },
+  {
+    key: MANAGE_ELEDIAGRAM,
+    title: "电气图管理",
+    element: lazy(() => import("@pages/eleDiagramMng")),
+  },
+  {
+    key: MANAGE_AUDIO,
+    title: "音频管理",
+    element: lazy(() => import("@pages/audioMng")),
   },
 ]
 export default MenuManage
