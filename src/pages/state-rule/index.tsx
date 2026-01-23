@@ -19,6 +19,7 @@ import usePageSearch from "@hooks/use-page-search.ts"
 import { AtomConfigMap } from "@/store/atom-config"
 import { useAtomValue } from "jotai"
 import React, { useEffect, useRef, useState } from "react"
+import { Tabs } from 'antd'
 
 import { getModel } from "@/pages/setting-point-sys/methods"
 
@@ -82,6 +83,17 @@ export default function DeviceManage() {
   const [modelId, setModelId] = useState<number>(null)
   const [searchDvsTyps, setSearchDvsTyps] = useState<TDeviceType>("WT") // 点击查询时候的设备类型
   const [templateModal, setTemplateModal] = useState(false)
+  const [currentTab, setCurrentTab] = useState('1')
+  const [tabItems, setTabItems] = useState([
+    {
+    key: '1',
+    label: '大状态',
+    },
+    {
+      key: '2',
+      label: '小状态',
+    },
+  ])
 
   useEffect(() => {
     // reverseParseSign(11)
@@ -303,6 +315,10 @@ export default function DeviceManage() {
       setModalFormDvsType(changeVal?.deviceType)
     }
   })
+  const onTabChange = (key) => { 
+    console.log('ontabchange',key)
+    setCurrentTab(key)
+  }
 
   const [currentModelOptions, setCurrentModelOptions] = useState([])
 
@@ -331,12 +347,13 @@ export default function DeviceManage() {
         onSearch={searchTable}
         onAction={onFormAction}
       />
+      <Tabs defaultActiveKey="1" items={tabItems} onChange={onTabChange} className="tabs"/>
       <CustomTable
         rowKey="idx"
         loading={loading}
         rowSelection={rowSelection}
         limitHeight
-        columns={STATE_ATT_COLUMNS({ onClick: onTbAction }, searchDvsTyps)}
+        columns={STATE_ATT_COLUMNS({ onClick: onTbAction }, searchDvsTyps, currentTab)}
         dataSource={dataSource}
         pagination={pagination}
       />
@@ -359,6 +376,7 @@ export default function DeviceManage() {
           modelId: modelId,
           selectRowInfo: selectRowInfo,
           currentId: currentId,
+          currentTab: currentTab,
         }}
       />
       <CustomModal

@@ -7,7 +7,8 @@
  */
 
 import "./template.less"
-import { Button, Space } from "antd"
+import { Button, Space, Tabs } from "antd"
+
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react"
 
 import SelectOrdinary from "@/components/select-ordinary"
@@ -50,6 +51,22 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
   const [replacePointsRes, setReplacePointsRes] = useState<any>([])
   const [isModalOpen, setIsModalOpen] = useState("")
   const [selectRowInfo, setSelectRowInfo] = useState<stateInfo>()
+
+  const [currentTab, setCurrentTab] = useState('1')
+  const [tabItems, setTabItems] = useState([
+    {
+    key: '1',
+    label: '大状态',
+    },
+    {
+      key: '2',
+      label: '小状态',
+    },
+  ])
+  const onTabChange = (key) => { 
+    console.log('ontabchange',key)
+    setCurrentTab(key)
+  }
 
   const setDataSource = ({ record, value, valkey }) => {
     const newData = [...dataSourceList]
@@ -106,10 +123,11 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
   const getInitDataSource = () => {
     const point = getUnrepeatKeys(currentTemplate.input_points) || []
     const timestamp = new Date().getTime()
-    const result = point?.map((i) => {
+    const result = point?.map((i,index) => {
       const info = exitPointList.find((j) => j.pointName === i)
       return {
         id: i + timestamp,
+        index: index + 1,
         originKey: i,
         desc: info?.pointDesc,
         actualKey: i,
@@ -146,6 +164,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
       const rule = replaceRuleFields(cur.rule, dataSourceList)
       cur.rule = rule
       cur.id = idx
+      cur.index = idx+1
       acc.push(cur)
       return acc
     }, [])
@@ -220,13 +239,16 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
         ) : currentStep === 2 ? (
           <CustomTable rowKey="id" limitHeight columns={column} dataSource={dataSourceList} pagination={false} />
         ) : (
+          <div className="tab-box">
+          <Tabs defaultActiveKey="1" items={tabItems} onChange={onTabChange} className="tabs"/>
           <CustomTable
             rowKey="id"
             limitHeight
-            columns={TEMPLATE_RESULT_COLUMNS({ onClick: onTbAction })}
+            columns={TEMPLATE_RESULT_COLUMNS({ onClick: onTbAction }, currentTab)}
             dataSource={replacePointsRes}
             pagination={false}
           />
+          </div>
         )}
       </div>
       <div className="step-footer">
@@ -266,6 +288,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
           selectRowInfo: selectRowInfo,
           showBottom: false,
           currentId: null,
+          currentTab: currentTab,
         }}
       />
     </div>

@@ -36,16 +36,29 @@ const TABLE_ACTION = [
   // { key: "see", label: "查看" },
   { key: "edit", label: "编辑" },
 ]
-export function TEMPLATE_RESULT_COLUMNS(config: ITbColAction<TStTbActInfo, stateInfo>): ColumnsType<stateInfo> {
+export function TEMPLATE_RESULT_COLUMNS(config: ITbColAction<TStTbActInfo, stateInfo>, currentTab: string,): ColumnsType<stateInfo> {
   const { onClick } = config
+  const stateColumns = []
+  if (currentTab == '1') {
+    stateColumns.push(
+      { dataIndex: "mainStateName", title: "状态名称", width: 120 },
+      { dataIndex: "mainStateCode", title: "状态编码", width: 120 }
+    )
+  } else if (currentTab == '2') {
+    stateColumns.push(
+      { dataIndex: "subStateName", title: "状态名称", width: 120 },
+      { dataIndex: "subStateCode", title: "状态编码", width: 120 }
+    )
+  }
   return [
     { dataIndex: "index", title: "序号", width: 60, align: "center" },
-    { dataIndex: "mainStateName", title: "大状态名称" },
-    { dataIndex: "mainStateCode", title: "大状态编码" },
-    { dataIndex: "subStateName", title: "小状态名称" },
-    { dataIndex: "subStateCode", title: "小状态编码" },
-    { dataIndex: "priority", title: "判定优先级" },
-    { dataIndex: "duration", title: "持续时长（s）" },
+    ...stateColumns,
+    // { dataIndex: "mainStateName", title: "大状态名称" },
+    // { dataIndex: "mainStateCode", title: "大状态编码" },
+    // { dataIndex: "subStateName", title: "小状态名称" },
+    // { dataIndex: "subStateCode", title: "小状态编码" },
+    { dataIndex: "priority", title: "判定优先级", width: 100 },
+    { dataIndex: "duration", title: "持续时长（s）", width: 120 },
     { dataIndex: "rule", title: "测点规则" },
     { dataIndex: "ruleBefore", title: "挂牌规则" },
     ...getTableActColumn<stateInfo, TStTbActInfo>(

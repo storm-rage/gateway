@@ -33,10 +33,11 @@ export interface IStRuleFormProps {
   selectRowInfo?: stateInfo
   showBottom?: boolean
   currentId?: number
+  currentTab?: string
 }
 export interface IStRuleFormRefs {}
 const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref) => {
-  const { modelId, deviceType, editType, currentId, showBottom = true, selectRowInfo, tableSource, buttonClick } = props
+  const { modelId, deviceType, editType, currentId, currentTab, showBottom = true, selectRowInfo, tableSource, buttonClick } = props
 
   const signRef = useRef(null)
   const pointRef = useRef(null)
@@ -121,38 +122,94 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
   }, [editType])
 
   const formChange = (changedValues) => {
-    if (changedValues.mainStateCode) {
-      const formIns = formRef.current.getInst()
-      const { mainStateCode } = changedValues
-      const mainState = stateInfos?.find((i) => i.value === mainStateCode)
-      formIns.setFieldsValue({
-        mainStateName: mainState?.label,
-        subStateCode: undefined,
-        subStateName: undefined,
-      })
-      setChooseState((prev) => {
-        return { ...prev, mainStateName: mainState?.label }
-      })
-      setFormItemConfigs((prev) => {
-        return {
-          ...prev,
-          subStateCode: {
-            options: mainState?.children,
-          },
-        }
-      })
-    } else if (changedValues.subStateCode) {
-      const formIns = formRef.current.getInst()
-      const { mainStateCode } = formIns.getFieldsValue()
-      const subState = stateInfos
-        ?.find((i) => i.value === mainStateCode)
-        ?.children?.find((i) => i.value === changedValues.subStateCode)
-      formIns.setFieldsValue({
-        subStateName: subState?.label,
-      })
-      setChooseState((prev) => {
-        return { ...prev, subStateName: subState?.label }
-      })
+    // if (changedValues.mainStateCode) {
+    //   const formIns = formRef.current.getInst()
+    //   const { mainStateCode } = changedValues
+    //   const mainState = stateInfos?.find((i) => i.value === mainStateCode)
+    //   formIns.setFieldsValue({
+    //     mainStateName: mainState?.label,
+    //     subStateCode: undefined,
+    //     subStateName: undefined,
+    //   })
+    //   setChooseState((prev) => {
+    //     return { ...prev, mainStateName: mainState?.label }
+    //   })
+    //   setFormItemConfigs((prev) => {
+    //     return {
+    //       ...prev,
+    //       subStateCode: {
+    //         options: mainState?.children,
+    //       },
+    //     }
+    //   })
+    // } else if (changedValues.subStateCode) {
+    //   const formIns = formRef.current.getInst()
+    //   const { mainStateCode } = formIns.getFieldsValue()
+    //   const subState = stateInfos
+    //     ?.find((i) => i.value === mainStateCode)
+    //     ?.children?.find((i) => i.value === changedValues.subStateCode)
+    //   formIns.setFieldsValue({
+    //     subStateName: subState?.label,
+    //   })
+    //   setChooseState((prev) => {
+    //     return { ...prev, subStateName: subState?.label }
+    //   })
+    // }
+    const deviceStdStateMap = getStorage(StorageDeviceStdState)
+    const mainStates = deviceStdStateMap?.filter((i) => i.deviceType === deviceType && i.stateType === "MAIN")
+    const subStates = deviceStdStateMap?.filter((i) => i.deviceType === deviceType && i.stateType === "SUB")
+    const formIns = formRef.current.getInst()
+
+    let result = []
+    if(changedValues.stateType) {
+      const { stateType, state } = changedValues
+      if(stateType == '1') {
+        result = mainStates?.map((i) => {
+          return {
+            label: i.stateDesc,
+            value: i.state,
+            key: i.id,
+            children: subStates
+              ?.filter((j) => j.parentId === i.id)
+              ?.map((j) => {
+                return {
+                  label: j.stateDesc,
+                  value: j.state,
+                  key: j.id
+                }
+              }),
+          }
+        })
+
+      } else if(stateType == '2') { 
+        result = subStates?.map((i) => {
+          return {
+            label: i.stateDesc,
+            value: i.state,
+            key: i.id
+          }
+        })
+      }
+        setStateInfos(result)
+        console.log('result==',stateType,result)
+        formIns.setFieldsValue({
+          state: undefined,
+        })
+        setFormItemConfigs((prev) => {
+          return {
+            ...prev,
+            state: {
+              options: result,
+            },
+            mainStateCode: {
+              options: result
+            },
+            subStateCode: {
+              options: result
+            },
+          }
+        })
+
     }
   }
   useEffect(() => {
@@ -163,13 +220,17 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
       setFormItemConfigs((prev) => {
         return {
           ...prev,
-          subStateCode: {
+          // stateType: currentTab,
+          state: {
             options: subStationOptions,
           },
         }
       })
-      formIns.setFieldsValue({ duration, priority, subStateCode, subStateName, mainStateCode, mainStateName })
+      formIns.setFieldsValue({ duration, priority, subStateCode, state: currentTab =='1' ? mainStateName : subStateName, subStateName, mainStateCode, mainStateName })
       setChooseState({ mainStateName, subStateName })
+      formIns.setFieldsValue({
+        stateType: currentTab =='1' ? '大状态' : '小状态',
+      })
 
       const ruleBeforeStr = processExpression(ruleBefore)
       const cdtion = ruleBeforeStr?.endsWith("||") || ruleBeforeStr.endsWith("&&") ? ruleBeforeStr.slice(-2) : "||"

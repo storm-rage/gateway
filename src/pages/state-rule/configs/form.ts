@@ -11,13 +11,43 @@ import SelectWithAll from "@/components/select-with-all"
 
 export const st_rule_model_form = (disabled): ISearchFormProps["itemOptions"] => {
   return [
+    // {
+    //   type: SelectWithAll,
+    //   name: "mainStateCode",
+    //   label: "大状态",
+    //   formItemProps: {
+    //     labelCol: { span: 8 },
+    //     rules: [{ required: true, message: "请选择大状态" }],
+    //   },
+    //   props: {
+    //     style: { minWidth: "8em" },
+    //     disabled,
+    //   },
+    // },
     {
       type: SelectWithAll,
-      name: "mainStateCode",
-      label: "大状态",
+      name: "stateType",
+      label: "状态类型",
+      formItemProps: {
+        labelCol: { span: 10 },
+        rules: [{ required: true, message: "请选择状态类型" }],
+      },
+      props: {
+        style: { minWidth: "8em" },
+        disabled,
+        options: [
+          { value: "1", label: "大状态" },
+          { value: "2", label: "小状态" },
+        ],
+      },
+    },
+    {
+      type: SelectWithAll,
+      name: "state",
+      label: "状态",
       formItemProps: {
         labelCol: { span: 8 },
-        rules: [{ required: true, message: "请选择大状态" }],
+        rules: [{ required: true, message: "请选择状态" }],
       },
       props: {
         style: { minWidth: "8em" },
@@ -37,19 +67,19 @@ export const st_rule_model_form = (disabled): ISearchFormProps["itemOptions"] =>
     //     disabled: true,
     //   },
     // },
-    {
-      type: SelectWithAll,
-      name: "subStateCode",
-      label: "小状态",
-      formItemProps: {
-        labelCol: { span: 8 },
-        rules: [{ required: true, message: "请选择小状态" }],
-      },
-      props: {
-        style: { minWidth: "8em" },
-        disabled,
-      },
-    },
+    // {
+    //   type: SelectWithAll,
+    //   name: "subStateCode",
+    //   label: "小状态",
+    //   formItemProps: {
+    //     labelCol: { span: 8 },
+    //     rules: [{ required: true, message: "请选择小状态" }],
+    //   },
+    //   props: {
+    //     style: { minWidth: "8em" },
+    //     disabled,
+    //   },
+    // },
     // {
     //   type: CustonInput,
     //   name: "subStateCode",

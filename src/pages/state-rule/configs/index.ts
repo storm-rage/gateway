@@ -92,14 +92,30 @@ const TABLE_ACTION = [
 export function STATE_ATT_COLUMNS(
   config: ITbColAction<TStTbActInfo, stateInfo>,
   dvsType: string,
+  currentTab: string,
 ): ColumnsType<stateInfo> {
   const { onClick } = config
+
+  const stateColumns = []
+  
+  if (currentTab == '1') {
+    stateColumns.push(
+      { dataIndex: "mainStateName", title: "状态名称" },
+      { dataIndex: "mainStateCode", title: "状态编码" }
+    )
+  } else if (currentTab == '2') {
+    stateColumns.push(
+      { dataIndex: "subStateName", title: "状态名称" },
+      { dataIndex: "subStateCode", title: "状态编码" }
+    )
+  }
   return [
     { dataIndex: "index", title: "序号", width: 60, align: "center" },
-    { dataIndex: "mainStateName", title: "大状态名称" },
-    { dataIndex: "mainStateCode", title: "大状态编码" },
-    { dataIndex: "subStateName", title: "小状态名称" },
-    { dataIndex: "subStateCode", title: "小状态编码" },
+    ...stateColumns,
+    // { dataIndex: "mainStateName", title: "大状态名称" },
+    // { dataIndex: "mainStateCode", title: "大状态编码" },
+    // { dataIndex: "subStateName", title: "小状态名称" },
+    // { dataIndex: "subStateCode", title: "小状态编码" },
     { dataIndex: "priority", title: "判定优先级" },
     { dataIndex: "duration", title: "持续时长（s）" },
     { dataIndex: "rule", title: "测点规则" },
