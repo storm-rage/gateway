@@ -184,17 +184,21 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
     }
     let api = 'getMngFormulaPage'
     const res = await doBaseServer(api, queryParams)
-    return res.records.find(item => item.pointName == templatePointName).formula
+    const resRecord = res.records.find(item => item.pointName == templatePointName)
+    return {
+      targetTableSource: resRecord?.formula,
+      id: resRecord.id
+    }
   }
 
   const saveTemplate = async () => {
     //根据模板类型进行保存到对应的状态列表中
-    let targetTableSource = await handleDataSource()
+    let {targetTableSource, id } = await handleDataSource()
     const type = !targetTableSource?.length ? "add" : "edit"
-    const editTypeForm = type === "edit" ? (targetTableSource as any)?.concat(replacePointsRes) : []//
+    const editTypeForm = type === "edit" ? (targetTableSource as any)?.concat(replacePointsRes) : []
     const formula = type === "add" ? replacePointsRes : editTypeForm
     const params = {
-      id: targetTableSource?.[0]?.id,
+      id: targetTableSource?.[0]?.id || id,
       modelId,
       enabled: true,
       formula: formula,
@@ -261,7 +265,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
           <CustomTable
             rowKey="id"
             limitHeight
-            columns={TEMPLATE_RESULT_COLUMNS({ onClick: onTbAction }, currentTab)}
+            columns={TEMPLATE_RESULT_COLUMNS({ onClick: onTbAction }, template)}
             dataSource={replacePointsRes}
             pagination={false}
           />

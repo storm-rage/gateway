@@ -75,7 +75,7 @@ export const getStateRuleData = async (pageInfo?: IPageInfo, formData?: ISearchF
   // const sortedByState1 = formula.length && sortByState([...formula.find(item=>(item as any).pointName == 'SState').formula], "priority")
 
   console.log('states===', mStateRecord,sStateRecord,)
-  const records = sortedByState?.map((i, idx) => {
+  const records = sortedByState && sortedByState?.map((i, idx) => {
     return {
       ...i,
       modelId: res.records?.[0]?.modelId,
