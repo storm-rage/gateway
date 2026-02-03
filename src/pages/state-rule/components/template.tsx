@@ -186,19 +186,30 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
     const res = await doBaseServer(api, queryParams)
     const resRecord = res.records.find(item => item.pointName == templatePointName)
     return {
-      targetTableSource: resRecord?.formula,
-      id: resRecord.id
+      targetTableSource: resRecord?.formula.map((i,idx)=>{
+        return {
+          ...i,
+          modelId: res.records?.[0]?.modelId,
+          id: resRecord?.id || '',
+          idx: idx + 1,
+          index: idx + 1,
+        }
+      }),
+      id: resRecord?.id || '',
     }
   }
 
   const saveTemplate = async () => {
     //根据模板类型进行保存到对应的状态列表中
     let {targetTableSource, id } = await handleDataSource()
-    const type = !targetTableSource?.length ? "add" : "edit"
+    const type = !targetTableSource ? "add" : "edit"
+    replacePointsRes.forEach(item => {
+      item.id = id
+    })
     const editTypeForm = type === "edit" ? (targetTableSource as any)?.concat(replacePointsRes) : []
     const formula = type === "add" ? replacePointsRes : editTypeForm
     const params = {
-      id: targetTableSource?.[0]?.id || id,
+      id: id,
       modelId,
       enabled: true,
       formula: formula,
@@ -309,7 +320,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
           selectRowInfo: selectRowInfo,
           showBottom: false,
           currentId: null,
-          currentTab: currentTab,
+          currentTab: template,
         }}
       />
     </div>
