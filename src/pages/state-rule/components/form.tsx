@@ -115,9 +115,9 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
 
     const oneFormula = {
       // id: tableSource[0]?.id,
-      // index: selectRowInfo.index || '',
-      duration,
-      priority,
+      index: (selectRowInfo as any).index || '',
+      duration: Number(duration),
+      priority: Number(priority),
       subStateCode: currentTab == '2'?Number(subStates.find((i) => i.state == states.subStateCode).state) : Number(states.subStateCode),
       subStateName: currentTab == '2'?subStates.find((i) => i.state == states.subStateCode).stateDesc : states.subStateName,
       mainStateCode: currentTab == '1'?Number(mainStates.find((i) => i.state == states.mainStateCode).state) : Number(states.mainStateCode),

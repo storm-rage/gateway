@@ -23,6 +23,7 @@ import { stateInfo } from "../types"
 import { addRule, extractVariables } from "../methods"
 import StateRuleForm, { IStRuleFormProps } from "./form"
 import CustomModal from "@/components/custom-modal"
+import { doBaseServer } from "@/api/serve-funs"
 interface TemplateChooseRef {}
 interface IProps {
   deviceType: TDeviceType
@@ -115,7 +116,10 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
 
   const currentTemplate = useMemo(() => {
     return TEMPLATE_OPTION[deviceType].find((i) => i.value === template)
-  }, [template, currentTab])
+  }, [template])
+  const templatePointName = useMemo(() => {
+    return TEMPLATE_OPTION[deviceType].find((i) => i.value == template)?.pointName
+  }, [template])
   const getPoints = async () => {
     setLoading(true)
     const res = await getDvsMeasurePointsData({ modelId: modelId, pointTypes: "1,2" })
@@ -172,19 +176,30 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
     }, [])
     setReplacePointsRes(replaceResult)
   }
+  const handleDataSource = async() => {
+    let queryParams = {
+      modelId,
+      pageNum: 1,
+      pageSize: 50
+    }
+    let api = 'getMngFormulaPage'
+    const res = await doBaseServer(api, queryParams)
+    return res.records.find(item => item.pointName == templatePointName).formula
+  }
 
   const saveTemplate = async () => {
-    const type = !tableSource?.length ? "add" : "edit"
-
-    const editTypeForm = type === "edit" ? tableSource?.concat(replacePointsRes) : []
+    //根据模板类型进行保存到对应的状态列表中
+    let targetTableSource = await handleDataSource()
+    const type = !targetTableSource?.length ? "add" : "edit"
+    const editTypeForm = type === "edit" ? (targetTableSource as any)?.concat(replacePointsRes) : []//
     const formula = type === "add" ? replacePointsRes : editTypeForm
     const params = {
-      id: tableSource?.[0]?.id,
+      id: targetTableSource?.[0]?.id,
       modelId,
       enabled: true,
       formula: formula,
       inputPoints: extractVariables(formula),
-      pointName: pointName,//需要传入
+      pointName: templatePointName,
     }
     try {
       await addRule(params, type)
@@ -242,7 +257,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
           <CustomTable rowKey="id" limitHeight columns={column} dataSource={dataSourceList} pagination={false} />
         ) : (
           <div className="tab-box">
-          <Tabs defaultActiveKey="1" items={tabItems} onChange={onTabChange} className="tabs"/>
+          {/* <Tabs defaultActiveKey="1" items={tabItems} onChange={onTabChange} className="tabs"/> */}
           <CustomTable
             rowKey="id"
             limitHeight

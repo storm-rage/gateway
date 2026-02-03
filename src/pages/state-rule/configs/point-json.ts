@@ -3,6 +3,7 @@ export default {
     {
       label: "测试模板1",
       value: "1",
+      pointName: "MState",
       formula: [
         {
           rule: "Turstatus == ？？ && GridsideActivePower >5",
@@ -40,6 +41,7 @@ export default {
     {
       label: "测试模板2",
       value: "2",
+      pointName: "SState",
       formula: [
         {
           rule: "wind == ？？ && TotProdActiveEnergy >5",
