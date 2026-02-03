@@ -97,7 +97,6 @@ export function STATE_ATT_COLUMNS(
   const { onClick } = config
 
   const stateColumns = []
-  
   if (currentTab == '1') {
     stateColumns.push(
       { dataIndex: "mainStateName", title: "状态名称" },

@@ -17,6 +17,7 @@ export interface ISearchFr {
   modelId?: number
   stationId?: number
   deviceType?: TDeviceType
+  currentTab?: string
 }
 export interface IPageSearch {
   pageNum: number

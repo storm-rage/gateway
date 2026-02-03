@@ -74,44 +74,82 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
   }
 
   const onFinish = async () => {
+    const deviceStdStateMap = getStorage(StorageDeviceStdState)
+    const mainStates = deviceStdStateMap?.filter((i) => i.deviceType === deviceType && i.stateType === "MAIN")
+    const subStates = deviceStdStateMap?.filter((i) => i.deviceType === deviceType && i.stateType === "SUB")
     // 如果点击按钮是新增，先判断列表返回的长度，长度小于1，则新增，反之修改
     // 如果点击按钮是修改，把当前的数据更新到tableSource中
     const type = editType === "add" && !tableSource?.length ? "add" : "edit"
-    const { subStateName, mainStateName } = chooseState
-    const { duration, priority, subStateCode, mainStateCode } = formRef.current.getInst()?.getFieldsValue()
+    let states = {
+      subStateCode:'',
+      mainStateCode:'',
+      mainStateName:'',
+      subStateName:'',
+    }
+    console.log(type, "type",editType,mainStates,subStates,'===add params')
+
+    // const { subStateCode, mainStateCode, mainStateName, subStateName } = chooseState//新增模式取不到
+    const { duration, priority, state, stateType} = formRef.current.getInst()?.getFieldsValue()
+    console.log(state,'===state')
+    if(editType === "add") {
+      if(currentTab == "1") {
+        states.mainStateCode = state
+        states.mainStateName = mainStates.find((i) => i.state == state).stateDesc
+      }
+      if(currentTab == "2") {
+        states.subStateCode = state
+        states.subStateName = subStates.find((i) => i.state == state).stateDesc
+      }
+    } else if (editType === "edit") {
+        const { subStateCode, mainStateCode, mainStateName, subStateName } = chooseState
+        states.subStateCode = subStateCode
+        states.mainStateCode = mainStateCode
+        states.mainStateName = mainStateName
+        states.subStateName = subStateName
+    }
     const signInfo = getSignInfo(signRef.current.signInfo)
     if (!pointRef.current?.pointRule && !Object.keys(signRef.current.signInfo || {})?.length) {
       showMsg("至少存在一种规则")
       return
     }
+
     const oneFormula = {
+      // id: tableSource[0]?.id,
+      // index: selectRowInfo.index || '',
       duration,
       priority,
-      subStateCode,
-      subStateName,
-      mainStateCode,
-      mainStateName,
+      subStateCode: currentTab == '2'?Number(subStates.find((i) => i.state == states.subStateCode).state) : Number(states.subStateCode),
+      subStateName: currentTab == '2'?subStates.find((i) => i.state == states.subStateCode).stateDesc : states.subStateName,
+      mainStateCode: currentTab == '1'?Number(mainStates.find((i) => i.state == states.mainStateCode).state) : Number(states.mainStateCode),
+      mainStateName: currentTab == '1'?mainStates.find((i) => i.state == states.mainStateCode).stateDesc : states.mainStateName,
       rule: pointRef.current?.pointRule || "",
-      ruleBefore: signInfo ? signInfo + ` ${pointRef.current?.pointRule ? condition : ""}` : "",
-      ruleBeforeInfo: JSON.stringify(signRef.current.signInfo),
+      // ruleBefore: signInfo ? signInfo + ` ${pointRef.current?.pointRule ? condition : ""}` : "",
+      ruleBefore: signInfo ? (signInfo + ` ${pointRef.current?.pointRule ? condition : ""}`).replace(/"(\d+)"/g, "'$1'") : "",
+      ruleBeforeInfo: JSON.stringify(signRef.current.signInfo).replace(/"(\d+)"/g, "'$1'"),
       condition: condition,
     }
-
+    console.log(oneFormula,'oneFormula', selectRowInfo, currentId, signInfo )
     if (!showBottom) {
       buttonClick?.("ok", oneFormula)
       return
     }
+    if(editType === "add" && stateType !== currentTab) {
+      console.log(stateType, currentTab)
+      stateType !== currentTab
+      showMsg("列表状态类型和表单状态类型不一致，请选择正确的状态类型")
+      return
+    }
 
     const editTypeForm =
-      type === "edit" ? tableSource?.filter((i) => i.idx !== selectRowInfo?.idx)?.concat([oneFormula]) : []
-    const formula = type === "add" ? [oneFormula] : editTypeForm
+      editType === "edit" ? tableSource?.filter((i) => i.idx !== selectRowInfo?.idx)?.concat([oneFormula]) : []
+    const formula = editType === "add" ? tableSource.concat(oneFormula) : editTypeForm
     const params = {
-      id: currentId || selectRowInfo?.id,
+      id: tableSource[0]?.id || selectRowInfo?.id,
       modelId,
       enabled: true,
       formula: formula,
       inputPoints: extractVariables(formula),
-      pointName: "df",
+      pointName: currentTab == "1" ? "df" : currentTab == "2" ? "SState" : "",
     }
     const res = await addRule(params, type)
     buttonClick?.("ok")
@@ -191,7 +229,7 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
         })
       }
         setStateInfos(result)
-        console.log('result==',stateType,result)
+        console.log('result==',stateType,result,state)
         formIns.setFieldsValue({
           state: undefined,
         })
@@ -201,12 +239,8 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
             state: {
               options: result,
             },
-            mainStateCode: {
-              options: result
-            },
-            subStateCode: {
-              options: result
-            },
+            mainStateCode: state,
+            subStateCode: state,
           }
         })
 
@@ -226,8 +260,8 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
           },
         }
       })
-      formIns.setFieldsValue({ duration, priority, subStateCode, state: currentTab =='1' ? mainStateName : subStateName, subStateName, mainStateCode, mainStateName })
-      setChooseState({ mainStateName, subStateName })
+      formIns.setFieldsValue({ duration, priority, state: currentTab =='1' ? mainStateName : subStateName, subStateName, mainStateName })
+      setChooseState({ mainStateName, subStateName, mainStateCode, subStateCode })
       formIns.setFieldsValue({
         stateType: currentTab =='1' ? '大状态' : '小状态',
       })

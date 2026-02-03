@@ -30,6 +30,7 @@ interface IProps {
   tableSource: Array<stateInfo>
   templateModal: boolean
   btnClkCallback: (type) => void
+  pointName: string
 }
 interface dataList {
   id: string
@@ -40,7 +41,7 @@ interface dataList {
 }
 const filterOption = (input, option) => ((option?.label as string) ?? "").toLowerCase().includes(input.toLowerCase())
 const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
-  const { deviceType = "WT", modelId, tableSource, templateModal, btnClkCallback } = props
+  const { deviceType = "WT", modelId, tableSource, templateModal, btnClkCallback, pointName } = props
   const stepChgRef = useRef(() => {})
   const [currentStep, setCurrentStep] = useState(1)
   const [template, setTemplate] = useState("")
@@ -66,6 +67,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
   const onTabChange = (key) => { 
     console.log('ontabchange',key)
     setCurrentTab(key)
+    setTemplate(key)
   }
 
   const setDataSource = ({ record, value, valkey }) => {
@@ -113,7 +115,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
 
   const currentTemplate = useMemo(() => {
     return TEMPLATE_OPTION[deviceType].find((i) => i.value === template)
-  }, [template])
+  }, [template, currentTab])
   const getPoints = async () => {
     setLoading(true)
     const res = await getDvsMeasurePointsData({ modelId: modelId, pointTypes: "1,2" })
@@ -163,7 +165,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
     const replaceResult = formula?.reduce((acc, cur, idx) => {
       const rule = replaceRuleFields(cur.rule, dataSourceList)
       cur.rule = rule
-      cur.id = idx
+      cur.id = tableSource[0].id
       cur.index = idx+1
       acc.push(cur)
       return acc
@@ -182,7 +184,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
       enabled: true,
       formula: formula,
       inputPoints: extractVariables(formula),
-      pointName: "df",
+      pointName: pointName,//需要传入
     }
     try {
       await addRule(params, type)
@@ -192,7 +194,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
     }
   }
   const onTbAction = (record, { key }) => {
-    console.log(key, "type")
+    console.log(key, record, "type")
     setSelectRowInfo(record)
     setIsModalOpen(key)
     // if (type === "edit")
@@ -200,7 +202,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
   const btnClkRef = (type, info) => {
     setIsModalOpen("")
     if (type === "ok") {
-      const index = replacePointsRes.findIndex((i) => i.id === selectRowInfo.id)
+      const index = replacePointsRes.findIndex((i,index) => index+1 === info.index)
       const beforeArr = replacePointsRes.slice(0, index)
       const afterArr = replacePointsRes.slice(index + 1)
       console.log([...beforeArr, info, ...afterArr])

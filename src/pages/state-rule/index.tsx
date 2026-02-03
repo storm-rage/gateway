@@ -18,7 +18,7 @@ import "./index.less"
 import usePageSearch from "@hooks/use-page-search.ts"
 import { AtomConfigMap } from "@/store/atom-config"
 import { useAtomValue } from "jotai"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useRef, useState, useCallback, useMemo } from "react"
 import { Tabs } from 'antd'
 
 import { getModel } from "@/pages/setting-point-sys/methods"
@@ -107,9 +107,21 @@ export default function DeviceManage() {
   const { selectedRowKeys, rowSelection, selectedRows, setSelectedRowKeys, setSelectedRows } =
     useTableSelection(rowSelectProps)
 
+  const currentTabRef = useRef(currentTab)
+  useEffect(() => {
+    currentTabRef.current = currentTab
+  }, [currentTab])
+
+  const getStateRuleDataWithTab = useCallback(async (paginationParams, searchParams) => {
+    const paramsWithTab = {
+      ...searchParams,
+      currentTab: currentTabRef.current
+    }
+    return await getStateRuleData(paginationParams, paramsWithTab);
+  },[])
   // 执行查询的钩子
   const { dataSource, loading, pagination, onSearch } = usePageSearch<ISearchFr, stateInfo>(
-    { serveFun: getStateRuleData },
+    { serveFun: getStateRuleDataWithTab },
     { formRef, needFirstSch: false },
   )
 
@@ -268,7 +280,7 @@ export default function DeviceManage() {
         enabled: true,
         formula: [...res.records, ...selectedData].map(removeUnwantedFields),
         inputPoints: extractVariables(targetArr),
-        pointName: "df",
+        pointName: currentTab == "1" ? "df" : "SState",
       }
 
       handleBatchApply([...targetArr], rowSelection.selectedRowKeys, data.modelId, type, params)
@@ -291,10 +303,11 @@ export default function DeviceManage() {
     if (type === "delete_ok") {
       // const dvsType = selectRowInfo?.deviceType || selectedRows?.[0].deviceType
       let res = null
+      let pointName = currentTab == '1' ? 'df' : 'SState'
       if (rowSelection.selectedRowKeys.length > 1) {
-        res = await handleBatchDel(dataSource, rowSelection.selectedRowKeys)
+        res = await handleBatchDel(dataSource, rowSelection.selectedRowKeys , pointName)
       } else {
-        res = await delStateRule(dataSource, selectRowInfo)
+        res = await delStateRule(dataSource, selectRowInfo, pointName)
       }
       if (!res) return
       setSelectRowInfo(null)
@@ -331,6 +344,9 @@ export default function DeviceManage() {
       fetchModelOptions()
     }
   }, [searchDvsTyps, batchApplyModal])
+  useEffect(() => {
+    onSearch()
+  }, [currentTab])
 
   return (
     <div className="page-wrap power-line">
@@ -347,7 +363,7 @@ export default function DeviceManage() {
         onSearch={searchTable}
         onAction={onFormAction}
       />
-      <Tabs defaultActiveKey="1" items={tabItems} onChange={onTabChange} className="tabs"/>
+      <Tabs defaultActiveKey={currentTab} items={tabItems} onChange={onTabChange} className="tabs"/>
       <CustomTable
         rowKey="idx"
         loading={loading}
@@ -412,6 +428,7 @@ export default function DeviceManage() {
           tableSource: dataSource,
           templateModal,
           btnClkCallback: btnClkRef,
+          pointName: currentTab == '1' ? 'df' : 'SState',
         }}
       />
       <CustomModal

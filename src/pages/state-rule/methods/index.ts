@@ -62,19 +62,26 @@ export const getStateRuleData = async (pageInfo?: IPageInfo, formData?: ISearchF
   }
   const res = await doBaseServer<IPageSearch, IPageData<IStateRuleList>>("getMngFormulaPage", params)
   if (validResErr(res)) return null
-  const formula = res.records?.[0]?.formula || []
-  const sortedByState = sortByState([...formula], "subStateCode")
-  console.log(sortedByState, "sortedByState")
+
+  //todo：模板编辑时候也需要获取formula，value:1大状态，value:2小状态
+  //此时可以返回所有records，然后根据currentTab进行过滤
+  const formula = formData.currentTab == '1' ?  res.records?.find(item=>(item as any).pointName == 'df')?.formula //MState
+                  : formData.currentTab == '2' ? res.records?.find(item=>(item as any).pointName == 'SState')?.formula : []//SState
+  const sortedByState = formula && formula.length && sortByState([...formula], "priority")// 按优先级排序
+
+
+  // const sortedByState1 = formula.length && sortByState([...formula.find(item=>(item as any).pointName == 'SState').formula], "priority")
 
   const records = sortedByState?.map((i, idx) => {
     return {
       ...i,
       modelId: res.records?.[0]?.modelId,
-      id: res.records?.[0]?.id,
+      id: i?.id || formula?.[0]?.id,
       idx: idx + 1,
+      index: i.index || idx + 1,
     }
   })
-  return { records: records || [], total: res.total, id: res.records?.[0]?.id }
+  return { records: records || [], total: records.length, id: res.records?.[0]?.id }
 }
 const getIntersection = (data = [], stationIds, dvsTypes = []) => {
   if (!data.length) return []
@@ -133,11 +140,11 @@ export const handleBatchApply = async (data = [], checkedItemsIds = [], modelId,
   }
   return validOperate(res)
 }
-export const handleBatchDel = async (data = [], checkedItemsIds = []) => {
+export const handleBatchDel = async (data = [], checkedItemsIds = [], pointName) => {
   const list = data?.filter((i) => !checkedItemsIds.includes(i.idx))
   const api = "updateMngFormula"
   const params = {
-    pointName: "df",
+    pointName: pointName,
     modelId: data[0].modelId,
     id: data[0].id,
     formula: list,
@@ -147,12 +154,12 @@ export const handleBatchDel = async (data = [], checkedItemsIds = []) => {
   return validOperate(res)
 }
 
-export const delStateRule = async (data = [], currentInfo) => {
+export const delStateRule = async (data = [], currentInfo, pointName) => {
   // 如果过滤后的数字长度小于1，那么删除这条数据
   const list = data?.filter((i) => i.idx !== currentInfo.idx)
   const api = list?.length ? "updateMngFormula" : "stateRuleDelete"
   const params = {
-    pointName: "df",
+    pointName: pointName,
     modelId: currentInfo.modelId,
     id: currentInfo.id,
     formula: list,
@@ -189,9 +196,11 @@ export const reverseParseSign = (signStr) => {
       ?.map((j) => j.split("&&")) || []
   const resultSign = data?.reduce((prev, cur, idx) => {
     prev[idx + 1] = cur.map((i, index) => {
+      const match = i.match(/['"]([^'"]+)['"]/)
+      const value = match ? match[1] : i
       return {
         key: index + 1,
-        value: JSON.parse(i),
+        value: value,
       }
     })
     return { ...prev }
