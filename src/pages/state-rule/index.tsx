@@ -280,7 +280,7 @@ export default function DeviceManage() {
         enabled: true,
         formula: [...res.records, ...selectedData].map(removeUnwantedFields),
         inputPoints: extractVariables(targetArr),
-        pointName: currentTab == "1" ? "df" : "SState",
+        pointName: currentTab == "1" ? "MState" : "SState",
       }
 
       handleBatchApply([...targetArr], rowSelection.selectedRowKeys, data.modelId, type, params)
@@ -303,7 +303,7 @@ export default function DeviceManage() {
     if (type === "delete_ok") {
       // const dvsType = selectRowInfo?.deviceType || selectedRows?.[0].deviceType
       let res = null
-      let pointName = currentTab == '1' ? 'df' : 'SState'
+      let pointName = currentTab == '1' ? 'MState' : 'SState'
       if (rowSelection.selectedRowKeys.length > 1) {
         res = await handleBatchDel(dataSource, rowSelection.selectedRowKeys , pointName)
       } else {

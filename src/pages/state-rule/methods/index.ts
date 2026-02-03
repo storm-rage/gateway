@@ -65,23 +65,26 @@ export const getStateRuleData = async (pageInfo?: IPageInfo, formData?: ISearchF
 
   //todo：模板编辑时候也需要获取formula，value:1大状态，value:2小状态
   //此时可以返回所有records，然后根据currentTab进行过滤
-  const formula = formData.currentTab == '1' ?  res.records?.find(item=>(item as any).pointName == 'df')?.formula //MState
-                  : formData.currentTab == '2' ? res.records?.find(item=>(item as any).pointName == 'SState')?.formula : []//SState
+  const mStateRecord = res.records.find((item) => (item as any).pointName == 'MState')
+  const sStateRecord = res.records.find((item) => (item as any).pointName == 'SState')
+  const formula = formData.currentTab == '1' ?  mStateRecord?.formula //MState
+                  : formData.currentTab == '2' ? sStateRecord?.formula : []//SState
   const sortedByState = formula && formula.length && sortByState([...formula], "priority")// 按优先级排序
 
 
   // const sortedByState1 = formula.length && sortByState([...formula.find(item=>(item as any).pointName == 'SState').formula], "priority")
 
+  console.log('states===', mStateRecord,sStateRecord,)
   const records = sortedByState?.map((i, idx) => {
     return {
       ...i,
       modelId: res.records?.[0]?.modelId,
-      id: i?.id || formula?.[0]?.id,
+      id: i?.id || formula?.[0]?.id || (formData.currentTab == '1' ? mStateRecord?.id : sStateRecord?.id),
       idx: idx + 1,
       index: i.index || idx + 1,
     }
   })
-  return { records: records || [], total: records.length, id: res.records?.[0]?.id }
+  return { records: records || [], total: records && records.length, id: res.records?.[0]?.id || '' }
 }
 const getIntersection = (data = [], stationIds, dvsTypes = []) => {
   if (!data.length) return []

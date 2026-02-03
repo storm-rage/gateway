@@ -165,7 +165,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
     const replaceResult = formula?.reduce((acc, cur, idx) => {
       const rule = replaceRuleFields(cur.rule, dataSourceList)
       cur.rule = rule
-      cur.id = tableSource[0].id
+      cur.id = tableSource.length && tableSource[0].id
       cur.index = idx+1
       acc.push(cur)
       return acc

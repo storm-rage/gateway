@@ -149,7 +149,7 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
       enabled: true,
       formula: formula,
       inputPoints: extractVariables(formula),
-      pointName: currentTab == "1" ? "df" : currentTab == "2" ? "SState" : "",
+      pointName: currentTab == "1" ? "MState" : currentTab == "2" ? "SState" : "",
     }
     const res = await addRule(params, type)
     buttonClick?.("ok")
