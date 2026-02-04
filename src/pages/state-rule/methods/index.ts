@@ -130,7 +130,7 @@ export const addRule = async (params, editType = "add") => {
 export const handleBatchApply = async (data = [], checkedItemsIds = [], modelId, type = "edit", param) => {
   const api = type == "edit" ? "updateMngFormula" : "addMngFormula" //如果目标设备型号下的recods为空，那么就添加
   const params = {
-    pointName: "df",
+    pointName: param.pointName,
     modelId: modelId,
     id: data[0].id,
     formula: data,
