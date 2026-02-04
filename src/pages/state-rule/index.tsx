@@ -346,6 +346,10 @@ export default function DeviceManage() {
   }, [searchDvsTyps, batchApplyModal])
   useEffect(() => {
     onSearch()
+    //切换数据源清空选中的行数据
+    setSelectRowInfo(null)
+    setSelectedRowKeys([])
+    setSelectedRows([])
   }, [currentTab])
 
   return (
