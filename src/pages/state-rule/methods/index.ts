@@ -87,7 +87,12 @@ export const getStateRuleData = async (pageInfo?: IPageInfo, formData?: ISearchF
       index: i.index || idx + 1,
     }
   })
-  return { records: records || [], total: records && records.length, id: res.records?.[0]?.id || '' , pointName: (formData.currentTab == '1' ? mStateRecord?.pointName : sStateRecord?.pointName) }
+  return { 
+    records: records || [], 
+    total: records && records.length, 
+    id: (formData.currentTab == '1' ? mStateRecord?.id : sStateRecord?.id) || '' , 
+    pointName: (formData.currentTab == '1' ? mStateRecord?.pointName : sStateRecord?.pointName) 
+  }
 }
 const getIntersection = (data = [], stationIds, dvsTypes = []) => {
   if (!data.length) return []
