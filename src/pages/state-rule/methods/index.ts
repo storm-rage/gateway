@@ -28,15 +28,17 @@ export async function onSetStRuleSchFormChg(
   const theFormInst = formInst?.getInst()
   if (chgedKey === "stationId") {
     const oneTypeModelList = await getStAllDeviceModel(chgedVal)
+    //进一步根据设备类型筛选型号
+    const deviceType = theFormInst?.getFieldValue("deviceType")
+    const currentTypeModelList = await getModel(deviceType, chgedVal)
     const deviceTypesOfSt = getStorage<IStnDvsType4LocalStorage[]>(StorageStnDvsType)
     const deviceTypes = getStorage(StorageDeviceType) || []
     const items = deviceTypesOfSt.find((e) => e.stationId == chgedVal)
     const deviceTypeOptions = getIntersection(items?.deviceTypes || [], chgedVal, deviceTypes)
     theFormInst?.setFieldsValue({
-      modelId: oneTypeModelList?.length ? oneTypeModelList[0].value : undefined,
+      modelId: currentTypeModelList?.length ? currentTypeModelList[0].value : undefined,
     })
-    console.log(oneTypeModelList,'=oneTypeModelList')
-    return { modelId: { options: oneTypeModelList }, deviceType: { options: deviceTypeOptions } }
+    return { modelId: { options: currentTypeModelList }, deviceType: { options: deviceTypeOptions } }
   }
   if (chgedKey === "deviceType") {
     const stnId = theFormInst?.getFieldValue("stationId")
