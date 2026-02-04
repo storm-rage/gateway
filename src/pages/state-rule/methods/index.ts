@@ -35,6 +35,7 @@ export async function onSetStRuleSchFormChg(
     theFormInst?.setFieldsValue({
       modelId: oneTypeModelList?.length ? oneTypeModelList[0].value : undefined,
     })
+    console.log(oneTypeModelList,'=oneTypeModelList')
     return { modelId: { options: oneTypeModelList }, deviceType: { options: deviceTypeOptions } }
   }
   if (chgedKey === "deviceType") {
@@ -84,7 +85,7 @@ export const getStateRuleData = async (pageInfo?: IPageInfo, formData?: ISearchF
       index: i.index || idx + 1,
     }
   })
-  return { records: records || [], total: records && records.length, id: res.records?.[0]?.id || '' }
+  return { records: records || [], total: records && records.length, id: res.records?.[0]?.id || '' , pointName: (formData.currentTab == '1' ? mStateRecord?.pointName : sStateRecord?.pointName) }
 }
 const getIntersection = (data = [], stationIds, dvsTypes = []) => {
   if (!data.length) return []

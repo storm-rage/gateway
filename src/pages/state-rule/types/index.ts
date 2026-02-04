@@ -8,6 +8,7 @@ export interface IStateRuleList {
   description: string
   createTime: string
   updateTime: string
+  pointName: string
 }
 export type TStTbActInfo = {
   key: string

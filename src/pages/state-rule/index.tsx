@@ -252,7 +252,7 @@ export default function DeviceManage() {
       setBatchApplyModal(false)
       //todo:先查询对应设备型号的modelId的规则列表，然后在选中的规则组装起来,
       // 如果需要继续支持多选设备型号，需要多次请求对应型号的规则数据，问题点接口按分页返回数据，不同分页可能存在相同数据
-      let res = await getStateRuleData({ current: 1, pageSize: 50 }, { modelId: data.modelId }) //data.modelId为单选，如果是多选则是数组需要另外处理
+      let res = await getStateRuleData({ current: 1, pageSize: 50 }, { modelId: data.modelId, currentTab: currentTabRef.current }) //data.modelId为单选，如果是多选则是数组需要另外处理
       const selectedData = dataSource
         .filter((item) => selectedRowKeys.includes(item.idx))
         .map((item) => ({
@@ -273,7 +273,7 @@ export default function DeviceManage() {
           modelId: data.modelId,
         }),
       )
-      let type = res.id ? "edit" : "add"
+      let type = res.id && (res.pointName == (currentTab == "1" ? "MState" : "SState")) ? "edit" : "add"
       let params = {
         id: currentId,
         modelId: data.modelId,
