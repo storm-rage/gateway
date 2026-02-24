@@ -37,13 +37,20 @@ export const delPjctMethods = async (data: any) => {
 }
 
 export const exportData = async (data) => {
-  const params = {
-    stationCode: data.stationCode,
-    fileName: data.fileName
+  if(data.constructor === Object) {
+    const params = {
+      stationCode: data.stationCode,
+      fileName: data.fileName
+    }
+    doBaseServer<any, AxiosResponse>("download", params).then((data) => {
+      dealDownload4Response(data, "导出表.xlsx")
+    })
+  } else if (data.constructor === Array) {
+    doBaseServer<any, AxiosResponse>("batchDownload", data).then((data) => {
+      dealDownload4Response(data, "导出表.xlsx")
+    })
   }
-  doBaseServer<any, AxiosResponse>("download", params).then((data) => {
-    dealDownload4Response(data, "导出表.xlsx")
-  })
+  
 }
 export const exportTemplate = async () => {
   doBaseServer<any, AxiosResponse>("pjtExportTemplate").then((data) => {
@@ -52,6 +59,21 @@ export const exportTemplate = async () => {
 }
 
 export const importFile = async (formData) => {
-  const res = await doBaseServer("upload", formData)
-  return validOperate(res)
+  let uploadData = new FormData()
+  uploadData.append('stationCode', formData.get('stationCode'))
+  if(formData.get('file')) {
+    uploadData.append('file', formData.get('file'))
+    const res = await doBaseServer("upload", uploadData)
+    return validOperate(res)
+  }
+  if(formData.getAll('files')) {
+    const files = formData.getAll('files')
+    files.forEach(file => {
+      uploadData.append('files', file)
+    })
+
+    console.log(uploadData.getAll('files'),'==formData.getAll',files)
+    const res = await doBaseServer("batchUpload", uploadData)
+    return validOperate(res)
+  }
 }

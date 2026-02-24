@@ -551,11 +551,25 @@ export const eleDiagramApiMap: IApiMapItem = {
     },
     desc: "导入",
   },
+  batchUpload: {
+    url: `${SERVE_NAME}/static/batchUpload`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "批量导入",
+  },
   download: {
     url: `${SERVE_NAME}/static/download`,
     method: "post",
     responseType: "blob",
     desc: "导出",
+  },
+  batchDownload: {
+    url: `${SERVE_NAME}/static/batchDownload`,
+    method: "post",
+    responseType: "blob",
+    desc: "批量导出",
   },
 }
 // 音频管理

@@ -34,7 +34,7 @@ export default function EleDiagramMng() {
   const [selectRowInfo, setSelectRowInfo] = useState<IRuleInfo | null>()
 
   // 选择框
-  const { rowSelection, setSelectedRowKeys, selectedRowKeys, setSelectedRows } = useTableSelection(rowSelectProps)
+  const { rowSelection, setSelectedRowKeys, selectedRowKeys, setSelectedRows, selectedRows } = useTableSelection(rowSelectProps)
   const initData = async () => {
     const formInst = formRef.current?.getInst?.()
     formInst?.submit()
@@ -52,10 +52,16 @@ export default function EleDiagramMng() {
 
   async function onFormAction(type: TFormType) {
     const formData = formRef.current?.getFormValues()
+    console.log("type==", type)
     if (type === "add") {
       setIsModalOpen("add")
       setIsEditOrAdd("add")
     } else if (type === "delete") {
+      if (!selectedRowKeys.length) {
+        return showMsg("请至少选择一条！")
+      }
+      setIsModalOpen("deleted")
+    }  else if (type === "batchDelete") {
       if (!selectedRowKeys.length) {
         return showMsg("请至少选择一条！")
       }
@@ -69,34 +75,53 @@ export default function EleDiagramMng() {
         showMsg("请选择站点！")
       }
     } else if (type === "export") {
-      let params = {
-        stationCode: selectRowInfo.stationCode,
-        fileName: selectRowInfo?.fileName,
+      console.log("selectedRows==", selectedRows,selectRowInfo)
+      let batchParams = []
+      if(selectedRows.length > 1) {
+        selectedRows.forEach(item => {
+          batchParams.push({
+            stationCode: item.stationCode,
+            fileName: item.fileName,
+          })
+        })
+        exportData(batchParams)
+      } else {
+        let params = {
+        stationCode: selectedRows[0].stationCode,
+        fileName: selectedRows[0]?.fileName,
       }
-      exportData(params)
+        exportData(params)
+      }
     }
   }
   const btnClick = useRef(async (type, form) => {
     const formData = formRef.current?.getFormValues()
     if (type === "ok") {
-      const uploadedFile = form.get('file')
-      if (!uploadedFile) {
+      let uploadedFile = form.getAll('files')
+      if (uploadedFile.length === 0) {
+        const singleFile = form.get('file')
+        if (singleFile) {
+          uploadedFile = [singleFile]
+        }
+      }
+      if (!uploadedFile.length) {
         showMsg("请选择要上传的文件！")
         return
       }
-      let fileName = ''
-      if (uploadedFile instanceof File) {
-        fileName = uploadedFile.name.toLowerCase()
-      } else {
-        fileName = String(uploadedFile).toLowerCase()
-      }
-      if (!fileName.endsWith('.svg')) {
-        showMsg("只能上传 SVG 格式的文件！")
-        return
-      }
+
       let newFormData = new FormData()
       newFormData.append('stationCode', formData.stationCode)
-      newFormData.append('file', form.get('file'))
+      if(uploadedFile.length > 1 && uploadedFile.constructor === Array ) {
+        uploadedFile.forEach((file, index) => {
+          
+          newFormData.append('files', file)
+        })
+      } else if(uploadedFile.length == 1) {
+        const singleFile = uploadedFile[0]
+        if (singleFile instanceof File) {
+          newFormData.append('file', singleFile)
+        }
+      }
       
       const res = await importFile(newFormData)
       if (res) {
@@ -112,7 +137,8 @@ export default function EleDiagramMng() {
     setSelectRowInfo(record)
     if (key === "edit") {
       setIsEditOrAdd(key)
-    } else if (key == "delete") {
+    } else if (key === "deleted") {
+      setIsModalOpen("deleted")
 
     } else if (key == "export") {
       let params = {
@@ -128,10 +154,19 @@ export default function EleDiagramMng() {
   const delBtnClkRef = async (type: "ok" | "close" | "delete_ok") => {
     // 执行
     if (type === "delete_ok") {
-      let params = {
-        stationCode: selectRowInfo?.stationCode,
-        fileName: selectRowInfo?.fileName,
-        fileNames: [selectRowInfo?.fileName],
+      let params = null
+      if(selectedRows.length) {
+         params = selectedRows.map(item => {
+          return {
+            stationCode: item.stationCode,
+            fileName: item.fileName,
+          }
+        })
+      } else if(selectRowInfo) {
+         params = [{
+          stationCode: selectRowInfo?.stationCode,
+          fileName: selectRowInfo?.fileName,
+        }]
       }
       console.log(selectedRowKeys,selectRowInfo,params, '====selectedRowKeys')
 
@@ -177,14 +212,14 @@ export default function EleDiagramMng() {
         componentProps={{ buttonClick: delBtnClkRef, selectRowInfo }}
       />
       <CustomModal
-        width="20%"
+        width="600px"
         title="导入"
         destroyOnClose
         open={importModal}
         footer={null}
         onCancel={() => setImportModal(false)}
         Component={FileImport}
-        componentProps={{ btnClick: btnClick.current }}
+        componentProps={{ btnClick: btnClick.current, fileType: "image/svg+xml" }}
       />
     </div>
   )
