@@ -16,7 +16,7 @@ import StationTreeSelect from "@/components/station-tree-select"
 export const deviceTypesOfSt = getStorage(StorageStnDvsType)
 
 export const ST_MANAGE_SCH_FORM_BTNS: ISearchFormProps["buttons"] = [
-  SCH_BTN,
+  // SCH_BTN,
   // {
   //   name: "add",
   //   label: "新增",
@@ -55,17 +55,17 @@ const TABLE_ACTION = [
   { key: "export", label: "导出" },
 ]
 export const PJCT_SEARCH_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
-  {
-    type: StationTreeSelect,
-    name: "stationCode",
-    label: "场站",
-    props: {
-      options: [],
-      disabled: false,
-      // mutiltiple: true,
+  // {
+  //   type: StationTreeSelect,
+  //   name: "stationCode",
+  //   label: "场站",
+  //   props: {
+  //     options: [],
+  //     disabled: false,
+  //     // mutiltiple: true,
 
-    },
-  },
+  //   },
+  // },
 ]
 export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IRuleInfo>): ColumnsType<IRuleInfo> {
   const { onClick } = config

@@ -148,14 +148,20 @@ export const getStAllDeviceModel = async (stationId?: number) => {
   return (actaulData || []) as TDvsMdlOptions
 }
 export const getStationDvsTypes = (stationId?: number) => {
-  if (!stationId) return []
+  // if (!stationId) return []
   const deviceTypesOfSt = getStorage<IStnDvsType4LocalStorage[]>(StorageStnDvsType)
   const allDvsType = getStorage(StorageDeviceType)
   const dvsTypes = deviceTypesOfSt?.find((i) => i.stationId == stationId)?.deviceTypes || []
-  return dvsTypes?.map((i) => {
+  // return dvsTypes?.map((i) => {
+  //   return {
+  //     value: i,
+  //     label: allDvsType?.find((j) => j.code === i)?.name,
+  //   }
+  // }) || []
+  return allDvsType?.map((i) => {
     return {
-      value: i,
-      label: allDvsType?.find((j) => j.code === i)?.name,
+      value: i?.code,
+      label: i?.name,
     }
   }) || []
 }
