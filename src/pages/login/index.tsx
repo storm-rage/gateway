@@ -170,13 +170,13 @@ const Login: React.FC = () => {
                         记住用户名、密码
                       </Checkbox>
                     </Form.Item> */}
-                    <Button
+                    {/* <Button
                       type="text"
                       style={{ fontSize: "14px", color: "#fff" }}
                       onClick={showModal}
                     >
                       修改密码
-                    </Button>
+                    </Button> */}
                   </Space>
                 </Form.Item>
 
