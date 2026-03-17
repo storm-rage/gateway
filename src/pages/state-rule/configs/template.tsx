@@ -39,12 +39,12 @@ const TABLE_ACTION = [
 export function TEMPLATE_RESULT_COLUMNS(config: ITbColAction<TStTbActInfo, stateInfo>, currentTab: string,): ColumnsType<stateInfo> {
   const { onClick } = config
   const stateColumns = []
-  if (currentTab == '1') {
+  if (currentTab.includes('1_')) {
     stateColumns.push(
       { dataIndex: "mainStateName", title: "状态名称", width: 120 },
       { dataIndex: "mainStateCode", title: "状态编码", width: 120 }
     )
-  } else if (currentTab == '2') {
+  } else if (currentTab.includes('2_')) {
     stateColumns.push(
       { dataIndex: "subStateName", title: "状态名称", width: 120 },
       { dataIndex: "subStateCode", title: "状态编码", width: 120 }
