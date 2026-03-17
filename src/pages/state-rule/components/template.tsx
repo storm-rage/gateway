@@ -71,6 +71,18 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
     setTemplate(key)
   }
 
+  const uniqueOptions = useMemo(() => {
+    return (TEMPLATE_OPTION[deviceType] || []).map((item, index) => ({
+      ...item,
+      value: `${item.value}_${index}`,
+      // 或者保留原始 value 在 extra 字段
+      originalValue: item.value,
+    }))
+  }, [deviceType])
+  const handleChange = (uniqueValue: string) => {
+    const selected = uniqueOptions.find(opt => opt.value === uniqueValue)
+    setTemplate(selected?.originalValue || '')
+  }
   const setDataSource = ({ record, value, valkey }) => {
     const newData = [...dataSourceList]
     const index = newData.findIndex((item) => record.id === item.id)
@@ -266,7 +278,12 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
         {currentStep === 1 ? (
           <div className="step-one">
             <span>选择模板：</span>
-            <SelectOrdinary options={TEMPLATE_OPTION[deviceType]} value={template} onChange={(e) => setTemplate(e)} />
+            {/* <SelectOrdinary options={uniqueOptions} value={template} onChange={(e) => setTemplate(e)} /> */}
+            <SelectOrdinary 
+              options={uniqueOptions}
+              value={uniqueOptions.find(opt => opt.originalValue === template)?.value}
+              onChange={handleChange} 
+            />
           </div>
         ) : currentStep === 2 ? (
           <CustomTable rowKey="id" limitHeight columns={column} dataSource={dataSourceList} pagination={false} />
