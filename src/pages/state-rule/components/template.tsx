@@ -81,7 +81,7 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
   }, [deviceType])
   const handleChange = (uniqueValue: string) => {
     const selected = uniqueOptions.find(opt => opt.value === uniqueValue)
-    setTemplate(selected?.originalValue || '')
+    setTemplate(selected?.value || '')
   }
   const setDataSource = ({ record, value, valkey }) => {
     const newData = [...dataSourceList]
@@ -127,10 +127,10 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
   }
 
   const currentTemplate = useMemo(() => {
-    return TEMPLATE_OPTION[deviceType].find((i) => i.value === template)
+    return uniqueOptions.find((i) => i.value === template)
   }, [template])
   const templatePointName = useMemo(() => {
-    return TEMPLATE_OPTION[deviceType].find((i) => i.value == template)?.pointName
+    return uniqueOptions.find((i) => i.value == template)?.pointName
   }, [template])
   const getPoints = async () => {
     setLoading(true)
