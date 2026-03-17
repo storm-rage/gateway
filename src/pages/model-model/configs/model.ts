@@ -13,16 +13,6 @@ import SelectWithAll from "@/components/select-with-all"
 // 新增用户弹框
 export const ST_USER_MODEL_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
   {
-    type: CustonInput,
-    name: "model",
-    label: "型号编码",
-    formItemProps: {
-      labelCol: { span: 6 },
-      rules: [{ required: true, message: "请输入型号编码" }],
-    },
-    props: {},
-  },
-  {
     type: SelectWithAll,
     name: "deviceType",
     label: "设备类型",
@@ -33,6 +23,16 @@ export const ST_USER_MODEL_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
     props: {
       // disabled: true,
     },
+  },
+  {
+    type: CustonInput,
+    name: "model",
+    label: "型号编码",
+    formItemProps: {
+      labelCol: { span: 6 },
+      rules: [{ required: true, message: "请输入型号编码" }],
+    },
+    props: {},
   },
   {
     type: CustonInput,
@@ -59,16 +59,6 @@ export const ST_USER_MODEL_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
 // 编辑用户弹框
 export const ST_USER_EDIT_MODEL_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
   {
-    type: CustonInput,
-    name: "model",
-    label: "型号编码",
-    formItemProps: {
-      labelCol: { span: 6 },
-      rules: [{ required: true, message: "请输入型号编码" }],
-    },
-    props: {},
-  },
-  {
     type: SelectWithAll,
     name: "deviceType",
     label: "设备类型",
@@ -79,6 +69,16 @@ export const ST_USER_EDIT_MODEL_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
     props: {
       // disabled: true,
     },
+  },
+  {
+    type: CustonInput,
+    name: "model",
+    label: "型号编码",
+    formItemProps: {
+      labelCol: { span: 6 },
+      rules: [{ required: true, message: "请输入型号编码" }],
+    },
+    props: {},
   },
   {
     type: CustonInput,

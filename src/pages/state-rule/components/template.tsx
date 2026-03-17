@@ -57,8 +57,8 @@ const TemplateChoose = forwardRef<TemplateChooseRef, IProps>((props, ref) => {
   const [currentTab, setCurrentTab] = useState('1')
   const [tabItems, setTabItems] = useState([
     {
-    key: '1',
-    label: '大状态',
+      key: '1',
+      label: '大状态',
     },
     {
       key: '2',
