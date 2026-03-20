@@ -61,7 +61,7 @@ export function formItemFuc({ controlType }): ISearchFormProps["itemOptions"] {
       label: "旧控制值",
       formItemProps: {
         labelCol: { span: 6 },
-        rules: [{ required: true, message: "请输入旧控制值" }],
+        rules: [{ required: false, message: "请输入旧控制值" }],
       },
       props: {
         style: { width: "100%" },
@@ -73,7 +73,19 @@ export function formItemFuc({ controlType }): ISearchFormProps["itemOptions"] {
       label: "新控制值",
       formItemProps: {
         labelCol: { span: 6 },
-        rules: [{ required: true, message: "请输入新控制值" }],
+        rules: [{ required: false, message: "请输入新控制值" }],
+      },
+      props: {
+        style: { width: "100%" },
+      },
+    },
+    {
+      type: CustomInputNumber,
+      name: "newRatio",
+      label: "乘倍率",
+      formItemProps: {
+        labelCol: { span: 6 },
+        rules: [{ required: false, message: "请输入乘倍率" }],
       },
       props: {
         style: { width: "100%" },

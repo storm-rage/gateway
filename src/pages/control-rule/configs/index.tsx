@@ -100,6 +100,7 @@ export function ST_STATION_SYS_COLUMNS_SHOW(deviceType): ColumnsType {
     { dataIndex: "controlTypeName", title: "控制类型", width: 150 },
     { dataIndex: "targetValue", title: "旧控制值", width: 120 },
     { dataIndex: "newTargetValue", title: "新控制值", width: 120 },
+    { dataIndex: "newRatio", title: "乘倍率", width: 120 },  
     { dataIndex: "newIo", title: "新测点编码", width: 120 },    
     { dataIndex: "operatorBy", title: "操作人", width: 120 },
     { dataIndex: "operatorTime", title: "操作时间", width: 120 },
@@ -140,6 +141,14 @@ export const ST_STATION_SYS_COLUMNS = (setDataSource, controlType) => {
         <EditableNumberCell value={text} record={record} dataIndex="newTargetValue" setDataSource={setDataSource} />
       ),
     },
+    {
+      dataIndex: "newRatio",
+      title: "乘倍率",
+      width: 150,
+      render: (text, record) => (
+        <EditableInputCell value={text} record={record} valkey="newRatio" setDataSource={setDataSource} />
+      ),
+    },    
     {
       dataIndex: "newIo",
       title: "新测点编码",
