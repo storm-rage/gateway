@@ -92,11 +92,11 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
     const { duration, priority, state, stateType} = formRef.current.getInst()?.getFieldsValue()
     console.log(state,'===state')
     if(editType === "add") {
-      if(currentTab.includes('1_')) {
+      if(currentTab.startsWith('1')) {
         states.mainStateCode = state
         states.mainStateName = mainStates.find((i) => i.state == state).stateDesc
       }
-      if(currentTab.includes('2_')) {
+      if(currentTab.startsWith('2')) {
         states.subStateCode = state
         states.subStateName = subStates.find((i) => i.state == state).stateDesc
       }
@@ -118,10 +118,10 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
       index: editType === "edit"?(selectRowInfo as any).index : '',
       duration: Number(duration),
       priority: Number(priority),
-      subStateCode: currentTab.includes('2_')?Number(subStates.find((i) => i.state == states.subStateCode).state) : Number(states.subStateCode),
-      subStateName: currentTab.includes('2_')?subStates.find((i) => i.state == states.subStateCode).stateDesc : states.subStateName,
-      mainStateCode: currentTab.includes('1_')?Number(mainStates.find((i) => i.state == states.mainStateCode).state) : Number(states.mainStateCode),
-      mainStateName: currentTab.includes('1_')?mainStates.find((i) => i.state == states.mainStateCode).stateDesc : states.mainStateName,
+      subStateCode: currentTab.startsWith('2')?Number(subStates.find((i) => i.state == states.subStateCode).state) : Number(states.subStateCode),
+      subStateName: currentTab.startsWith('2')?subStates.find((i) => i.state == states.subStateCode).stateDesc : states.subStateName,
+      mainStateCode: currentTab.startsWith('1')?Number(mainStates.find((i) => i.state == states.mainStateCode).state) : Number(states.mainStateCode),
+      mainStateName: currentTab.startsWith('1')?mainStates.find((i) => i.state == states.mainStateCode).stateDesc : states.mainStateName,
       rule: pointRef.current?.pointRule || "",
       // ruleBefore: signInfo ? signInfo + ` ${pointRef.current?.pointRule ? condition : ""}` : "",
       ruleBefore: signInfo ? (signInfo + ` ${pointRef.current?.pointRule ? condition : ""}`).replace(/"(\d+)"/g, "'$1'") : "",
@@ -149,7 +149,7 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
       enabled: true,
       formula: formula,
       inputPoints: extractVariables(formula),
-      pointName: currentTab.includes('1_') ? "MState" : currentTab.includes('2_') ? "SState" : "",
+      pointName: currentTab.startsWith('1') ? "MState" : currentTab.startsWith('2') ? "SState" : "",
     }
     const res = await addRule(params, type)
     buttonClick?.("ok")
@@ -260,10 +260,10 @@ const StateRuleForm = forwardRef<IStRuleFormRefs, IStRuleFormProps>((props, ref)
           },
         }
       })
-      formIns.setFieldsValue({ duration, priority, state: currentTab.includes('1_') ? mainStateName : subStateName, subStateName, mainStateName })
+      formIns.setFieldsValue({ duration, priority, state: currentTab.startsWith('1') ? mainStateName : subStateName, subStateName, mainStateName })
       setChooseState({ mainStateName, subStateName, mainStateCode, subStateCode })
       formIns.setFieldsValue({
-        stateType: currentTab.includes('1_') ? '大状态' : '小状态',
+        stateType: currentTab.startsWith('1') ? '大状态' : '小状态',
       })
 
       const ruleBeforeStr = processExpression(ruleBefore)
