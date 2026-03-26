@@ -66,13 +66,31 @@ export const getStateRuleData = async (pageInfo?: IPageInfo, formData?: ISearchF
   const res = await doBaseServer<IPageSearch, IPageData<IStateRuleList>>("getMngFormulaPage", params)
   if (validResErr(res)) return null
 
+  const parseFormula = (record: any) => {
+    if (!record || !record.formula) return []
+    // 如果 formula 是字符串（如 JSON），尝试解析
+    if (typeof record.formula === 'string') {
+      try {
+        const parsed = JSON.parse(record.formula)
+        return Array.isArray(parsed) ? parsed : []
+      } catch {
+        return []
+      }
+    }
+    // 如果已经是数组则直接使用
+    return Array.isArray(record.formula) ? record.formula : []
+  }
   //todo：模板编辑时候也需要获取formula，value:1大状态，value:2小状态
   //此时可以返回所有records，然后根据currentTab进行过滤
   const mStateRecord = res.records.find((item) => (item as any).pointName == 'MState')
   const sStateRecord = res.records.find((item) => (item as any).pointName == 'SState')
-  const formula = formData.currentTab == '1' ?  mStateRecord?.formula //MState
-                  : formData.currentTab == '2' ? sStateRecord?.formula : []//SState
-  const sortedByState = formula && formula.length && sortByState([...formula], "priority")// 按优先级排序
+  const mFormula = parseFormula(mStateRecord)
+  const sFormula = parseFormula(sStateRecord)
+  mFormula.forEach(item => item.id = mStateRecord?.id)
+  sFormula.forEach(item => item.id = sStateRecord?.id)
+  const formula = formData.currentTab == '1' ?  mFormula //MState
+                  : formData.currentTab == '2' ? sFormula : []//SState
+  const sortedByState = formula.length ? sortByState([...formula], "priority") : []// 按优先级排序
 
 
   // const sortedByState1 = formula.length && sortByState([...formula.find(item=>(item as any).pointName == 'SState').formula], "priority")
