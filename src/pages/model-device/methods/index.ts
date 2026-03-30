@@ -79,6 +79,36 @@ const getIntersection = (data = [], stationIds) => {
 
 export const saveStnIdxData = async (data) => {
   const changeStnList = data.filter((i) => i.edit)
+  .map((e) => {
+      // 1. 处理 tags：过滤掉空值
+      const filteredTags = Object.fromEntries(
+        Object.entries(e.tags || {}).filter(([key, value]) => {
+          return value !== null && value !== undefined && value !== ''
+        })
+      )
+      // 2. 构建最终对象：只包含非空的顶层字段 + 过滤后的 tags
+      const result: Record<string, any> = {}
+      // 必传字段：id（用于标识设备）
+      if (e.id !== undefined) {
+        result.id = e.id
+      }
+      // 遍历 e 的所有顶层字段（排除 edit 和 tags）
+      for (const key in e) {
+        if (key === 'edit' || key === 'tags') continue
+        const value = e[key]
+        // 只保留“非空”值
+        if (value !== null && value !== undefined && value !== '') {
+          result[key] = value
+        }
+      }
+      // tags 只有在非空时才加入
+      if (Object.keys(filteredTags).length > 0) {
+        result.tags = filteredTags
+      }
+      return result
+    })
+    // 过滤掉没有任何有效字段的对象（比如只改了 edit 标记但没改数据）
+    .filter(item => Object.keys(item).length > 1 || (item.tags && Object.keys(item.tags).length > 0))
   if (!changeStnList.length) return Promise.reject()
   const res = await doBaseServer<IStationData>("updateDevicesData", changeStnList)
   refleshFlag = true
