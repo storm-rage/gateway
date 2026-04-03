@@ -530,6 +530,83 @@ export const controlRuleApi: IApiMapItem = {
     desc: "导入",
   },
 }
+// 时序库迁移规则
+export const timeRuleApi: IApiMapItem = {
+  queryDeviceList: {
+    url: `${SERVE_NAME}/iotdb/queryDeviceList`,
+    method: "get",
+    desc: "查询",
+  },
+  queryMeasurement: {
+    url: `${SERVE_NAME}/iotdb/queryMeasurement`,
+    method: "post",
+    desc: "修改",
+  },
+  migrateDevice: {
+    url: `${SERVE_NAME}/iotdb/migrateDevice`,
+    method: "post",
+    desc: "新增",
+  },
+  queryPage: {
+    url: `${SERVE_NAME}/iotdb/queryPage`,
+    method: "post",
+    desc: "查询",
+  },
+  export: {
+    url: `${SERVE_NAME}/iotdb/export`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出",
+  },
+}
+// 虚拟点规则
+export const virtualRuleApi: IApiMapItem = {
+  selectFormulaV2: {
+    url: `${SERVE_NAME}/mngFormulaV2/selectFormulaV2`,
+    method: "post",
+    desc: "查询",
+  },
+  addMngFormulaV2: {
+    url: `${SERVE_NAME}/mngFormulaV2/addMngFormulaV2`,
+    method: "post",
+    desc: "新增",
+  },
+  updateMngFormulaV2: {
+    url: `${SERVE_NAME}/mngFormulaV2/updateMngFormulaV2`,
+    method: "post",
+    desc: "修改",
+  },
+  delete: {
+    url: `${SERVE_NAME}/mngFormulaV2/delete`,
+    method: "post",
+    desc: "删除",
+  },
+  batchDelete: {
+    url: `${SERVE_NAME}/mngFormulaV2/batchDelete`,
+    method: "post",
+    desc: "批量删除",
+  },
+  exportDate: {
+    url: `${SERVE_NAME}/mngFormulaV2/exportDate`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出",
+  },
+  exportTemplate: {
+    url: `${SERVE_NAME}/mngFormulaV2/exportTemplate`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出模板",
+  },
+  importData: {
+    url: `${SERVE_NAME}/mngFormulaV2/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入",
+  },
+}
 
 // 电气图管理
 export const eleDiagramApiMap: IApiMapItem = {

@@ -22,6 +22,8 @@ import {
   eamDvsApi,
   staticMngApiMap,
   controlRuleApi,
+  timeRuleApi,
+  virtualRuleApi,
   eleDiagramApiMap,
   audioApiMap
 } from "./api-devicemng"
@@ -54,6 +56,8 @@ const API_LIST = {
   stateRuleApi,
   dvsSignalApiMap,
   controlRuleApi,
+  timeRuleApi,
+  virtualRuleApi,
   eleDiagramApiMap,
   audioApiMap
 }
