@@ -126,6 +126,11 @@ export const stateRuleApi: IApiMapItem = {
     method: "post",
     desc: "删除",
   },
+  stateRuleDeleteSingle: {
+    url: `${SERVE_NAME}/mngFormula/delete`,
+    method: "post",
+    desc: "删除",
+  },
   exportMngFormula: {
     url: `${SERVE_NAME}/mngFormula/exportMngFormula`,
     method: "post",

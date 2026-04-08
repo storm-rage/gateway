@@ -7,7 +7,7 @@
  */
 import { lazy } from "react"
 import { ITreeMenuItem } from "./interface"
-import { CONTROL_RULE, RULE_ALARM, RULE_CUSTOMIZE, RULE_FIVE, STATE_RULE } from "./variables"
+import { CONTROL_RULE, RULE_ALARM, RULE_CUSTOMIZE, RULE_FIVE, STATE_RULE, VIRTUAL_RULE, TIME_RULE } from "./variables"
 
 const MenuRuleSetting: ITreeMenuItem[] = [
   {
@@ -34,6 +34,16 @@ const MenuRuleSetting: ITreeMenuItem[] = [
     key: CONTROL_RULE,
     title: "控制规则",
     element: lazy(() => import("@pages/control-rule")),
+  },
+  {
+    key: VIRTUAL_RULE,
+    title: "虚拟点规则",
+    element: lazy(() => import("@/pages/virtualConfigRule")),
+  },
+  {
+    key: TIME_RULE,
+    title: "时序库迁移规则",
+    element: lazy(() => import("@pages/timeLibrary")),
   },
 ]
 export default MenuRuleSetting

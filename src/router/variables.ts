@@ -26,6 +26,8 @@ export const RULE_FIVE = "five"
 export const RULE_CUSTOMIZE = "customize"
 export const STATE_RULE = "state"
 export const CONTROL_RULE = "control"
+export const VIRTUAL_RULE = "virtual"
+export const TIME_RULE = "time"
 
 export const MANAGE = "manage"
 export const MANAGE_USER = "user"

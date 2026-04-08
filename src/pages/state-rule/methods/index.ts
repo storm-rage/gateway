@@ -171,14 +171,21 @@ export const handleBatchApply = async (data = [], checkedItemsIds = [], modelId,
 }
 export const handleBatchDel = async (data = [], checkedItemsIds = [], pointName) => {
   const list = data?.filter((i) => !checkedItemsIds.includes(i.idx))
-  const api = "updateMngFormula"
-  const params = {
-    pointName: pointName,
-    modelId: data[0].modelId,
-    id: data[0].id,
-    formula: list,
+  const api = list.length ? "updateMngFormula" : "stateRuleDelete"
+  let params = {}
+  if(list.length) {
+    params = {
+      pointName: pointName,
+      modelId: data[0].modelId,
+      id: data[0].id,
+      formula: list,
+    }
+  } else {
+    params = {
+      idList: [data[0].id],
+    }
   }
-  console.log(params, "params")
+  console.log(params,api, "params")
   const res = await doBaseServer(api, params)
   return validOperate(res)
 }
