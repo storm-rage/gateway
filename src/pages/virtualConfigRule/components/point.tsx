@@ -77,7 +77,7 @@ const EditRuleModel = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
           {
           calcType == 0 ? <EditRulePoint /> 
           : calcType == 1 ?
-          <BatchDevice deviceType={deviceType} onSelect={(e) => handleDeviceSelect(e as any)} /> : null
+          <BatchDevice deviceType={deviceType} isModelId={true} onSelect={(e) => handleDeviceSelect(e as any)} /> : null
           }
         </div>
         <div className="ar-edit-right">

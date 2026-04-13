@@ -27,9 +27,10 @@ import { showMsg } from "@/utils/util-funs.tsx"
 export interface IAlarmAnalyseTreeProps<TForm = any> {
   deviceType?: string
   onSelect?: (checkedDevices: IBatchStn2DvsTreeData[]) => void
+  isModelId?: boolean
 }
 export default function AlarmAnalyseTree(props: IAlarmAnalyseTreeProps) {
-  const { deviceType, onSelect } = props
+  const { deviceType, onSelect, isModelId } = props
 
   //树结构数据
   const [deviceData, setDeviceData] = useState<IDeviceData[]>([])
@@ -83,6 +84,9 @@ export default function AlarmAnalyseTree(props: IAlarmAnalyseTreeProps) {
     closeSearch.current()
     // setShowSearch(false)
   })
+  const handleTreeData = (treeData) => {
+    treeData.forEach(i=> i.deviceName = i.deviceName+'-'+i.deviceCode)
+  }
   // const getParent
   useEffect(() => {
     if (searchDevice) {
@@ -107,7 +111,11 @@ export default function AlarmAnalyseTree(props: IAlarmAnalyseTreeProps) {
     getDeviceTreeData(deviceType).then((treeData) => {
       if (!treeData) return
       setDeviceData(treeData)
-      setDevice4Tree(getTreeData(treeData) || [])
+      if(isModelId) {
+        handleTreeData(treeData)
+      }
+      const data = getTreeData(treeData)
+      setDevice4Tree(data || [])
     })
   }, [])
 
@@ -117,7 +125,11 @@ export default function AlarmAnalyseTree(props: IAlarmAnalyseTreeProps) {
     getDeviceTreeData(deviceType).then((treeData) => {
       if (!treeData) return
       setDeviceData(treeData)
-      setDevice4Tree(getTreeData(treeData) || [])
+      if(isModelId) {
+        handleTreeData(treeData)
+      }
+      const data = getTreeData(treeData)
+      setDevice4Tree(data || [])
     })
   }, [deviceType])
 
