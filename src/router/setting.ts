@@ -35,11 +35,11 @@ const MenuRuleSetting: ITreeMenuItem[] = [
     title: "控制规则",
     element: lazy(() => import("@pages/control-rule")),
   },
-  // {
-  //   key: VIRTUAL_RULE,
-  //   title: "虚拟点规则",
-  //   element: lazy(() => import("@/pages/virtualConfigRule")),
-  // },
+  {
+    key: VIRTUAL_RULE,
+    title: "虚拟点规则",
+    element: lazy(() => import("@/pages/virtualConfigRule")),
+  },
   {
     key: TIME_RULE,
     title: "时序库迁移规则",

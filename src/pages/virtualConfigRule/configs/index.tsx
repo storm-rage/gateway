@@ -1,5 +1,8 @@
 /*
- * 
+ * @Author: chenmeifeng
+ * @Date: 2024-01-08 13:50:48
+ * @LastEditors: chenmeifeng
+ * @LastEditTime: 2025-10-30 10:10:19
  * @Description:
  */
 import { ColumnsType } from "antd/es/table"
@@ -14,7 +17,11 @@ import EditableInputCell from "@/pages/setting-station/components/edit-input"
 import RangeDatePicker from "@/components/range-date-picker"
 import customInput from "@/components/custom-input"
 import CommonTreeSelect from "@/components/common-tree-select"
-import AutoComplete from "antd/es/auto-complete"
+import { getTableActColumn } from "@/utils/table-funs"
+import { TStTbActInfo, stateInfo } from "../types"
+import { ITbColAction } from "@/components/action-buttons/types"
+import CustonInputNumber from "@/components/custom-input-number"
+
 
 
 // import { IStationIndexInfo } from "../types"
@@ -22,21 +29,30 @@ import AutoComplete from "antd/es/auto-complete"
 export const ST_POINT_SCH_FORM_BTNS: ISearchFormProps["buttons"] = [
   SCH_BTN,
   // { name: "edit", label: "批量编辑", permission: "model:point:edit" },
-  { name: "add", label: "新增", permission: "model:point:add" },
-  // {
-  //   name: "batchDelete",
-  //   label: "批量删除",
-  //   permission: "model:point:batchDelete",
-  // },
-  // {
-  //   name: "import",
-  //   label: "导入",
-  //   permission: "model:point:import",
-  // },
+  { name: "add", label: "新增", permission: "rule:virtual:add" },
+  {
+    name: "batchDelete",
+    label: "批量删除",
+    permission: "rule:virtual:batchDelete",
+  },
+  {
+    name: "batchEnable",
+    label: "批量启用",
+    permission: "rule:virtual:batchEnable",
+  },
+  {
+    name: "batchDisable",
+    label: "批量禁用",
+    permission: "rule:virtual:batchDisable",
+  },{
+    name: "import",
+    label: "导入",
+    permission: "rule:virtual:import",
+  },
   {
     name: "export",
     label: "导出",
-    permission: "model:point:export",
+    permission: "rule:virtual:export",
   },
   // {
   //   name: "template",
@@ -44,9 +60,9 @@ export const ST_POINT_SCH_FORM_BTNS: ISearchFormProps["buttons"] = [
   //   permission: "model:point:import",
   // },
 ]
-export const YOPTIONS = [
-  { value: 1, label: "是" },
-  { value: 0, label: "否" },
+export const COMPUTED_OPTIONS = [
+  { value: 0, label: "设备自身计算" },
+  { value: 1, label: "跨设备计算" },
 ]
 export const BREKE_OPTIONS = [
   { value: 1, label: "断路器标志" },
@@ -79,46 +95,40 @@ export const ST_STATION_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
       options: [],
       needFirst: true,
       disabled: false,
-      allowClear: true,
-    },
-  },
-  {
-    type: CommonTreeSelect,
-    name: "modelIds",
-    label: "设备",
-    props: {
-      // options: [],
-      // disabled: false,
-      // allowClear: true,
-      // placeholder: "全部",
-        // showSearch: true,
-        optionFilterProp: "children",
-        allowClear: false,
-        placeholder: "全部",
-        style: { width: "200px" },
-    },
-  },
-  {
-    type: SelectWithAll,
-    name: "status",
-    label: "状态",
-    props: {
-      options: [
-        { value: 0, label: "待开始" },
-        { value: 1, label: "迁移中" },
-        { value: 2, label: "完成" },
-        { value: 3, label: "失败" },
-      ],
+      allowClear: false,
     },
   },
   // {
-  //   type: RangeDatePicker,
-  //   name: "dateRange",
-  //   label: "时间",
+  //   type: SelectWithAll,
+  //   name: "modelIds",
+  //   label: "型号",
   //   props: {
-  //     showTime: true,
-  //     presets: false,
-  //     style: { width: "32.2em" },
+  //     // needFirst: true,
+  //     options: [],
+  //     disabled: false,
+  //     mode: "multiple",
+  //     allowClear: false,
+  //     placeholder: "全部",
+  //   },
+  // },
+  {
+    type: CommonTreeSelect,
+    name: "deviceIds",
+    label: "设备",
+    props: {
+      options: [],
+      disabled: false,
+      mode: "multiple",
+      allowClear: false,
+      placeholder: "全部",
+    },
+  },
+  // {
+  //   type: SelectWithAll,
+  //   name: "controlType",
+  //   label: "控制类型",
+  //   props: {
+  //     placeholder: "全部",
   //   },
   // },
 ]
@@ -135,96 +145,108 @@ export const ST_STATION_ADD_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
       style: { minWidth: "8em" },
     },
   },
+  // {
+  //   type: SelectWithAll,
+  //   name: "deviceType",
+  //   label: "类型",
+  //   props: {
+  //     options: [],
+  //     needFirst: false,
+  //     disabled: false,
+  //     allowClear: false,
+  //   },
+  // },
   {
-    type: SelectWithAll,
-    name: "deviceType",
-    label: "类型",
-    props: {
-      options: [],
-      needFirst: false,
-      disabled: false,
-      allowClear: false,
-    },
-  },
-  {
-    
-    type: SelectWithAll,
-    // type: AutoComplete,
-    name: "modelIds",
+    type: CommonTreeSelect,
+    name: "deviceIds",
     label: "设备",
     props: {
       // needFirst: true,
       // options: [],
       // disabled: false,
-      optionFilterProp: "children",
       // mode: "single",
-      allowClear: true,
-      showSearch: true,
+      // allowClear: false,
+      multiple: false,
       placeholder: "全部",
-      style: { width: "800px" },
+      treeCheckable: true,
+      style: { minWidth: "13em" },
     },
   },
+  // {
+  //   type: customInput,
+  //   name: "sourceDevicePointCode",
+  //   label: "迁移来源测点编码",
+  //   props: {
+  //     placeholder: "请输入",
+  //     isArea: true,
+  //     rows: 1,
+  //   },
+  // },
+]
+const FREQUENCY_UNITS = [
+  { value: 's', label: '秒' },
+  { value: 'm', label: '分' },
+  { value: 'h', label: '小时' },
+  { value: 'd', label: '天' },
 ]
 export const ST_STATION_ADD_TARGET_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
   {
-      type: StationTreeSelect,
-      name: "stationId",
-      label: "场站",
-      props: {
-        needFirst: false,
-        disabled: false,
-        needId: true,
-        placeholder: "全部",
-        style: { minWidth: "8em" },
-      },
+    type: customInput,
+    name: "pointName",
+    label: "新测点编码",
+    props: {
+      placeholder: "请输入",
     },
-    {
-      type: SelectWithAll,
-      name: "deviceType",
-      label: "类型",
-      props: {
-        options: [],
-        needFirst: false,
-        disabled: false,
-        allowClear: false,
-      },
+  },
+  {
+    type: customInput,
+    name: "pointDesc",
+    label: "新测点描述",
+    props: {
+      placeholder: "请输入",
     },
-    {
-      // type: SelectWithAll,
-      type: AutoComplete,
-      name: "modelIds",
-      label: "设备",
-      props: {
-        showSearch: true,
-        optionFilterProp: "children",
-        allowClear: true,
-        placeholder: "全部",
-        style: { width: "800px" },
-        // multiple: true,
-        // placeholder: "全部",
-        // treeCheckable: true,
-        // style: { minWidth: "13em" },
-      },
+  },
+  {
+    type: SelectWithAll,
+    name: "pointType",
+    label: "测点类型",
+    props: {
+      options: [{ label: "遥测", value: "1"}, { label: "遥信", value: "0"}],
+      disabled: false,
+      mode: "single",
+      allowClear: false,
+      placeholder: "请选择",
+      style: { width: "200px" },
     },
-    // {
-    //     type: CommonTreeSelect,
-    //     name: "deviceIds",
-    //     label: "设备",
-    //     props: {
-    //       // needFirst: true,
-    //       // options: [],
-    //       // disabled: false,
-    //       // mode: "single",
-    //       // allowClear: false,
-    //       // placeholder: "全部",
-    //       // style: { width: "200px" },
-    //       multiple: true,
-    //       placeholder: "全部",
-    //       treeCheckable: true,
-    //       style: { minWidth: "13em" },
-    //     },
-    //   },
-  
+  },
+  {
+    // type: SelectWithAll,
+    type: CustonInputNumber,
+    name: "frequency",
+    label: "计算频率",
+    props: {
+      options:  FREQUENCY_UNITS || [],
+      disabled: false,
+      allowClear: false,
+      placeholder: "请选择",
+      style: { width: "200px" },
+    },
+    
+
+  },
+  {
+    type: SelectWithAll,
+    name: "enabled",
+    label: "是否启用",
+    props: {
+      options: [{ label: "是", value: "1" }, { label: "否", value: "0" }],
+      disabled: false,
+      mode: "single",
+      allowClear: false,
+      placeholder: "请选择",
+      style: { width: "200px" },
+    },
+  },
 ]
 export function ST_DEVICE_COLUMNS(deviceType): ColumnsType {
   return [
@@ -237,44 +259,33 @@ export function ST_DEVICE_COLUMNS(deviceType): ColumnsType {
     { dataIndex: "deviceCode", title: "设备代码",  },
   ]
 }
-const STATUS_MAP = {
-  0: '待开始',
-  1: '迁移中',
-  2: '完成',
-  3: '失败',
-};
-export function ST_STATION_SYS_COLUMNS_SHOW(deviceType): ColumnsType {
+const TABLE_ACTION = [
+  // { key: "see", label: "查看" },
+  { key: "edit", label: "编辑" },
+  { key: "deleted", label: "删除" },
+]
+export function ST_STATION_SYS_COLUMNS_SHOW(config: ITbColAction<TStTbActInfo, stateInfo>,): ColumnsType {
+  const { onClick } = config
   return [
     { dataIndex: "index", title: "序号", width: 60 },
     { dataIndex: "stationName", title: "场站",  },
     { dataIndex: "deviceType", title: "设备类型",  },
-    { dataIndex: "deviceName", title: "设备",  },
-    { dataIndex: "newDevicePath", title: "迁移目标设备", width: 300,
-      ellipsis: true, // 超出隐藏
-      render: (text) => (
-          <div 
-            style={{ whiteSpace: 'wrap',}}
-          >
-            {text}
-          </div>
-      )
-    },
-    { dataIndex: "newMeasurement", title: "迁移目标测点",  },
-    { dataIndex: "oldDevicePath", title: "迁移来源设备", width: 300,
-      ellipsis: true, // 超出隐藏
-      render: (text) => (
-          <div 
-            style={{ whiteSpace: 'wrap',}}
-          >
-            {text}
-          </div>
-      )
-    },
-    { dataIndex: "oldMeasurement", title: "迁移来源测点",  },
-    { dataIndex: "startTime", title: "迁移开始时间",  },
-    { dataIndex: "endTime", title: "迁移结束时间",  },
-    { dataIndex: "operatorTime", title: "任务创建时间", },
-    { dataIndex: "status", title: "任务状态", render: (status) => STATUS_MAP[status] || '未知状态' },
+    { dataIndex: "deviceName", title: "(输出)设备",  },
+    { dataIndex: "modelId", title: "设备型号",  },
+    { dataIndex: "calcType", title: "类型(0、1)",  render: (text) => COMPUTED_OPTIONS.find(i=>i.value==text).label },
+    { dataIndex: "inputPoints", title: "规则", width: 200 },
+    { dataIndex: "pointName", title: "新测点编码",  },
+    { dataIndex: "pointType", title: "测点类型", render: (text) => text == "0" ? "遥信" : "遥测" },
+    { dataIndex: "frequency", title: "计算频率", },
+    { dataIndex: "enabled", title: "是否启用", render: (text) => text==true ? "是" : "否" },
+    ...getTableActColumn<any,any>(
+          TABLE_ACTION,
+          (record) => ({
+            onClick: onClick?.bind(null, record),
+          }),
+          undefined,
+          { width: 200 },
+        ),
   ]
 }
 

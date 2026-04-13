@@ -18,6 +18,33 @@
     .ant-tree-checkbox-indeterminate .ant-tree-checkbox-inner:after {
       background: #fff;
     }
+    .ant-tree-treenode-checkbox-checked {
+      // 设置背景色
+      background-color: #e6f7ff; // 示例：浅蓝色，可替换为你需要的颜色
+      // 可选：hover 时不改变背景（避免覆盖）
+      &:hover {
+        background-color: #e6f7ff;
+      }
+
+      // 文字颜色（可选）
+      .ant-tree-node-content-wrapper {
+        color: #1890ff;
+        background-color: transparent;
+      }
+    }
+    // 如果你还想高亮半选（indeterminate）状态
+    .ant-tree-treenode-checkbox-indeterminate {
+      background-color: #f9f0ff;
+    }
+
+    // 点击行选中状态
+    .ant-tree-node-selected {
+      background-color: #e6f7ff !important;
+      .ant-tree-node-content-wrapper {
+        color: #1890ff;
+        background-color: transparent;
+      }
+    }
   }
 
   .footer-option {

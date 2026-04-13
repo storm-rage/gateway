@@ -9,13 +9,21 @@
 import "./limit-power-button.less"
 
 import { Input, InputProps } from "antd"
+const { TextArea } = Input
 
-export default function CustomInput(props: InputProps) {
+interface CustomInputProps extends InputProps {
+  isArea?: boolean;
+  rows?: number;
+}
+export default function CustomInput(props: CustomInputProps) {
   const { value, ...otherProps } = props
 
   return (
     <div className="w-100 limit-power-button-wrap">
-      <Input value={value} {...otherProps} />
+      {props.isArea?
+        <TextArea value={value} rows={props.rows}/>
+        :<Input value={value} {...otherProps} />}
+      
     </div>
   )
 }

@@ -38,6 +38,7 @@ export default function TimeLibrary() {
   const [column, setColumn] = useState(ST_STATION_SYS_COLUMNS_SHOW(""))
   const modeRef = useRef<any>(null)
 
+  const [formField, setFormField] = useState({})
   const [isModalOpen, setIsModalOpen] = useState(false)
   
   const [btnCombination, setBtnCombination] = useState([...ST_POINT_SCH_FORM_BTNS])
@@ -152,7 +153,7 @@ export default function TimeLibrary() {
       <CustomModal
         ref={modeRef}
         title="新增"
-        width={1200}
+        width={1340}
         destroyOnClose
         open={isModalOpen}
         footer={null}
@@ -160,6 +161,7 @@ export default function TimeLibrary() {
         Component={AddCom as any}
         componentProps={{
           buttonClick: btnClkRef,
+          formField: formField,
         }}
       />
     </div>

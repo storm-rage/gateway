@@ -78,7 +78,7 @@ export interface IDeviceSignal {
 }
 
 export type TModalType = "add" | "update" | "deleted" | "edit"
-export type TFormType = "add" | "batchDelete" | "export" | "import" | "template" | "edit" | "delete"
+export type TFormType = "add" | "batchDelete" | "batchEnable" | "batchDisable" | "export" | "import" | "template" | "edit" | "delete"
 
 export interface IPageData<data> {
   records: data[]

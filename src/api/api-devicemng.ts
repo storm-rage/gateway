@@ -586,6 +586,11 @@ export const virtualRuleApi: IApiMapItem = {
     method: "post",
     desc: "批量删除",
   },
+  updateEnable: {
+    url: `${SERVE_NAME}/mngFormulaV2/updateEnable`,
+    method: "post",
+    desc: "批量删除",
+  },
   exportDate: {
     url: `${SERVE_NAME}/mngFormulaV2/exportDate`,
     method: "post",
