@@ -194,6 +194,10 @@ export const ST_STATION_ADD_TARGET_FORM_ITEMS: ISearchFormProps["itemOptions"] =
     type: customInput,
     name: "pointName",
     label: "新测点编码",
+    formItemProps: {
+        labelCol: { span: 8 },
+        rules: [{ required: true, message: "请输入测点编码" }],
+    },
     props: {
       placeholder: "请输入",
     },
@@ -210,6 +214,10 @@ export const ST_STATION_ADD_TARGET_FORM_ITEMS: ISearchFormProps["itemOptions"] =
     type: SelectWithAll,
     name: "pointType",
     label: "测点类型",
+    formItemProps: {
+        labelCol: { span: 8 },
+        rules: [{ required: true, message: "请选择测点类型" }],
+    },
     props: {
       options: [{ label: "遥测", value: "1"}, { label: "遥信", value: "0"}],
       disabled: false,

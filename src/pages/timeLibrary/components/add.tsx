@@ -28,14 +28,15 @@ export interface IOperateProps {
 //   editType?: TModalType
   loading?: boolean
   selectRowInfo?: any
+  formField?: any
   layout?: "horizontal" | "vertical" | "inline"
 //   FORM_ITEMS: ISearchFormProps["itemOptions"]
   formSelectChange?: (changeVals, setFormConfigs) => void
   initialValues?: any
 }
 
-export default function AddCom(props) { 
-    const { buttonClick } = props
+export default function AddCom(props:IOperateProps) { 
+    const { buttonClick, formField } = props
     const [loading, setLoading] = useState(false)
     const [formList, setFormItemConfig] = useState([])
     const [newFormList, setNewFormItemConfig] = useState([])
@@ -119,6 +120,11 @@ export default function AddCom(props) {
         })
         setPointMapping(initialMapping)
     }
+    useEffect(() => {
+        if (formField && Object.keys(formField).length > 0) {
+            onSchValueChgRef(formField)
+        }
+    }, [formField])
     return (
         <div className="add-module">
             <div className="data-module-title">选择迁移来源：</div>
@@ -131,6 +137,7 @@ export default function AddCom(props) {
                 onSearch={searchTable}
                 formOptions={{
                     onValuesChange: onSchValueChgRef,
+                    initialValues: formField || {}
                 }}
             />
             <div className="data-module-title">选择迁移目标：</div>

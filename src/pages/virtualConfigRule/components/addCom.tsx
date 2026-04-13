@@ -4,7 +4,7 @@
 */
 import "./addCom.less"
 import { useEffect, useState, useRef } from "react"
-import { Form, Input , Select, Button, DatePicker } from "antd"
+import { Form, Input , Select, Button, DatePicker, message } from "antd"
 import {
   addRuleMethods,
   changeRefleshFlag,
@@ -76,8 +76,8 @@ export default function AddCom(props) {
         const params = {
             "id": selectRowInfo?.id || 0,
             "stationCode": stationData.stationList.find(i => i.id == formRefData.stationId).stationCode,//
-            "deviceType": selectRowInfo.deviceType || formRefData?.deviceType,//
-            "deviceCode": res.find(item =>  Array.isArray(formRefData.deviceIds) && formRefData.deviceIds.includes(item.deviceId))?.deviceCode || selectRowInfo.deviceCode,//
+            "deviceType": selectRowInfo.deviceType || res.find(item =>  Array.isArray(formRefData.deviceIds)?formRefData.deviceIds.includes(item.deviceId):formRefData.deviceIds.toString().includes(item.deviceId))?.deviceType,//
+            "deviceCode": res.find(item =>  Array.isArray(formRefData.deviceIds)?formRefData.deviceIds.includes(item.deviceId):formRefData.deviceIds.toString().includes(item.deviceId))?.deviceCode || selectRowInfo.deviceCode,//
             "pointName": pointRule.formData.pointName,//状态点名称
             "pointDesc": pointRule.formData.pointDesc,//描述
             "pointType": pointRule.formData.pointType,//状态点类型
@@ -93,11 +93,26 @@ export default function AddCom(props) {
             "nextExecuteTime": selectRowInfo.nextExecuteTime || "",
             "lastExecuteTime": selectRowInfo.lastExecuteTime || ""
         }
-        console.log(params,'==formRefData')
-
-        // return
+        
+        console.log(params,'==params')
+        //校验必填数据
+        const errorMsg = validateRequiredFields(params)
+        if (errorMsg) {
+            message.error(errorMsg);
+            return
+        }
         handleAddSubmit(params, editType)
         buttonClick("ok")
+    }
+    const validateRequiredFields = (params) => {
+        if (!params.stationCode) return "请选择场站"
+        if (!params.deviceType) return "请选择设备类型"
+        if (!params.deviceCode) return "请选择设备"
+        if (!params.pointName) return "请输入测点编码"
+        if (!params.pointType) return "请选择测点类型"
+        if (params.calcType === undefined || params.calcType === null) return "请选择计算类型"
+        if (!params.inputPoints || params.inputPoints.length === 0) return "请配置输入测点规则"
+        return null
     }
     const handleCancel = () => { 
         buttonClick("close")

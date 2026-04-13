@@ -95,6 +95,10 @@ export default function TimeLibrary() {
 
   async function onFormAction(type: TFormType) {
     if (type === "add") {
+      setFormField({
+        stationId: formRef.current?.getFormValues().stationId, 
+        deviceType: formRef.current?.getFormValues().deviceType
+      })
       setIsModalOpen(true)
     } else if (type === "export") {
       const formData = formRef.current?.getFormValues()
