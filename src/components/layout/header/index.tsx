@@ -57,7 +57,7 @@ export default function Header() {
       <div className="app-header-left"></div>
       <div className="app-header-right">
         <MainMenu />
-        <div className="header-user">
+        {/* <div className="header-user">
           <Dropdown menu={{ items, onClick }} placement="bottomLeft">
             <span className="user-name" children={userInfo?.loginName || userInfo?.realName || "访客"} />
           </Dropdown>
@@ -70,7 +70,7 @@ export default function Header() {
           onCancel={() => setEditPassword(false)}
           Component={UpPassword}
           componentProps={{ buttonClick: updatePassword, selectRowInfo: userInfo }}
-        />
+        /> */}
       </div>
     </div>
   )

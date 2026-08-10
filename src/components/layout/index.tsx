@@ -38,12 +38,12 @@ export default function LayoutApp(props: IProps) {
     if (!firstMenuPath) return;
     navigate(firstMenuPath);
   }, [menuList, navigate, routeReady, pathname]);
-  useEffect(() => {
-    if (!userInfo?.token) {
-      showMsg("请先登录");
-      navigate("/login");
-    }
-  }, [userInfo]);
+  // useEffect(() => {
+  //   if (!userInfo?.token) {
+  //     showMsg("请先登录");
+  //     navigate("/login");
+  //   }
+  // }, [userInfo]);
   return (
     <LargeScreenContext.Provider
       value={{ currentChoosePathParent, setCurrentChoosePathParent }}

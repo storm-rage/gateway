@@ -308,7 +308,7 @@ const TABLE_ACTION = [
 export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserList>): ColumnsType<IUserList> {
   const { onClick } = config
   return [
-    { dataIndex: "id", title: "ID", width: 60, sorter: (a, b) => Number(a?.id) - Number(b.id), },
+    { dataIndex: "id", title: "ID", width: 80, sorter: (a, b) => Number(a?.id) - Number(b.id), },
     { dataIndex: "modelId", title: "设备型号ID", width: 120, sorter: (a, b) => Number(a?.modelId) - Number(b.modelId), },
     { dataIndex: "pointName", title: "测点英文名", width: 140,sorter: (a, b) => {
         const modelA = String(a.pointName ?? '').trim()
@@ -339,7 +339,7 @@ export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserLis
         onClick: onClick?.bind(null, record),
       }),
       undefined,
-      { width: 140 },
+      { width: 120 },
     ),
   ]
 }
