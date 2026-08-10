@@ -1,0 +1,37 @@
+.user-model {
+  .confirm-btn {
+    margin-top: 1.5rem;
+    text-align: center;
+    .ant-btn {
+      margin-left: 1.5rem;
+    }
+  }
+  .ant-form {
+    height: 600px;
+    overflow-y: scroll;
+    padding-right: 20px;
+    /* Firefox 兼容 */
+    scrollbar-width: thin;
+    scrollbar-color: #949494 #f1f1f1;
+    /* 滚动条轨道 */
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    /* 滚动条滑块（可拖动的部分） */
+    &::-webkit-scrollbar-thumb {
+      background: #949494;    /* 滑块颜色 */
+      border-radius: 4px;  /* 圆角 */
+    }
+
+
+
+    .ant-input-affix-wrapper-disabled {
+      background-color: var(--primary-color);
+    }
+    .ant-input-disabled {
+      color: #ffffff;
+      background-color: var(--primary-color);
+    }
+  }
+  
+}

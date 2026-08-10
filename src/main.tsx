@@ -7,7 +7,7 @@ import zhCN from "antd/locale/zh_CN";
 import dayjs from "dayjs";
 import React from "react";
 import ReactDOM from "react-dom/client";
-
+window.global = window
 // import { AntdThemeData } from ;
 
 import App from "./App";

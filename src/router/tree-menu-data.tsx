@@ -14,21 +14,21 @@ import MenuManage from "./manage";
 
 export const TREE_MENU_DATA: ITreeMenuItem[] = [
   {
-    title: "设备模型",
+    title: "网关机配置",
     key: MODEL,
     // icon: <img alt="" src="/images/menu/area_center.png" style={{ width: "1.2em", height: "1.2em" }} />,
     children: Model,
   },
-  {
-    title: "规则配置",
-    key: RULE,
-    // icon: <img alt="" src="/images/menu/area_center.png" style={{ width: "1.2em", height: "1.2em" }} />,
-    children: MenuRuleSetting,
-  },
-  {
-    title: "权限配置",
-    key: MANAGE,
-    // icon: <img alt="" src="/images/menu/area_center.png" style={{ width: "1.2em", height: "1.2em" }} />,
-    children: MenuManage,
-  },
+  // {
+  //   title: "规则配置",
+  //   key: RULE,
+  //   // icon: <img alt="" src="/images/menu/area_center.png" style={{ width: "1.2em", height: "1.2em" }} />,
+  //   children: MenuRuleSetting,
+  // },
+  // {
+  //   title: "权限配置",
+  //   key: MANAGE,
+  //   // icon: <img alt="" src="/images/menu/area_center.png" style={{ width: "1.2em", height: "1.2em" }} />,
+  //   children: MenuManage,
+  // },
 ];

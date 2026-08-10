@@ -26,22 +26,53 @@ export default function LayoutContent() {
   navigateRef.current = navigate
 
   const menuItems = useMemo(() => {
-    if (!currentChoosePathParent) return []
-    const menu = allMenu
-      ?.filter((menu) => menu.key === currentChoosePathParent)?.[0]
-      ?.children?.map((i) => {
-        return {
-          key: `${currentChoosePathParent}/${i.key}`,
-          label: i.label,
-          title: i.label,
+    // if (!currentChoosePathParent) return []
+    // const menu = allMenu
+    //   ?.filter((menu) => menu.key === currentChoosePathParent)?.[0]
+    //   ?.children?.map((i) => {
+    //     return {
+    //       key: `${currentChoosePathParent}/${i.key}`,
+    //       label: i.label,
+    //       title: i.label,
+    //     }
+    //   })
+    // return menu || []
+    if (!currentChoosePathParent || !allMenu?.length) return []
+
+    // 找到当前选中的父级菜单
+    const parentMenu = allMenu.find(menu => menu.key === currentChoosePathParent)
+    if (!parentMenu?.children?.length) return []
+
+    // 递归转换函数：将原始菜单结构转为 AntD Menu 所需的 ItemType 结构
+    const transformToAntdMenu = (items: typeof parentMenu.children, parentKey: string): ItemType[] => {
+      return items.map(item => {
+        const fullKey = `${parentKey}/${item.key}`
+        const labelStr = typeof item.label === 'string' ? item.label : String(item.label)
+        const baseItem: ItemType = {
+          key: fullKey,
+          label: item.label,
+          title: labelStr,
         }
+
+        // 如果当前项还有 children，则递归处理
+        if (item.children && item.children.length > 0) {
+          return {
+            ...baseItem,
+            children: transformToAntdMenu(item.children, fullKey), // 继续拼接完整路径
+          }
+        }
+
+        return baseItem
       })
-    return menu || []
+    }
+
+    return transformToAntdMenu(parentMenu.children, currentChoosePathParent);
   }, [allMenu, currentChoosePathParent])
 
   const handleSelectRef = useRef(({ keyPath }: { keyPath: string[] }) => {
-    navigateRef.current(`/${keyPath}`)
-    setSelectedKeys(keyPath)
+    console.log(keyPath,'==keypath')
+    navigateRef.current(`/${keyPath[0]}`)
+    setSelectedKeys([keyPath[0]])
   })
   useEffect(() => {
     // console.log(pathname, "pathname");

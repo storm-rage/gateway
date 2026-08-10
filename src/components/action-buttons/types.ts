@@ -30,5 +30,6 @@ export interface IActBtnProps<TAct extends IActInfo> {
 
 export interface ITbColAction<TAct extends IActInfo, TData = any> {
   onClick?: (record: TData, info: IActBtnInfo<TAct>) => void
+  onSwitchChange?: (record: TData, info: IActBtnInfo<TAct>) => void
   actHead?: boolean
 }

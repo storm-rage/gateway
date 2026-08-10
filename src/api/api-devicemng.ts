@@ -8,6 +8,7 @@
 import { IApiMapItem } from "@/types/i-api.ts"
 
 const SERVE_NAME = "/devicemng"
+const SERVE_GATEWAY = "/dataGateway"
 // 功率曲线
 export const settingApiMap: IApiMapItem = {
   getWtPowerCurveByStn: {
@@ -660,5 +661,515 @@ export const audioApiMap: IApiMapItem = {
     url: `${SERVE_NAME}/static/stationSvg/getAudioFileList`,
     method: "get",
     desc: "查询",
+  },
+}
+//设备管理
+export const pageIndexApiMap: IApiMapItem = {
+  deviceUpdate: {
+    url: `${SERVE_GATEWAY}/device/update`,
+    method: "post",
+    desc: "更新设备",
+  },
+  updateDeviceTags: {
+    url: `${SERVE_GATEWAY}/device/updateDeviceTags`,
+    method: "post",
+    desc: "批量更新设备tags",
+  },
+  deviceSelectByPage: {
+    url: `${SERVE_GATEWAY}/device/selectByPage`,
+    method: "post",
+    desc: "分页查询设备信息",
+  },
+  deviceInsert: {
+    url: `${SERVE_GATEWAY}/device/insert`,
+    method: "post",
+    desc: "添加设备",
+  },
+  deviceImportData: {
+    url: `${SERVE_GATEWAY}/device/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入数据",
+  },
+  deviceExportTemplate: {
+    url: `${SERVE_GATEWAY}/device/exportTemplate`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入模板",
+  },
+  deviceExportData: {
+    url: `${SERVE_GATEWAY}/device/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出数据",
+  },
+  deviceDelete: {
+    url: `${SERVE_GATEWAY}/device/delete/{id}`,
+    method: "post",
+    desc: "根据id删除设备",
+  },
+  deviceBatchUpdate: {
+    url: `${SERVE_GATEWAY}/device/batchUpdate`,
+    method: "post",
+    desc: "批量更新设备",
+  },
+  batchInsert: {
+    url: `${SERVE_GATEWAY}/device/batchInsert`,
+    method: "post",
+    desc: "批量新增设备",
+  },
+  deviceBatchDelete: {
+    url: `${SERVE_GATEWAY}/device/batchDelete`,
+    method: "post",
+    desc: "批量删除设备",
+  },
+  getStationDeviceTree: {
+    url: `${SERVE_GATEWAY}/device/getStationDeviceTree`,
+    method: "get",
+    desc: "获取场站-设备树",
+  },
+  detail: {
+    url: `${SERVE_GATEWAY}/device/detail/{id}`,
+    method: "get",
+    desc: "根据ID查询设备信息",
+  },
+}
+//场站管理
+export const stationManageApiMap: IApiMapItem = { 
+  stationUpdate: {
+    url: `${SERVE_GATEWAY}/station/update`,
+    method: "post",
+    desc: "批量更新场站",
+  },
+  stationInsert: {
+    url: `${SERVE_GATEWAY}/station/insert`,
+    method: "post",
+    desc: "新增场站",
+  },
+  stationImportData: {
+    url: `${SERVE_GATEWAY}/station/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "场站数据导入",
+  },
+  stationFindStation: {
+    url: `${SERVE_GATEWAY}/station/findStation`,
+    method: "post",
+    desc: "根据条件查询场站",
+  },
+  stationExportTemplate: {
+    url: `${SERVE_GATEWAY}/station/exportTemplate`,
+    method: "post",
+    responseType: "blob",
+    desc: "场站数据模板导出",
+    
+  },
+  stationExportData: {
+    url: `${SERVE_GATEWAY}/station/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "场站数据导出",
+  },
+  stationBatchDelete: {
+    url: `${SERVE_GATEWAY}/station/batchDelete`,
+    method: "post",
+    desc: "批量删除场站",
+  },
+}
+//设备型号管理
+export const deviceModelApiMap: IApiMapItem = { 
+  deviceModelUpdate: {
+    url: `${SERVE_GATEWAY}/deviceModel/update`,
+    method: "post",
+    desc: "批量更新设备型号",
+  },
+  deviceModelSelectByPage: {
+    url: `${SERVE_GATEWAY}/deviceModel/selectByPage`,
+    method: "post",
+    desc: "分页查询设备型号",
+  },
+  deviceModelInsert: {
+    url: `${SERVE_GATEWAY}/deviceModel/insert`,
+    method: "post",
+    desc: "添加一个新的设备型号",
+  },
+  deviceModelImportData: {
+    url: `${SERVE_GATEWAY}/deviceModel/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入数据",
+  },
+  deviceModelExportData: {
+    url: `${SERVE_GATEWAY}/deviceModel/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出数据",
+  },
+  deviceModelDelete: {
+    url: `${SERVE_GATEWAY}/deviceModel/delete/{id}`,
+    method: "post",
+    desc: "根据id删除设备型号",
+  },
+  deviceModelBatchDelete: {
+    url: `${SERVE_GATEWAY}/deviceModel/batchDelete`,
+    method: "post",
+    desc: "批量删除设备型号",
+  },
+  deviceModelById: {
+    url: `${SERVE_GATEWAY}/deviceModel/{id}`,
+    method: "get",
+    desc: "根据id查询设备型号",
+  },
+  deviceModelDeviceType: {
+    url: `${SERVE_GATEWAY}/deviceModel/deviceType`,
+    method: "get",
+    desc: "查询所有的设备类型",
+  },
+}
+//设备协议管理
+export const deviceProtocolApiMap: IApiMapItem = { 
+  deviceProtocolUpdate: {
+    url: `${SERVE_GATEWAY}/protocol/update`,
+    method: "post",
+    desc: "更新设备协议",
+  },
+  deviceProtocolUpdateByModel: {
+    url: `${SERVE_GATEWAY}/protocol/updateByModel`,
+    method: "post",
+    desc: "根据场站-型号更新设备协议",
+  },
+  deviceProtocolQueryPage: {
+    url: `${SERVE_GATEWAY}/protocol/queryPage`,
+    method: "post",
+    desc: "分页查询设备协议",
+  },
+  deviceProtocolQueryByModel: {
+    url: `${SERVE_GATEWAY}/protocol/queryByModel`,
+    method: "post",
+    desc: "根据型号查询设备协议",
+  },
+  deviceProtocolInsert: {
+    url: `${SERVE_GATEWAY}/protocol/insert`,
+    method: "post",
+    desc: "添加一个新的设备协议",
+  },
+  deviceProtocolImportTemplate: {
+    url: `${SERVE_GATEWAY}/protocol/importTemplate`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入模板",
+  },
+  deviceProtocolImportData: {
+    url: `${SERVE_GATEWAY}/protocol/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入数据",
+  },
+  deviceProtocolExportData: {
+    url: `${SERVE_GATEWAY}/protocol/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出数据",
+  },
+  deviceProtocolDelete: {
+    url: `${SERVE_GATEWAY}/protocol/delete/{id}`,
+    method: "post",
+    desc: "根据id删除设备协议",
+  },
+  deviceProtocolBatchDelete: {
+    url: `${SERVE_GATEWAY}/protocol/batchDelete`,
+    method: "post",
+    desc: "批量删除设备协议",
+  },
+  deviceProtocolById: {
+    url: `${SERVE_GATEWAY}/protocol/{id}`,
+    method: "get",
+    desc: "根据id查询设备协议",
+  },
+}
+//测点管理
+export const pointApiMap: IApiMapItem = { 
+  pointUpdate: {
+    url: `${SERVE_GATEWAY}/dataPoint/update`,
+    method: "post",
+    desc: "修改测点",
+  },
+  pointUpdateBatch: {
+    url: `${SERVE_GATEWAY}/dataPoint/updateBatch`,
+    method: "post",
+    desc: "批量修改测点",
+  },
+  pointSave: {
+    url: `${SERVE_GATEWAY}/dataPoint/save`,
+    method: "post",
+    desc: "新增测点",
+  },
+  pointQueryPage: {
+    url: `${SERVE_GATEWAY}/dataPoint/queryPage `,
+    method: "post",
+    desc: "分页查询测点",
+  },
+  pointDataImportData: {
+    url: `${SERVE_GATEWAY}/dataPoint/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "批量导入测点数据",
+  },
+  pointExportData: {
+    url: `${SERVE_GATEWAY}/dataPoint/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "批量导出测点数据",
+  },
+  pointDelete: {
+    url: `${SERVE_GATEWAY}/dataPoint/delete/{id}`,
+    method: "post",
+    desc: "删除测点",
+  },
+  pointBatchDelete: {
+    url: `${SERVE_GATEWAY}/dataPoint/batchDelete`,
+    method: "post",
+    desc: "批量删除测点",
+  },
+  pointQueryByDeviceCode: {
+    url: `${SERVE_GATEWAY}/dataPoint/queryByDeviceCode/{deviceCode}`,
+    method: "get",
+    desc: "根据设备编码查询测点",
+  },
+}
+//测点地址
+export const pointAddressApiMap: IApiMapItem = { 
+  pointAddressSelectByPage: {
+    url: `${SERVE_GATEWAY}/devicePointAddressMapping/selectByPage`,
+    method: "post",
+    desc: "分页查询设备测点地址映射",
+  },
+  pointAddressDetail: {
+    url: `${SERVE_GATEWAY}/devicePointAddressMapping/detail/{id}`,
+    method: "get",
+    desc: "根据ID查询详情",
+  },
+  pointAddressInsert: {
+    url: `${SERVE_GATEWAY}/devicePointAddressMapping/insert`,
+    method: "post",
+    desc: "新增",
+  },
+  pointAddressUpdate: {
+    url: `${SERVE_GATEWAY}/devicePointAddressMapping/update`,
+    method: "post",
+    desc: "编辑",
+  },
+  pointAddressDelete: {
+    url: `${SERVE_GATEWAY}/devicePointAddressMapping/delete/{id}`,
+    method: "post",
+    desc: "删除",
+  },
+  pointAddressBatchDelete: {
+    url: `${SERVE_GATEWAY}/devicePointAddressMapping/batchDelete`,
+    method: "post",
+    desc: "批量删除",
+  },
+  pointAddressExportTemplate: {
+    url: `${SERVE_GATEWAY}/devicePointAddressMapping/exportTemplate`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "下载导入模板",
+  },
+  pointAddressExportData: {
+    url: `${SERVE_GATEWAY}/devicePointAddressMapping/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出",
+  },
+  pointAddressImportData: {
+    url: `${SERVE_GATEWAY}/devicePointAddressMapping/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入",
+  },
+}
+//目标服务器
+export const serviceRelayApiMap: IApiMapItem = { 
+  serviceRelayQueryPage: {
+    url: `${SERVE_GATEWAY}/serviceRelay/queryPage`,
+    method: "post",
+    desc: "分页查询设备服务继电器",
+  },
+  serviceRelayUpdate: {
+    url: `${SERVE_GATEWAY}/serviceRelay/update`,
+    method: "post",
+    desc: "更新设备服务继电器",
+  },
+  serviceRelayInsert: {
+    url: `${SERVE_GATEWAY}/serviceRelay/insert`,
+    method: "post",
+    desc: "新增设备服务继电器",
+  },
+  serviceRelayImportTemplate: {
+    url: `${SERVE_GATEWAY}/serviceRelay/importTemplate`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入模板",
+  },
+  serviceRelayImportDate: {
+    url: `${SERVE_GATEWAY}/serviceRelay/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "批量导入设备服务继电器",
+  },
+  serviceRelayExportDate: {
+    url: `${SERVE_GATEWAY}/serviceRelay/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "批量导出设备服务继电器",
+  },
+  serviceRelayDelete: {
+    url: `${SERVE_GATEWAY}/serviceRelay/delete/{id}`,
+    method: "post",
+    desc: "删除设备服务继电器",
+  },
+  serviceRelayBatchDelete: {
+    url: `${SERVE_GATEWAY}/serviceRelay/batchDelete`,
+    method: "post",
+    desc: "批量删除设备服务继电器",
+  },
+  serviceRelayGetList: {
+    url: `${SERVE_GATEWAY}/serviceRelay/selectList`,
+    method: "get",
+    desc: "查询设备服务继电器",
+  },
+  serviceRelaySelectById: {
+    url: `${SERVE_GATEWAY}/serviceRelay/selectById/{id}`,
+    method: "get",
+    desc: "根据ID查询设备服务继电器",
+  },
+}
+//业务常量  公共配置管理
+export const configBusinessApiMap: IApiMapItem = { 
+  constantUpdate: {
+    url: `${SERVE_GATEWAY}/config/update`,
+    method: "post",
+    desc: "更新公共配置",
+  },
+  configQueryPage: {
+    url: `${SERVE_GATEWAY}/config/queryPage`,
+    method: "post",
+    desc: "分页查询业务常量",
+  },
+  configInsert: {
+    url: `${SERVE_GATEWAY}/config/insert`,
+    method: "post",
+    desc: "新增公共配置",
+  },
+  configImportTemplate: {
+    url: `${SERVE_GATEWAY}/config/importTemplate`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入公共配置模板",
+  },
+  configImportData: {
+    url: `${SERVE_GATEWAY}/config/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "批量导入公共配置",
+  },
+  configExportData: {
+    url: `${SERVE_GATEWAY}/config/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "批量导出公共配置",
+  },
+  configDeleteBatch: {
+    url: `${SERVE_GATEWAY}/config/deleteBatch`,
+    method: "post",
+    desc: "批量删除公共配置",
+  },
+  configDeleteById: {
+    url: `${SERVE_GATEWAY}/config/delete/{id}`,
+    method: "post",
+    desc: "删除公共配置",
+  },
+  configSeletctById: {
+    url: `${SERVE_GATEWAY}/config/selectById/{id}`,
+    method: "get",
+    desc: "根据ID查询公共配置",
+  },
+  configSeletctByType: {
+    url: `${SERVE_GATEWAY}/config/selectByBusinessType/{businessType}`,
+    method: "get",
+    desc: "根据业务类型查询公共配置",
+  },
+}
+//设备测点-转发
+export const devicePointApiMap: IApiMapItem = { 
+  devicePointQueryPage: {
+    url: `${SERVE_GATEWAY}/dataPointRelay/queryPage`,
+    method: "post",
+    desc: "分页查询设备测点-转发",
+  },
+  devicePointUpdate: {
+    url: `${SERVE_GATEWAY}/dataPointRelay/update`,
+    method: "post",
+    desc: "更新设备测点-转发",
+  },
+  devicePointSelectById: {
+    url: `${SERVE_GATEWAY}/dataPointRelay/selectById/{id}`,
+    method: "post",
+    desc: "根据id查询设备测点模板-转发",
+  },
+  devicePointInsert: {
+    url: `${SERVE_GATEWAY}/dataPointRelay/insert`,
+    method: "post",
+    desc: "新增设备测点-转发",
+  },
+  devicePointImportData: {
+    url: `${SERVE_GATEWAY}/dataPointRelay/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入数据",
+  },
+  devicePointExportData: {
+    url: `${SERVE_GATEWAY}/dataPointRelay/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "导出数据",
+  },
+  devicePointDeleteBatch: {
+    url: `${SERVE_GATEWAY}/dataPointRelay/deleteBatch`,
+    method: "post",
+    desc: "批量删除",
+  },
+  devicePointdeleteByid: {
+    url: `${SERVE_GATEWAY}/dataPointRelay/delete/{id}`,
+    method: "post",
+    desc: "删除",
   },
 }

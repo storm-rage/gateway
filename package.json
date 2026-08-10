@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
+    "@stomp/stompjs": "6.1.2",
     "antd": "^5.22.2",
     "axios": "^1.7.8",
     "dayjs": "^1.11.13",
+    "echarts": "5.4.3",
+    "echarts-for-react": "3.0.2",
     "jotai": "^2.10.3",
     "mqtt": "^5.10.3",
     "qs": "^6.13.1",
@@ -21,6 +24,7 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.21.3",
     "sm-crypto": "^0.3.13",
+    "sockjs-client": "^1.6.1",
     "uuid": "^11.0.3"
   },
   "devDependencies": {

@@ -25,7 +25,16 @@ import {
   timeRuleApi,
   virtualRuleApi,
   eleDiagramApiMap,
-  audioApiMap
+  audioApiMap,
+  pageIndexApiMap,
+  stationManageApiMap,
+  deviceModelApiMap,
+  deviceProtocolApiMap,
+  pointApiMap,
+  pointAddressApiMap,
+  serviceRelayApiMap,
+  configBusinessApiMap,
+  devicePointApiMap,
 } from "./api-devicemng"
 import { userMngApi } from "./api-user"
 import { alarmFiveRuleApi, alarmRuleApi, mftAlarmApi, stateRuleApi } from "./api-alarm"
@@ -59,7 +68,16 @@ const API_LIST = {
   timeRuleApi,
   virtualRuleApi,
   eleDiagramApiMap,
-  audioApiMap
+  audioApiMap,
+  pageIndexApiMap,
+  stationManageApiMap,
+  deviceModelApiMap,
+  deviceProtocolApiMap,
+  pointApiMap,
+  pointAddressApiMap,
+  serviceRelayApiMap,
+  configBusinessApiMap,
+  devicePointApiMap,
 }
 
 const API_MAP = (function () {
