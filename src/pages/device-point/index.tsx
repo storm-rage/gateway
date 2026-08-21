@@ -4,7 +4,7 @@
 import "./index.less"
 
 import usePageSearch from "@hooks/use-page-search.ts"
-import React, { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import CustomForm from "@/components/custom-form"
 import { IFormInst } from "@/components/custom-form/types.ts"
@@ -15,7 +15,7 @@ import useTableSelection from "@/hooks/use-table-selection"
 import { showMsg } from "@/utils/util-funs"
 
 import { DEVICE_ATT_COLUMNS, ST_MANAGE_SCH_FORM_BTNS, RP_DEVICE_SCH_FORM_ITEMS, ADD_FORM_ITEMS } from "./configs/index"
-import { addUserMethods, delUserMethods, getSettingUserSchData, udPwMethods, importFile, exportFile, getModel } from "./methods/index"
+import { addUserMethods, delUserMethods, getSettingUserSchData, importFile, exportFile, getStation, getModel } from "./methods/index"
 import { IUserList, IUserListParam, TModelFrAndTbInfo, TUserTbActInfo } from "./types/index"
 import { TModalType } from "@/types/i-config"
 import AddModal, { IOperateProps, IPerateRef } from "./components/edit"
@@ -31,6 +31,7 @@ export default function ModelStation() {
   const [isEditOrAdd, setIsEditOrAdd] = useState<TModalType>("add")
   const [importModal, setImportModal] = useState(false)
   const [deviceModel, setDeviceModel] = useState<any>([])
+  const [stationList, setStationList] = useState<any>([])
   
   // 设置选中的一条数据
   const [selectRowInfo, setSelectRowInfo] = useState<IUserList | null>()
@@ -44,6 +45,15 @@ export default function ModelStation() {
   }, [])
 
   useEffect(() => {
+    getStation().then(res => {
+      if(res) {
+        res.records.forEach(item => {
+          item.value = item.id
+          item.label = item.shortName
+        })
+        setStationList(res.records)
+      }
+    })
     getModel().then(res => {
       console.log("getModel===",res)
       if(res) {
@@ -76,11 +86,11 @@ export default function ModelStation() {
         setImportModal(true)
   
     } else if(type === "export") {
+      const formData = formRef.current?.getFormValues?.() || {}
       const params = {
         "pageNum": pagination.current || 1,
         "pageSize": pagination.pageSize || 10,
-        "deviceCode": "",
-        "deviceType": "",
+        "stationId": formData.stationId || "",
         "modelId": formData.modelId,
         "pointName": formData.pointName,
       }
@@ -120,6 +130,14 @@ export default function ModelStation() {
           ...item.props,
           options: deviceModel,
         },
+      }
+    } else if (item.name === 'stationId') {
+      return {
+        ...item,
+        props: {
+          ...item.props,
+          options: stationList,
+        }
       }
     }
     return item

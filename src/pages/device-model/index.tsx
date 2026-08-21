@@ -15,7 +15,7 @@ import useTableSelection from "@/hooks/use-table-selection"
 import { showMsg } from "@/utils/util-funs"
 
 import { DEVICE_ATT_COLUMNS, ST_MANAGE_SCH_FORM_BTNS, RP_DEVICE_SCH_FORM_ITEMS, ADD_FORM_ITEMS, } from "./configs/index"
-import { addUserMethods, delUserMethods, getSettingUserSchData, udPwMethods, getDeviceType, importFile, exportFile } from "./methods/index"
+import { addUserMethods, delUserMethods, getSettingUserSchData, getDeviceType, importFile, exportFile } from "./methods/index"
 import { IUserList, IUserListParam, TModelFrAndTbInfo, TUserTbActInfo } from "./types/index"
 import { TModalType } from "@/types/i-config"
 import AddModal, { IOperateProps, IPerateRef } from "./components/edit"
@@ -93,14 +93,15 @@ export default function ModelStation() {
       setImportModal(true)
 
     } else if(type === "export") {
+      const formData = formRef.current?.getFormValues?.() || {}
       const params = {
         "pageNum": pagination.current || 1,
         "pageSize": pagination.pageSize || 10,
         "id": "",
-        "model": "",
-        "version": "",
-        "manufacturer": "",
-        "deviceType": ""
+        "model": formData.model,
+        "version": formData.version || "",
+        "manufacturer": formData.manufacturer || "",
+        "deviceType": formData.deviceType || "",
       }
       exportFile(params)
     } else if(type === "search") {

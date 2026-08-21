@@ -5,7 +5,7 @@
  * @LastEditTime: 2024-12-16 11:30:46
  * @Description:
  */
-import { doBaseServer, doNoParamServer } from "@/api/serve-funs"
+import { doBaseServer } from "@/api/serve-funs"
 // import { STATION_DATA_MAP } from "@/store/atom-station"
 import { IPageInfo } from "@/types/i-table.ts"
 import { validOperate, validResErr } from "@/utils/util-funs"
@@ -20,6 +20,7 @@ export async function getSettingUserSchData(pageInfo?: IPageInfo, formData?: any
     pageNum: pageInfo?.current,
     pageSize: pageInfo?.pageSize,
     modelId: formData?.modelId,
+    stationId: formData?.stationId,
     pointName: formData?.pointName,
   }
   const res = await doBaseServer<IUserListParam>("pointQueryPage", params)
@@ -47,6 +48,17 @@ export const exportFile = async (formData) => {
   doBaseServer<any, AxiosResponse>("pointExportData", formData).then((data) => {
     dealDownload4Response(data, "导出表.xlsx")
   })
+}
+
+export const getStation = async () => {
+  const params = {
+    pageNum: 1,
+    pageSize: 100,
+  }
+  const res = await doBaseServer("stationFindStation", params)
+  
+  if (validResErr(res)) return null
+  return { records: res || [], total: res?.total }
 }
 
 export const getModel = async () => {

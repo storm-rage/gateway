@@ -19,6 +19,7 @@ export async function getSettingUserSchData(pageInfo?: IPageInfo, formData?: any
   const params = {
     pageNum: pageInfo?.current,
     pageSize: pageInfo?.pageSize,
+    stationId: formData?.stationId,
     deviceCode: formData?.deviceCode,
     pointName: formData?.pointName,
   }
@@ -57,4 +58,15 @@ export const getDeviceCodeList = async () => {
 export const delUserMethods = async (data: any) => {
   const res = await doBaseServer<any>("pointAddressBatchDelete", data)
   return validOperate(res)
+}
+
+export const getStation = async () => {
+  const params = {
+    pageNum: 1,
+    pageSize: 100,
+  }
+  const res = await doBaseServer("stationFindStation", params)
+  
+  if (validResErr(res)) return null
+  return { records: res || [], total: res?.total }
 }

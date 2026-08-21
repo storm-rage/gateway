@@ -15,8 +15,8 @@ import useTableSelection from "@/hooks/use-table-selection"
 import { showMsg } from "@/utils/util-funs"
 
 import { DEVICE_ATT_COLUMNS, ST_MANAGE_SCH_FORM_BTNS, RP_DEVICE_SCH_FORM_ITEMS, ADD_FORM_ITEMS, ADD_FORM_ITEMS_BATCH } from "./configs/index"
-import { addUserMethods, delUserMethods, getSettingUserSchData, udPwMethods, importFile, exportFile, getStationDeviceTree, getDeviceType, getStation, getModel, getDeviceCodeList } from "./methods/index"
-import { IUserList, IUserListParam, TModelFrAndTbInfo, TUserTbActInfo } from "./types/index"
+import { addUserMethods, delUserMethods, getSettingUserSchData, importFile, exportFile, getDeviceType, getStation, getModel, getDeviceCodeList } from "./methods/index"
+import { IUserList, TModelFrAndTbInfo, TUserTbActInfo } from "./types/index"
 import { TModalType } from "@/types/i-config"
 import AddModal, { IOperateProps, IPerateRef } from "./components/edit"
 import FileImport from "@/components/custom-upload/upload"
@@ -84,7 +84,8 @@ export default function ModelStation() {
       getDeviceCodeList({ pageNum: 1, pageSize: 100, deviceCode: ''}).then(res => {
         if(res?.records) {
           const uniqueCodes = new Map<string, { label: string; value: string }>()
-          res.records.forEach(item => {
+          const filteredRecords = res.records.filter(item => item.stationId == formRef.current?.getFormValues().stationId)
+          filteredRecords.forEach(item => {
             if (!uniqueCodes.has(item.deviceCode)) {
               uniqueCodes.set(item.deviceCode, { label: item.deviceCode, value: item.deviceCode })
             }
@@ -157,14 +158,15 @@ export default function ModelStation() {
         setImportModal(true)
   
     } else if(type === "export") {
+      const formData = formRef.current?.getFormValues?.() || {}
       const params = {
         "pageNum": pagination.current || 1,
         "pageSize": pagination.pageSize || 10,
-        "deviceCode": "",
-        "modelId": "",
-        "stationId": "",
-        "protocolType": "",
-        "state": "",
+        "deviceCode": formData.deviceCode || "",
+        "modelId": formData.modelId || "",
+        "stationId": formData.stationId || "",
+        "protocolType": formData.protocolType || "",
+        "state": formData.state || "",
       }
       exportFile(params)
     } else if(type === "search") {

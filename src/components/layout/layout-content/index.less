@@ -1,10 +1,26 @@
 .layout-content {
+  .layout-sider {
+    .sider-trigger {
+      height: 30px;
+      line-height: 30px;
+      text-align: center;
+      cursor: pointer;
+      color: #fff;
+      transition: background 0.3s;
+      &:hover {
+        background: rgba(0, 0, 0, 0.35);
+      }
+    }
+  }
   .layout-content-inner {
     padding: 1em;
   }
   .child-menu {
     .ant-menu-item {
-      border: 1px solid rgb(47, 95, 207);
+      // border: 1px solid rgb(47, 95, 207);
     }
   }
+}
+.ant-layout-sider {
+  background: var(--bg-active);
 }

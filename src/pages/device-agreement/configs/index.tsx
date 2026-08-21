@@ -13,12 +13,9 @@ import { ISearchFormProps } from "@/components/custom-form/types.ts"
 import { StorageStnDvsType } from "@/configs/storage-cfg"
 import { getTableActColumn } from "@/utils/table-funs"
 import { getStorage } from "@/utils/util-funs"
-import StationTreeSelect from "@/components/station-tree-select"
-import CommonTreeSelect from "@/components/common-tree-select"
 import SelectOrdinary from "@/components/select-ordinary"
 import { IUserList, TUserTbActInfo } from "../types/index"
 import CustomInput from "@/components/custom-input"
-import SelectWithAll from "@/components/select-with-all"
 
 interface DeviceAttColumnsConfig {
   onClick?: (record: IUserList, { key, label }) => void;

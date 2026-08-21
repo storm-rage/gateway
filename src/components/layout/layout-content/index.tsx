@@ -9,6 +9,7 @@ import "./index.less"
 import LargeScreenContext from "@/contexts/menu-context"
 import { ATOM_ROUTER_ALL } from "@/store/atom-menu"
 import { Layout, Menu } from "antd"
+import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons"
 import { ItemType } from "antd/es/menu/interface"
 import { useAtomValue } from "jotai"
 import { useContext, useEffect, useMemo, useRef, useState } from "react"
@@ -96,6 +97,9 @@ export default function LayoutContent() {
         trigger={null}
         className="layout-sider"
       >
+        <div className="sider-trigger" onClick={() => setCollapsed(!collapsed)}>
+          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        </div>
         <Menu
           mode="inline"
           style={{ height: "100%", borderRight: 0 }}

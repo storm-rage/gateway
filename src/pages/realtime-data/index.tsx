@@ -5,8 +5,14 @@ import "./index.less"
 import React, { useEffect, useState, useRef } from "react"
 import { Tree } from "antd"
 import CustomTable from "@/components/custom-table"
-import { DEVICE_ATT_COLUMNS, ST_MANAGE_SCH_FORM_BTNS, RP_DEVICE_SCH_FORM_ITEMS } from "./configs/index"
+import { DEVICE_ATT_COLUMNS, ST_MANAGE_SCH_FORM_BTNS, RP_DEVICE_SCH_FORM_ITEMS, ADD_FORM_ITEMS } from "./configs/index.ts"
+
 import { getStation, getDevices, getPointByDeviceCode } from "./methods/index"
+import { IUserList, IUserListParam, TModelFrAndTbInfo, TUserTbActInfo } from "./types/index"
+import CustomModal from "@/components/custom-modal"
+import AddModal, { IOperateProps, IPerateRef } from "./components/edit"
+import { addUserMethods } from "./methods/index"
+
 import { useRealtimeData } from "@/hooks/use-stomp"
 export default function ModelStation() {
   const [tableData, setTableData] = useState([])
@@ -15,6 +21,12 @@ export default function ModelStation() {
   const [modelList, setModelList] = useState([])
   const [deviceList, setDeviceList] = useState([])
   const { connected, realtimeData, logs, messageCount } = useRealtimeData()
+  const [isModalOpen, setIsModalOpen] = useState("")
+    const [selectRowInfo, setSelectRowInfo] = useState<IUserList | null>()
+    const [isEditOrAdd, setIsEditOrAdd] = useState<"add" | "update">("update")
+    const [selectTreeNode, setSelectTreeNode] = useState<any>(null)
+    const modeRef = useRef<any>(null)
+  
 
   // 添加ref来存储当前选中的设备和定时器
   const selectedDeviceRef = useRef<string | null>(null)
@@ -152,6 +164,7 @@ export default function ModelStation() {
       event: "select"
     }
   ) => { 
+    setSelectTreeNode(info.node)
     let realTimeKeys = Object.keys(realtimeData)
     if(String(selectedRowKeys[0])?.includes("device")) {
       if(realTimeKeys.includes(info.node.deviceCode)) {
@@ -191,6 +204,34 @@ export default function ModelStation() {
       }
     }
   }
+  const onTbAction = async (record: IUserList, { key, label }: TUserTbActInfo) => {
+      setIsModalOpen(key)
+      setSelectRowInfo(record)
+      if (key === "update") {
+        setIsEditOrAdd(key)
+        setIsModalOpen("edit")
+      }
+    }
+
+  const btnClkRef = async (type: "ok" | "close", data?: TModelFrAndTbInfo) => {
+      setSelectRowInfo(null)
+      // 执行
+      if (type === "ok") {
+        const obj = {
+          stationId: selectTreeNode?.stationId,
+          modelId: selectTreeNode?.modelId,
+          deviceCode: selectTreeNode?.deviceCode,
+          pointType: selectRowInfo?.pointType,
+          dataType: selectRowInfo?.dataType,
+          ...data
+        }
+        const res = await addUserMethods(obj)
+        if (!res) return
+        setIsModalOpen("")
+        // return onSearch()
+      }
+      if (type === "close") return setIsModalOpen("")
+    }
   // 组件卸载时清理定时器
   useEffect(() => {
     return () => {
@@ -216,11 +257,26 @@ export default function ModelStation() {
         <CustomTable
           rowKey="id"
           limitHeight
-          columns={DEVICE_ATT_COLUMNS({})}
+          columns={DEVICE_ATT_COLUMNS({ onClick: onTbAction })}
           dataSource={tableData}
           // pagination={pagination}
         />
       </div>
+      <CustomModal<IOperateProps, IPerateRef>
+        ref={modeRef}
+        title={isEditOrAdd === "add" ? "新增" : "修改"}
+        destroyOnClose
+        open={isModalOpen === "add" || isModalOpen === "edit"}
+        footer={null}
+        onCancel={() => setIsModalOpen("")}
+        Component={AddModal}
+        componentProps={{
+          buttonClick: btnClkRef,
+          editType: isEditOrAdd,
+          selectRowInfo,
+          FORM_ITEMS: ADD_FORM_ITEMS
+        }}
+      />
     </div>
   )
 }

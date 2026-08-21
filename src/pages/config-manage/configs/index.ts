@@ -13,12 +13,9 @@ import { ISearchFormProps } from "@/components/custom-form/types.ts"
 import { StorageStnDvsType } from "@/configs/storage-cfg"
 import { getTableActColumn } from "@/utils/table-funs"
 import { getStorage } from "@/utils/util-funs"
-import StationTreeSelect from "@/components/station-tree-select"
-import CommonTreeSelect from "@/components/common-tree-select"
 import SelectOrdinary from "@/components/select-ordinary"
 import { IUserList, TUserTbActInfo } from "../types/index"
 import CustomInput from "@/components/custom-input"
-import { options } from "node_modules/axios/index.d.cts"
 
 export const deviceTypesOfSt = getStorage(StorageStnDvsType)
 
@@ -277,23 +274,18 @@ const TABLE_ACTION = [
 export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserList>): ColumnsType<IUserList> {
   const { onClick } = config
   return [
-    { dataIndex: "stationCode", title: "场站编码", align: "center" },
+    { dataIndex: "stationCode", title: "场站编码", align: "center"},
     { dataIndex: "fullName", title: "场站中文描述" },
     { dataIndex: "shortName", title: "简称" },
-    { dataIndex: "stationType", title: "类型" },
+    { dataIndex: "stationType", title: "类型", width: 100 },
     { dataIndex: "stationTypeName", title: "类型名称" },
-    // { dataIndex: "parentComId", title: "项目公司" },
-    // { dataIndex: "maintenanceComId", title: "检修公司" },
-    // { dataIndex: "state", title: "状态" },
-    // { dataIndex: "tags", title: "标签" },
-    // { dataIndex: "maintenanceComName", title: "" },
     ...getTableActColumn<IUserList, TUserTbActInfo>(
       TABLE_ACTION,
       (record) => ({
         onClick: onClick?.bind(null, record),
       }),
       undefined,
-      { width: 180 },
+      { width: 140 },
     ),
   ]
 }

@@ -13,6 +13,8 @@ export interface IUserList {
   roleDescription: string
   id: number
   roleId: number
+  dataType: string
+  pointType: string
 }
 
 export interface IUserListParam {

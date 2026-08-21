@@ -61,14 +61,16 @@ const AddModal = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
     getFormValues: () => formRef.current?.getFieldsValue?.(),
   }))
   return (
-    <div className="user-model">
-      <CustomForm
-        ref={formRef}
-        formOptions={{ layout: "horizontal" }}
-        itemOptionConfig={formList}
-        itemOptions={FORM_ITEMS}
-        onSearch={onFinish}
-      />
+    <div className="device-point-edit-modal">
+      <div className="custom-form-wrapper">
+        <CustomForm
+          ref={formRef}
+          formOptions={{ layout: "horizontal" }}
+          itemOptionConfig={formList}
+          itemOptions={FORM_ITEMS}
+          onSearch={onFinish}
+        />
+      </div>
       <div className="confirm-btn">
         <Button onClick={btnClkRef.current.bind(null, "ok")}>保存</Button>
         <Button onClick={btnClkRef.current.bind(null, "close")}>取消</Button>

@@ -950,6 +950,11 @@ export const pointApiMap: IApiMapItem = {
     method: "get",
     desc: "根据设备编码查询测点",
   },
+  pointQueryPointByDeviceCode: {
+    url: `${SERVE_GATEWAY}/dataPoint/queryPointByDeviceCode/{deviceCode}`,
+    method: "get",
+    desc: "根据设备编码查询测点",
+  },
 }
 //测点地址
 export const pointAddressApiMap: IApiMapItem = { 

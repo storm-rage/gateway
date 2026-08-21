@@ -13,8 +13,6 @@ import { ISearchFormProps } from "@/components/custom-form/types.ts"
 import { StorageStnDvsType } from "@/configs/storage-cfg"
 import { getTableActColumn } from "@/utils/table-funs"
 import { getStorage } from "@/utils/util-funs"
-import StationTreeSelect from "@/components/station-tree-select"
-import CommonTreeSelect from "@/components/common-tree-select"
 import SelectOrdinary from "@/components/select-ordinary"
 import { IUserList, TUserTbActInfo } from "../types/index"
 import CustomInput from "@/components/custom-input"
@@ -51,6 +49,17 @@ export const ST_MANAGE_SCH_FORM_BTNS: ISearchFormProps["buttons"] = [
 ]
 export const RP_DEVICE_SCH_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
   
+  {
+    type: SelectOrdinary,
+    name: "stationId",
+    label: "场站",
+    props: {
+      disabled: false,
+      placeholder: "",
+      style: { minWidth: "10em" },
+      allowClear: true,
+    },
+  },
   {
     type: SelectOrdinary,
     name: "modelId",
@@ -309,6 +318,8 @@ export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserLis
   const { onClick } = config
   return [
     { dataIndex: "id", title: "ID", width: 80, sorter: (a, b) => Number(a?.id) - Number(b.id), },
+    { dataIndex: "stationCode", title: "场站编码", },
+    { dataIndex: "stationName", title: "场站名称", },
     { dataIndex: "modelId", title: "设备型号ID", width: 120, sorter: (a, b) => Number(a?.modelId) - Number(b.modelId), },
     { dataIndex: "pointName", title: "测点英文名", width: 140,sorter: (a, b) => {
         const modelA = String(a.pointName ?? '').trim()
@@ -321,7 +332,7 @@ export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserLis
       },
     },
     { dataIndex: "pointDesc", title: "中文描述" , width: 160,},
-    { dataIndex: "dataType", title: "数据类型" , width: 120},
+    { dataIndex: "dataType", title: "数据类型" , width: 100},
     { dataIndex: "pointType", title: "测点类型" , width: 100, render:(text) => text == 1 ? '遥信' : text == 2 ? '遥测' : ''},
     { dataIndex: "coefficient", title: "系数" },
     { dataIndex: "unit", title: "单位" },

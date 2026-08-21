@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+import { getSettingUserSchData } from '@/pages/system-manage/methods/index';
 
-// 配置常量
-const WS_URL = 'http://10.63.9.233:22127/ness/dataGateway/gs-guide-websocket';
 const TOPIC = '/topic/realtime-data';
 
 /**
@@ -26,57 +25,78 @@ export const useRealtimeData = () => {
   useEffect(() => {
     console.log('🚀 RealtimeData Hook 挂载，正在初始化连接...');
 
-    // 1. 初始化 STOMP 客户端
-    const client = new Client({
-      webSocketFactory: () => new SockJS(WS_URL),
-      // 心跳配置
-      heartbeatIncoming: 4000,
-      heartbeatOutgoing: 4000,
-      reconnectDelay: 3000,
-
-      // 连接成功回调
-      onConnect: (frame) => {
-        console.log('✅ STOMP 握手成功', frame);
-        addLog(`连接建立`, 'success');
-        setConnected(true);
-
-        // 2. 订阅主题
-        client.subscribe(TOPIC, (message) => {
-          setMessageCount(prev => prev + 1);
-          addLog(`收到数据 (${message.body.length}字节)`, 'info');
-          
-          try {
-            // 解析 JSON 并更新状态
-            const data = JSON.parse(message.body);
-            setRealtimeData(data);
-          } catch (error) {
-            addLog(`数据解析失败: ${error.message}`, 'error');
-            console.error('JSON Parse Error:', error);
-          }
-        });
-      },
-
-      // 错误处理
-      onStompError: (frame) => {
-        addLog(`STOMP 错误: ${frame.headers['message']}`, 'error');
-      },
-      onWebSocketClose: (evt) => {
-        setConnected(false);
-        addLog(`连接断开: ${evt.reason || '未知原因'}`, 'warning');
-      },
-      onWebSocketError: (evt) => {
-        addLog(`WebSocket 错误: ${evt.message}`, 'error');
+    let clientInstance: Client | undefined;
+    
+    // 异步获取 WebSocket URL 并初始化连接
+    const initWebSocket = async () => {
+      const businessData = await getSettingUserSchData()
+      const WS_URL = businessData?.records?.[0]?.configValue
+      
+      console.log('📡 WebSocket URL:', WS_URL)
+      
+      if (!WS_URL || WS_URL.includes('undefined')) {
+        console.error('❌ WebSocket URL 获取失败:', WS_URL)
+        addLog('WebSocket URL 配置错误', 'error')
+        return
       }
-    });
 
-    // 3. 激活连接
-    client.activate();
+      // 1. 初始化 STOMP 客户端
+      const client = new Client({
+        webSocketFactory: () => new SockJS(WS_URL),
+        // 心跳配置
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+        reconnectDelay: 3000,
 
-    // 4. 清理函数 (组件卸载时执行)
+        // 连接成功回调
+        onConnect: (frame) => {
+          console.log('✅ STOMP 握手成功', frame);
+          addLog(`连接建立`, 'success');
+          setConnected(true);
+
+          // 2. 订阅主题
+          client.subscribe(TOPIC, (message) => {
+            setMessageCount(prev => prev + 1);
+            addLog(`收到数据 (${message.body.length}字节)`, 'info');
+            
+            try {
+              // 解析 JSON 并更新状态
+              const data = JSON.parse(message.body);
+              setRealtimeData(data);
+            } catch (error) {
+              addLog(`数据解析失败: ${error.message}`, 'error');
+              console.error('JSON Parse Error:', error);
+            }
+          });
+        },
+
+        // 错误处理
+        onStompError: (frame) => {
+          addLog(`STOMP 错误: ${frame.headers['message']}`, 'error');
+        },
+        onWebSocketClose: (evt) => {
+          setConnected(false);
+          addLog(`连接断开: ${evt.reason || '未知原因'}`, 'warning');
+        },
+        onWebSocketError: (evt) => {
+          addLog(`WebSocket 错误: ${evt.message}`, 'error');
+        }
+      });
+
+      // 3. 激活连接
+      client.activate();
+
+      // 4. 保存 client 引用以便清理
+      clientInstance = client;
+    };
+
+    initWebSocket();
+
+    // 5. 清理函数 (组件卸载时执行)
     return () => {
       console.log('🛑 RealtimeData Hook 卸载，正在断开连接...');
-      if (client && client.active) {
-        client.deactivate().then(() => {
+      if (clientInstance && clientInstance.active) {
+        clientInstance.deactivate().then(() => {
           addLog('连接已安全断开', 'info');
         });
       }

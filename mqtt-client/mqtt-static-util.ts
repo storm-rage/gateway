@@ -17,11 +17,11 @@ const MqttStaticUtil: IMqttStaticUtil = {
   mq: null,
   mainWindowSend: () => {},
   init: (mqttModule: any, options: IMqttClient) => {
-    if (MqttStaticUtil.mq) return;
+    // if (MqttStaticUtil.mq) return;
 
-    MqttStaticUtil.mq = new MqttClientBase(options);
-    MqttStaticUtil.mq.mqttConnect(mqttModule);
-    MqttStaticUtil.mq.initEventListeners();
+    // MqttStaticUtil.mq = new MqttClientBase(options);
+    // MqttStaticUtil.mq.mqttConnect(mqttModule);
+    // MqttStaticUtil.mq.initEventListeners();
   },
 };
 

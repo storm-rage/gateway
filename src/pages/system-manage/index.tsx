@@ -15,7 +15,7 @@ import useTableSelection from "@/hooks/use-table-selection"
 import { showMsg } from "@/utils/util-funs"
 
 import { DEVICE_ATT_COLUMNS, ST_MANAGE_SCH_FORM_BTNS, RP_DEVICE_SCH_FORM_ITEMS, ADD_FORM_ITEMS } from "./configs/index.tsx"
-import { addUserMethods, delUserMethods, getSettingUserSchData, udPwMethods, importFile, exportFile } from "./methods/index"
+import { addUserMethods, delUserMethods, getSettingUserSchData, importFile, exportFile } from "./methods/index"
 import { IUserList, IUserListParam, TModelFrAndTbInfo, TUserTbActInfo } from "./types/index"
 import { TModalType } from "@/types/i-config"
 import AddModal, { IOperateProps, IPerateRef } from "./components/edit"

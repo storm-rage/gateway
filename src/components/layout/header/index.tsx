@@ -33,11 +33,11 @@ export default function Header() {
     const [reload, setReload] = useRefresh(MS_MINU)
     const [editPassword, setEditPassword] = useState(false)
 
-  useEffect(() => {
-    if (!reload) return
-    // 跳过登录就注释
-    setCheckToken().then(() => setReload(false))
-  }, [reload, setCheckToken])
+  // useEffect(() => {
+  //   if (!reload) return
+  //   // 跳过登录就注释
+  //   setCheckToken().then(() => setReload(false))
+  // }, [reload, setCheckToken])
 
   const onClick = ({ key }) => {
     if (key === "0") {

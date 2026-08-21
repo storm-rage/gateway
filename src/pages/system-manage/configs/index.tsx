@@ -182,8 +182,8 @@ export function DEVICE_ATT_COLUMNS(config: DeviceAttColumnsConfig): ColumnsType<
   const { onClick, onSwitchChange } = config
   return [
     { dataIndex: "businessType", title: "业务类型"},
-    { dataIndex: "configKey", title: "值" },
-    { dataIndex: "configValue", title: "扩展值" },
+    { dataIndex: "configKey", title: "配置键" },
+    { dataIndex: "configValue", title: "配置值" },
     { dataIndex: "state", title: "状态" , 
       render: (text: string, record) => (
         <Switch
@@ -208,7 +208,7 @@ export function DEVICE_ATT_COLUMNS(config: DeviceAttColumnsConfig): ColumnsType<
         onClick: onClick?.bind(null, record),
       }),
       undefined,
-      { width: 160 },
+      { width: 120 },
     ),
   ]
 }

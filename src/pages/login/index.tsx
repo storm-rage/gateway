@@ -55,18 +55,18 @@ const Login: React.FC = () => {
       name: formVal.name,
       pwd: sm3(formVal.pwd),
     };
-    await loginAsync({
-      loginForm: { ...params, ...code },
-      call: (isErr: boolean, pwTimeoutInfo) => {
-        if (pwTimeoutInfo?.pwTimeout) {
-          console.log("登录过期");
-          setIsModalOpen(true);
-          // userInfo.current = { id: pwTimeoutInfo.id }
-        }
-        if (!isErr) return;
-        validIptRef.current?.refresh?.();
-      },
-    });
+    // await loginAsync({
+    //   loginForm: { ...params, ...code },
+    //   call: (isErr: boolean, pwTimeoutInfo) => {
+    //     if (pwTimeoutInfo?.pwTimeout) {
+    //       console.log("登录过期");
+    //       setIsModalOpen(true);
+    //       // userInfo.current = { id: pwTimeoutInfo.id }
+    //     }
+    //     if (!isErr) return;
+    //     validIptRef.current?.refresh?.();
+    //   },
+    // });
   });
   const onFinishFailed: FormProps<ILoginFormVal>["onFinishFailed"] = (
     errorInfo
@@ -94,8 +94,8 @@ const Login: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (userInfo?.token) navigate("/");
-  }, [userInfo]);
+    navigate("/")
+  }, [])
 
   return (
     <>

@@ -23,6 +23,7 @@ import { atom } from "jotai"
 
 import { TStorageInfo } from "@/types/i-api.ts"
 import { IConfigTypeData, IDeviceSignal, ISubSystemType } from "@/types/i-config.ts"
+import { LOGIN_INFO_FOR_FUNS } from "./atom-auth"
 
 type TConfigKey =
   | "deviceType"
@@ -79,6 +80,11 @@ const CONFIG_MAP_ATOM = atom<TConfigMap>(CONFIG_MAP)
 export const AtomConfigMap = atom(
   (get) => get(CONFIG_MAP_ATOM),
   async (_, set) => {
+    // 免登录模式下，跳过配置数据获取
+    if (LOGIN_INFO_FOR_FUNS.loginInfo?.loginName === "guest") {
+      return
+    }
+
     const { deviceType, stationType, deviceStdState } = CONFIG_MAP.list
     if (deviceType?.length && stationType?.length && deviceStdState?.length) return
     const storageArr = Object.entries(STORAGE_LIST) as [TConfigKey, TStorageInfo][]

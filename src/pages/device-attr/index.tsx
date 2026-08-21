@@ -53,7 +53,6 @@ export default function ModelStation() {
         }
       })
       getStation().then(res => {
-        console.log("getStation===",res)
         if(res) {
           res.records.forEach(item => {
             item.value = item.id
@@ -114,14 +113,15 @@ export default function ModelStation() {
         setImportModal(true)
   
     } else if(type === "export") {
+      const formData = formRef.current?.getFormValues?.() || {}
       const params = {
         "pageNum": pagination.current || 1,
         "pageSize": pagination.pageSize || 10,
         "id": "",
         "deviceCode": "",
-        "deviceType": "",
-        "modelId": "",
-        "stationId": "",
+        "deviceType": formData.deviceType || "",
+        "modelId": formData.modelId || "",
+        "stationId": formData.stationId || "",
         "stationCode": "",
         "periodCode": "",
         "lineCode": "",

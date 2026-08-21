@@ -13,8 +13,9 @@ import { TREE_MENU_DATA } from "@/router/tree-menu-data"
 import { ITreeMenuItem } from "@/router/interface"
 import { LOGIN_INFO_FOR_FUNS } from "./atom-auth"
 import { setStorage } from "@/utils/util-funs"
-import { StorageRolePermission } from "@/configs/storage-cfg"
+import { StorageRolePermission, StorageUserInfo } from "@/configs/storage-cfg"
 import { AtomStation } from "./atom-station"
+import { ILoginInfo } from "@/types/i-auth"
 const currentRolePermission = [
   "model:projectCompany:add",
   "model:projectCompany:export",
@@ -130,7 +131,21 @@ export const ATOM_ROUTER_ALL = atom<ITreeMenuItem[]>([])
 export const AtomUserOfMenuMap = atom(
   (get) => get(ATOM_ROUTER_CONFIG),
   async (get, set) => {
-    if (!LOGIN_INFO_FOR_FUNS.loginInfo?.token) return set(AtomRouteReady, true)
+    // 如果没有 token，先生成默认用户信息（免登录）
+    if (!LOGIN_INFO_FOR_FUNS.loginInfo?.token) {
+      const defaultUserInfo: ILoginInfo = {
+        id: 0,
+        loginName: "guest",
+        realName: "访客",
+        roleId: 1,
+        role: "admin",
+        roleDescription: "管理员",
+        permission: ["*"],
+        token: "guest-token-" + Date.now(),
+      };
+      setStorage(defaultUserInfo, StorageUserInfo);
+      LOGIN_INFO_FOR_FUNS.loginInfo = defaultUserInfo;
+    }
     await set(AtomStation)
     set(AtomMenuBtnPermission, currentRolePermission)
     setStorage(currentRolePermission, StorageRolePermission)

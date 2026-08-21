@@ -50,7 +50,17 @@ export const ST_MANAGE_SCH_FORM_BTNS: ISearchFormProps["buttons"] = [
   
 ]
 export const RP_DEVICE_SCH_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
-  
+  {
+    type: SelectOrdinary,
+    name: "stationId",
+    label: "场站",
+    props: {
+      disabled: false,
+      placeholder: "",
+      style: { minWidth: "10em" },
+      allowClear: true,
+    },
+  },
   {
     type: SelectOrdinary,
     name: "deviceCode",
@@ -149,7 +159,9 @@ const TABLE_ACTION = [
 export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserList>): ColumnsType<IUserList> {
   const { onClick } = config
   return [
-    { dataIndex: "id", title: "ID", width: 60, sorter: (a, b) => Number(a?.id) - Number(b.id), },
+    { dataIndex: "id", title: "ID", width: 100, sorter: (a, b) => Number(a?.id) - Number(b.id), },
+    { dataIndex: "stationCode", title: "场站编码", },
+    { dataIndex: "stationName", title: "场站名称", },
     { dataIndex: "deviceCode", title: "设备", },
     { dataIndex: "pointName", title: "测点英文名", sorter: (a, b) => {
         const modelA = String(a.pointName ?? '').trim()
@@ -162,6 +174,7 @@ export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserLis
       },
     },
     { dataIndex: "pointDesc", title: "中文描述"},
+    { dataIndex: "funCode", title: "功能码/类型标识" },
     { dataIndex: "address", title: "地址码" },
     // { dataIndex: "coefficient", title: "系数" },
     // { dataIndex: "unit", title: "单位" },

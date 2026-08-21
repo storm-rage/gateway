@@ -15,7 +15,7 @@ import useTableSelection from "@/hooks/use-table-selection"
 import { showMsg } from "@/utils/util-funs"
 
 import { DEVICE_ATT_COLUMNS, ST_MANAGE_SCH_FORM_BTNS, RP_DEVICE_SCH_FORM_ITEMS, ADD_FORM_ITEMS } from "./configs/index"
-import { addUserMethods, delUserMethods, getSettingUserSchData, importFile, exportFile, getDeviceCodeList } from "./methods/index"
+import { addUserMethods, delUserMethods, getSettingUserSchData, importFile, exportFile, getStation, getDeviceCodeList } from "./methods/index"
 import { IUserList, IUserListParam, TModelFrAndTbInfo, TUserTbActInfo } from "./types/index"
 import { TModalType } from "@/types/i-config"
 import AddModal, { IOperateProps, IPerateRef } from "./components/edit"
@@ -32,7 +32,7 @@ export default function ModelStation() {
   const [importModal, setImportModal] = useState(false)
   const [deviceModel, setDeviceModel] = useState<any>([])
   const [deviceCodeList, setDeviceCodeList] = useState<{ label: string; value: string }[]>([])
-  
+  const [stationList, setStationList] = useState<any>([])
   // 设置选中的一条数据
   const [selectRowInfo, setSelectRowInfo] = useState<IUserList | null>()
 
@@ -42,6 +42,15 @@ export default function ModelStation() {
   useEffect(() => {
     const formInst = formRef.current?.getInst?.()
     formInst?.submit()
+    getStation().then(res => {
+      if(res) {
+        res.records.forEach(item => {
+          item.value = item.id
+          item.label = item.shortName
+        })
+        setStationList(res.records)
+      }
+    })
     getDeviceCodeList().then(res => {
       if (res) {
         const uniqueCodes = new Map<string, { label: string; value: string }>()
@@ -76,9 +85,11 @@ export default function ModelStation() {
         setImportModal(true)
   
     } else if(type === "export") {
+      const formData = formRef.current?.getFormValues?.() || {}
       const params = {
         "deviceCode": formData.deviceCode || "",
         "deviceType": formData.deviceType || "",
+        "stationId": formData.stationId || "",
       }
       exportFile(params)
     } else if(type === "search") {
@@ -109,9 +120,15 @@ export default function ModelStation() {
 
   const mapDeviceCodeOptions = (items: typeof RP_DEVICE_SCH_FORM_ITEMS) =>
     items.map(item =>
-      item.name === 'deviceCode'
-        ? { ...item, props: { ...item.props, options: deviceCodeList } }
-        : item
+      {
+        if (item.name === 'deviceCode') {
+          return { ...item, props: { ...item.props, options: deviceCodeList } }
+        } else if (item.name === 'stationId') {
+          return { ...item, props: { ...item.props, options: stationList } }
+        } else {
+          return item
+        }
+      }
     )
   const searchFormItems = mapDeviceCodeOptions(RP_DEVICE_SCH_FORM_ITEMS)
   const addFormItems = mapDeviceCodeOptions(ADD_FORM_ITEMS)

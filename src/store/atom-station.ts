@@ -14,6 +14,7 @@ import { atom } from "jotai"
 
 import { doNoParamServer } from "@/api/serve-funs"
 import { IAtomStation, IProjectCompany, IStationData } from "@/types/i-station"
+import { LOGIN_INFO_FOR_FUNS } from "./atom-auth"
 
 export const STATION_DATA_MAP: IAtomStation = {
   stationList: [],
@@ -39,6 +40,11 @@ export const AtomStation = atom(
       await set(AtomConfigMap) // 触发配置数据的获取
       const hasSitList = get(ATOM_STATION).stationList?.length
       if (hasSitList) return
+
+      // 免登录模式下，跳过场站数据获取
+      if (LOGIN_INFO_FOR_FUNS.loginInfo?.loginName === "guest") {
+        return
+      }
 
       const localData = getStorage<IAtomStation>(StorageStationData)
       if (localData?.stationList?.length) {

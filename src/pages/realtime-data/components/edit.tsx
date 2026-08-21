@@ -18,15 +18,17 @@ import { TModalType } from "@/types/i-config"
 export interface IPerateRef {}
 export interface IOperateProps {
   data?: any
-  buttonClick?: (type: "ok" | "close", data?: any, tag?: TModalType) => void
+  buttonClick?: (type: "ok" | "close", data?: any) => void
   editType: TModalType
   FORM_ITEMS: ISearchFormProps["itemOptions"]
   loading?: boolean
   selectRowInfo?: any
+  deviceModel?: any
+  formSelectChange?: (changeVals, setFormConfigs) => void
 }
 
 const AddModal = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
-  const { buttonClick, editType, selectRowInfo, FORM_ITEMS } = props
+  const { buttonClick, editType, selectRowInfo, FORM_ITEMS, deviceModel } = props
   const formRef = useRef<IFormInst | null>(null)
   //组件数据集合
   const [formList, setFormItemConfig] = useState({})
@@ -35,23 +37,23 @@ const AddModal = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
   useImperativeHandle(ref, () => ({}))
 
   useEffect(() => {
+    const formInsts = formRef.current?.getInst?.()
     if (editType !== "add") {
-      const formInsts = formRef.current?.getInst?.()
-      const { id, state, ...other } = selectRowInfo || {}
+      const { id, ...other } = selectRowInfo || {}
       currentId.current = id
-      const formData = {
-        ...other,
-        state: String(state),
-      }
-      formInsts?.setFieldsValue(formData)
+      formInsts?.setFieldsValue({ ...other })
     }
-    allAsyncPromise().then((r) => r)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    console.log("deviceModel", deviceModel)
+    setFormItemConfig((pre) => {
+      return { ...pre, options: deviceModel }
+    })
+
+    
   }, [])
   const allAsyncPromise = async () => {}
 
   const onFinish = (formValue) => {
-    buttonClick?.("ok", { ...formValue, id: currentId.current }, editType)
+    buttonClick?.("ok", { ...formValue, id: currentId.current })
   }
   const btnClkRef = useRef((type: "ok" | "close") => {
     if (type === "ok") {

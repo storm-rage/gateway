@@ -51,13 +51,13 @@ export const getDevices = async (pageInfo?: IPageInfo, formData?: any) => {
 }
 
 export const getPointByDeviceCode = async (deviceCode: string) => {
-  const res = await doBaseServer<any>("pointQueryByDeviceCode", { deviceCode })
+  const res = await doBaseServer<any>("pointQueryPointByDeviceCode", { deviceCode })
   if (validResErr(res)) return null
   return res
 }
 
-export const addUserMethods = async (data: any, type: TModalType) => {
-  const api = type == "add" ? "addUser" : "updateUser"
+export const addUserMethods = async (data: any) => {
+  const api = "pointUpdate"
   const res = await doBaseServer<any>(api, data)
   return validOperate(res)
 }

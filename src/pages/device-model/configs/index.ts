@@ -10,12 +10,9 @@ import { ISearchFormProps } from "@/components/custom-form/types.ts"
 import { StorageStnDvsType } from "@/configs/storage-cfg"
 import { getTableActColumn } from "@/utils/table-funs"
 import { getStorage } from "@/utils/util-funs"
-import StationTreeSelect from "@/components/station-tree-select"
-import CommonTreeSelect from "@/components/common-tree-select"
 import SelectOrdinary from "@/components/select-ordinary"
 import { IUserList, TUserTbActInfo } from "../types/index"
 import CustomInput from "@/components/custom-input"
-import { clear } from "console"
 export const deviceTypesOfSt = getStorage(StorageStnDvsType)
 
 export const ST_MANAGE_SCH_FORM_BTNS: ISearchFormProps["buttons"] = [
@@ -100,10 +97,10 @@ export const ADD_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
       labelCol: { span: 6 },
       rules: [
         { required: true, message: "请输入设备型号" },
-        {
-          pattern: /^[a-zA-Z0-9_.-]+$/,
-          message: "设备型号只能包含字母、数字、下划线、点、连接线",
-        },
+        // {
+        //   pattern: /^[a-zA-Z0-9_.-]+$/,
+        //   message: "设备型号只能包含字母、数字、下划线、点、连接线",
+        // },
       ],
     },
     props: {
@@ -214,7 +211,7 @@ export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserLis
         onClick: onClick?.bind(null, record),
       }),
       undefined,
-      { width: 200 },
+      { width: 120 },
     ),
   ]
 }
