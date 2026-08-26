@@ -189,6 +189,7 @@ const TABLE_ACTION = [
 export function DEVICE_ATT_COLUMNS(config: ITbColAction<TUserTbActInfo, IUserList>): ColumnsType<IUserList> {
   const { onClick } = config
   return [
+    { dataIndex: "id", title: "型号ID", width: 100, sorter: (a, b) => a.id - b.id },
     { dataIndex: "model", title: "设备型号", 
       sorter: (a, b) => {
         const modelA = String(a.model ?? '').trim();

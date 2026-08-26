@@ -32,7 +32,6 @@ export default function ModelStation() {
   const [selectRowInfo, setSelectRowInfo] = useState<IUserList | null>()
   const [importModal, setImportModal] = useState(false)
   const [deviceTypeOptions, setDeviceTypeOptions] = useState<{ label: string; value: any }[]>([])
-  const [stationDeviceTree, setStationDeviceTree] = useState<any>([])
   const [stationList, setStationList] = useState<any>([])
   const [deviceModel, setDeviceModel] = useState<any>([])
   const [deviceCodeList, setDeviceCodeList] = useState<{ label: string; value: string }[]>([])
@@ -81,7 +80,9 @@ export default function ModelStation() {
           setDeviceModel(res.records)
         }
       })
-      getDeviceCodeList({ pageNum: 1, pageSize: 100, deviceCode: ''}).then(res => {
+    }, [])
+    useEffect(() => {
+      getDeviceCodeList({ pageNum: 1, pageSize: 1000, }).then(res => {
         if(res?.records) {
           const uniqueCodes = new Map<string, { label: string; value: string }>()
           const filteredRecords = res.records.filter(item => item.stationId == formRef.current?.getFormValues().stationId)
@@ -94,7 +95,7 @@ export default function ModelStation() {
           setDeviceCodeList(list)
         }
       })
-    }, [])
+    }, [formRef.current?.getFormValues().stationId])
 
 
   const addFormItems = ADD_FORM_ITEMS.map(item => {
@@ -205,9 +206,8 @@ export default function ModelStation() {
       let obj = {
         ...data,
         stationId: formRef.current?.getFormValues().stationId,
-        modelId: selectRowInfo?.modelId,
       }
-      const res = await addUserMethods(obj, tag, selectRowInfo)
+      const res = await addUserMethods(obj, tag, data)
       if (!res) return
       setIsModalOpen("")
       return onSearch()

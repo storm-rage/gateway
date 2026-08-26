@@ -52,6 +52,14 @@ export const ST_MANAGE_SCH_FORM_BTNS: ISearchFormProps["buttons"] = [
   },
   
 ]
+
+const protocolTypeOptions = [
+  { value: "MODBUS_TCP", label: "MODBUS_TCP" },
+  { value: "MODBUS_UDP", label: "MODBUS_UDP" },
+  { value: "IEC104", label: "IEC104" },
+  { value: "IEC103", label: "IEC103" },
+]
+
 export const RP_DEVICE_SCH_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
   {
     type: SelectOrdinary,
@@ -95,12 +103,7 @@ export const RP_DEVICE_SCH_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
     label: "协议类型",
     props: {
       disabled: false,
-      options: [
-        { value: "MODBUS_TCP", label: "MODBUS_TCP" },
-        { value: "MODBUS_UDP", label: "MODBUS_UDP" },
-        { value: "IEC104", label: "IEC104" },
-        { value: "IEC103", label: "IEC103" },
-      ],
+      options: protocolTypeOptions,
       allowClear: true,
       style: { minWidth: "10em" },
     },
@@ -165,12 +168,7 @@ export const ADD_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
       rules: [{ required: true, message: "请选择" }],
     },
     props: {
-      options: [
-        { value: "MODBUS_TCP", label: "MODBUS_TCP" },
-        { value: "MODBUS_UDP", label: "MODBUS_UDP" },
-        { value: "IEC104", label: "IEC104" },
-        { value: "IEC103", label: "IEC103" },
-      ],
+      options: protocolTypeOptions,
       disabled: false,
       style: { minWidth: "10em" },
     },
@@ -308,12 +306,7 @@ export const ADD_FORM_ITEMS_BATCH: ISearchFormProps["itemOptions"] = [
       rules: [{ required: true, message: "请选择" }],
     },
     props: {
-      options: [
-        { value: "MODBUS_TCP", label: "MODBUS_TCP" },
-        { value: "MODBUS_UDP", label: "MODBUS_UDP" },
-        { value: "IEC104", label: "IEC104" },
-        { value: "IEC103", label: "IEC103" },
-      ],
+      options: protocolTypeOptions,
       disabled: false,
       style: { minWidth: "10em" },
     },
