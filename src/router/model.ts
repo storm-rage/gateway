@@ -29,6 +29,7 @@ import {
   CONFIG_DEVICE_POINT,
   CONFIG_DEVICE_POINT_ADDRESS,
   CONFIG_SERVE_DEVICE_POINT,
+  CONFIG_DEVICE_SPLIT,
   DATA_FORWARD,
   SYSTEM_MANAGE,
   BUSINESS_CONSTANT
@@ -133,6 +134,11 @@ const MenuArea: ITreeMenuItem[] = [
         key: CONFIG_DEVICE_POINT_ADDRESS,
         title: "测点地址",
         element: lazy(() => import("@pages/device-point-address")),
+      },
+      {
+        key: CONFIG_DEVICE_SPLIT,
+        title: "设备拆分",
+        element: lazy(() => import("@pages/device-split")),
       },
     ]
   },

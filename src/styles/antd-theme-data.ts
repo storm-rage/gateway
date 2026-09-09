@@ -22,7 +22,7 @@ export const AntdThemeData: ThemeConfig = {
     borderRadiusOuter: 0,
     borderRadiusSM: 0,
     fontFamily:
-      '"微软雅黑", "宋体", "Hiragino Sans GB", STHeiti, "WenQuanYi Micro Hei", "Droid Sans Fallback", SimSun, sans-serif',
+      '"FZYouHei", sans-serif',
   },
   components: {
     Modal: {

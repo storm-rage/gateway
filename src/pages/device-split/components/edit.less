@@ -1,0 +1,162 @@
+/*
+ * @Description: 设备拆分 弹窗样式
+ */
+
+/* ========== 新增/修改弹窗 ========== */
+.device-split-edit {
+  .split-form {
+    .form-row {
+      display: flex;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+    .form-item {
+      margin-bottom: 16px;
+      .form-label {
+        display: block;
+        font-size: 14px;
+        color: rgba(0, 0, 0, 0.85);
+        margin-bottom: 8px;
+        font-weight: 500;
+        .required {
+          color: #ff4d4f;
+          margin-right: 2px;
+        }
+      }
+      .form-content {
+        width: 100%;
+        .select-tip {
+          border-radius: 4px;
+          padding: 4px 8px;
+          font-size: 12px;
+          color: rgba(0, 0, 0, 0.45);
+          .ant-tag {
+            border-radius: 12px;
+            margin-right: 2px;
+          }
+        }
+      }
+    }
+    .form-item-half {
+      flex: 1;
+      min-width: 0;
+    }
+    .ioa-format-tip {
+      margin-top: 8px;
+      font-size: 13px;
+      color: rgba(0, 0, 0, 0.65);
+      .ant-tag {
+        border-radius: 12px;
+        margin-right: 2px;
+      }
+    }
+    .ioa-parse-tip {
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #f6ffed;
+      border: 1px solid #b7eb8f;
+      border-radius: 4px;
+      font-size: 13px;
+      .parse-count {
+        color: #389e0d;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+      .parse-points {
+        color: rgba(0, 0, 0, 0.65);
+      }
+    }
+    .switch-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 80px;
+    }
+    .content-tip {
+      font-size: 12px;
+      color: rgba(0, 0, 0, 0.45);
+    }
+    .updater-info {
+      font-size: 13px;
+      color: rgba(0, 0, 0, 0.65);
+      line-height: 32px;
+    }
+  }
+
+  .split-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 8px;
+  }
+}
+
+/* ========== 选择测点弹窗 ========== */
+.point-select-modal {
+  .point-select-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    .point-select-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: rgba(0, 0, 0, 0.85);
+    }
+    .point-select-source {
+      font-size: 13px;
+      color: rgba(0, 0, 0, 0.55);
+    }
+  }
+  .point-select-search {
+    margin-bottom: 12px;
+  }
+  .point-select-filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    .filter-actions {
+      font-size: 13px;
+      a {
+        color: #1890ff;
+        cursor: pointer;
+        &:hover {
+          color: #40a9ff;
+        }
+      }
+    }
+  }
+  .point-select-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0f0;
+    .selected-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      .selected-count {
+        font-size: 13px;
+        color: rgba(0, 0, 0, 0.65);
+        font-weight: 500;
+      }
+      .selected-summary {
+        font-size: 13px;
+        color: rgba(0, 0, 0, 0.45);
+        max-width: 320px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .footer-btns {
+      display: flex;
+      gap: 8px;
+    }
+  }
+}

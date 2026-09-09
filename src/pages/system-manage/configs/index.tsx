@@ -9,13 +9,10 @@
 import { ColumnsType } from "antd/es/table"
 import { Switch } from 'antd'
 
-import { ITbColAction } from "@/components/action-buttons/types"
 import { ISearchFormProps } from "@/components/custom-form/types.ts"
 import { StorageStnDvsType } from "@/configs/storage-cfg"
 import { getTableActColumn } from "@/utils/table-funs"
 import { getStorage } from "@/utils/util-funs"
-import StationTreeSelect from "@/components/station-tree-select"
-import CommonTreeSelect from "@/components/common-tree-select"
 import SelectOrdinary from "@/components/select-ordinary"
 import { IUserList, TUserTbActInfo } from "../types/index"
 import CustomInput from "@/components/custom-input"

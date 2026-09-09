@@ -35,6 +35,7 @@ import {
   serviceRelayApiMap,
   configBusinessApiMap,
   devicePointApiMap,
+  deviceSplitApiMap,
 } from "./api-devicemng"
 import { userMngApi } from "./api-user"
 import { alarmFiveRuleApi, alarmRuleApi, mftAlarmApi, stateRuleApi } from "./api-alarm"
@@ -78,6 +79,7 @@ const API_LIST = {
   serviceRelayApiMap,
   configBusinessApiMap,
   devicePointApiMap,
+  deviceSplitApiMap,
 }
 
 const API_MAP = (function () {

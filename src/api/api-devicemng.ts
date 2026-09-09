@@ -1011,6 +1011,74 @@ export const pointAddressApiMap: IApiMapItem = {
     desc: "导入",
   },
 }
+//设备拆分
+export const deviceSplitApiMap: IApiMapItem = {
+  deviceSplitQueryPage: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/queryPage`,
+    method: "post",
+    desc: "分页查询设备拆分",
+  },
+  deviceSplitDetail: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/detail/{id}`,
+    method: "get",
+    desc: "根据ID查询详情",
+  },
+  deviceSplitSelectList: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/selectList`,
+    method: "post",
+    desc: "按条件查询所有匹配的设备拆分配置（不分页）",
+  },
+  deviceSplitSave: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/save`,
+    method: "post",
+    desc: "新增一条设备拆分配置（源设备编码+目标设备编码唯一）",
+  },
+  deviceSplitBatchSave: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/batchSave`,
+    method: "post",
+    desc: "批量新增设备拆分配置（存在则更新，不存在则插入）",
+  },
+  deviceSplitUpdate: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/update`,
+    method: "post",
+    desc: "根据ID更新设备拆分配置",
+  },
+  deviceSplitBatchUpdate: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/batchUpdate`,
+    method: "post",
+    desc: "批量更新设备拆分配置（存在则更新，不存在则插入）",
+  },
+  deviceSplitDelete: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/delete/{id}`,
+    method: "post",
+    desc: "根据主键ID删除单条设备拆分配置",
+  },
+  deviceSplitBatchDelete: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/batchDelete`,
+    method: "post",
+    desc: "根据ID列表批量删除设备拆分配置",
+  },
+  deviceSplitExportTemplate: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/exportTemplate`,
+    method: "post",
+    responseType: "blob",
+    desc: "下载Excel导入模板（含表头：主键ID、源设备编码、目标设备编码、IOA地址区间、备注）",
+  },
+  deviceSplitExportData: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/exportData`,
+    method: "post",
+    responseType: "blob",
+    desc: "按条件导出设备拆分配置为Excel文件",
+  },
+  deviceSplitImportData: {
+    url: `${SERVE_GATEWAY}/configDeviceSplit/importData`,
+    method: "post",
+    headers: {
+      "Content-Type": "multipart/form-data;charset=UTF-8",
+    },
+    desc: "导入设备拆分配置数据",
+  },
+}
 //目标服务器
 export const serviceRelayApiMap: IApiMapItem = { 
   serviceRelayQueryPage: {
