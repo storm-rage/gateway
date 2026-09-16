@@ -86,7 +86,7 @@
 
   .split-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 12px;
     padding-top: 16px;
     border-top: 1px solid #f0f0f0;
@@ -131,15 +131,15 @@
     }
   }
   .point-select-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #f0f0f0;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
+    // margin-top: 12px;
+    // padding-top: 12px;
+    // border-top: 1px solid #f0f0f0;
     .selected-info {
       display: flex;
-      align-items: center;
+      // align-items: center;
       gap: 8px;
       .selected-count {
         font-size: 13px;
@@ -149,7 +149,7 @@
       .selected-summary {
         font-size: 13px;
         color: rgba(0, 0, 0, 0.45);
-        max-width: 320px;
+        max-width: 400px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -158,6 +158,24 @@
     .footer-btns {
       display: flex;
       gap: 8px;
+      margin-top: 8px;
+      justify-content: center;
     }
   }
+}
+
+/* 选中行 hover 背景色修复 */
+.point-select-modal {
+  .ant-table-tbody > tr.ant-table-row-selected > td {
+    background: #e6f7ff !important;
+  }
+  .ant-table-tbody > tr.ant-table-row-selected:hover > td {
+    background: #dcf0ff !important;
+  }
+}
+
+.ant-input::placeholder,
+.ant-input textarea::placeholder {
+  color: rgba(183, 183, 183, 0.7) !important;
+  -webkit-text-fill-color: rgba(183, 183, 183, 0.7) !important;
 }

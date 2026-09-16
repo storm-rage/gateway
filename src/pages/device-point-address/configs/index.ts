@@ -148,6 +148,22 @@ export const ADD_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
       style: { minWidth: "10em" },
     },
   },
+  {
+    type: CustomInput,
+    name: "funCode",
+    label: "功能码/类型标识",
+    formItemProps: {
+      labelCol: { span: 7 },
+      rules: [
+        { required: false, message: "请选择" },
+      ],
+    },
+    props: {
+      options: [],
+      disabled: false,
+      style: { minWidth: "10em" },
+    },
+  },
   
 ]
 

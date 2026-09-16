@@ -30,7 +30,6 @@ export default function ModelStation() {
   const [isModalOpen, setIsModalOpen] = useState("")
   const [isEditOrAdd, setIsEditOrAdd] = useState<TModalType>("add")
   const [importModal, setImportModal] = useState(false)
-  const [deviceModel, setDeviceModel] = useState<any>([])
   const [deviceCodeList, setDeviceCodeList] = useState<{ label: string; value: string }[]>([])
   const [stationList, setStationList] = useState<any>([])
   // 设置选中的一条数据

@@ -161,15 +161,15 @@ const AddModal = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
 
   const handleSave = () => {
     if (!sourceDeviceCode) {
-      showMsg("请选择源设备", "warning")
+      showMsg("请选择源设备", "error")
       return
     }
     if (!targetDeviceCode) {
-      showMsg("请选择目标设备", "warning")
+      showMsg("请配置目标设备", "error")
       return
     }
     if (!ioaText) {
-      showMsg("请配置 IOA 地址位", "warning")
+      showMsg("请配置 IOA 地址位", "error")
       return
     }
     const data = {
@@ -211,7 +211,7 @@ const AddModal = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
           <div className="form-item form-item-half">
             <label className="form-label"><span className="required">*</span>目标设备</label>
             <div className="form-content">
-              <Select
+              {/* <Select
                 placeholder="请选择 AGVC / 测风塔设备"
                 style={{ width: "100%" }}
                 value={targetDeviceCode || undefined}
@@ -219,7 +219,8 @@ const AddModal = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
                 showSearch
                 optionFilterProp="label"
                 options={targetDeviceOptions}
-              />
+              /> */}
+              <Input placeholder="请配置目标设备" value={targetDeviceCode} onChange={(e) => setTargetDeviceCode(e.target.value)} />
               {/* <div className="select-tip"><Tag color="blue">AGVC/测风塔</Tag>转发目标</div> */}
             </div>
           </div>
@@ -297,8 +298,8 @@ const AddModal = forwardRef<IPerateRef, IOperateProps>((props, ref) => {
 
       {/* 底部按钮 */}
       <div className="split-footer">
-        <Button onClick={handleCancel}>取消</Button>
         <Button onClick={handleSave}>保存</Button>
+        <Button onClick={handleCancel}>取消</Button>
       </div>
     </div>
   )

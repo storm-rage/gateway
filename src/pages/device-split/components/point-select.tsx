@@ -118,8 +118,9 @@ export default function PointSelectModal(props: Props) {
       if (searchText) {
         const text = searchText.toLowerCase()
         const ioa = String(p.ioa ?? p.address ?? "")
-        const name = String(p.pointName ?? p.pointDesc ?? "")
-        if (!ioa.includes(text) && !name.toLowerCase().includes(text)) return false
+        const nameEn = String(p.pointName ?? "")
+        const nameCn = String(p.pointDesc ?? "")
+        if (!ioa.includes(text) && !nameEn.toLowerCase().includes(text) && !nameCn.toLowerCase().includes(text)) return false
       }
       return true
     })
@@ -244,8 +245,8 @@ export default function PointSelectModal(props: Props) {
           )}
         </div>
         <div className="footer-btns">
-          <Button onClick={onCancel}>取消</Button>
           <Button onClick={handleConfirm}>确定</Button>
+          <Button onClick={onCancel}>取消</Button>
         </div>
       </div>
     </div>
