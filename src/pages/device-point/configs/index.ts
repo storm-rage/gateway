@@ -7,6 +7,7 @@
  */
 
 import { ColumnsType } from "antd/es/table"
+import { InputNumber } from "antd"
 
 import { ITbColAction } from "@/components/action-buttons/types"
 import { ISearchFormProps } from "@/components/custom-form/types.ts"
@@ -178,7 +179,7 @@ export const ADD_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
     },
   },
   {
-    type: CustomInput,
+    type: InputNumber,
     name: "coefficient",
     label: "系数",
     formItemProps: {
@@ -190,8 +191,8 @@ export const ADD_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
     },
     props: {
       disabled: false,
-      type: 'number',
-      style: { minWidth: "10em" },
+      stringMode: true,
+      style: { width: "100%" },
     },
   },
   {
@@ -275,7 +276,7 @@ export const ADD_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
     },
   },
   {
-    type: CustomInput,
+    type: InputNumber,
     name: "address",
     label: "地址码",
     formItemProps: {
@@ -287,7 +288,8 @@ export const ADD_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
     },
     props: {
       disabled: false,
-      style: { minWidth: "10em" },
+      stringMode: true,
+      style: { width: "100%" },
     },
   },
   {
