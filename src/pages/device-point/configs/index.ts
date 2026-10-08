@@ -282,7 +282,7 @@ export const ADD_FORM_ITEMS: ISearchFormProps["itemOptions"] = [
       labelCol: { span: 7 },
       rules: [
         { required: false, message: "请选择" },
-        { pattern: /^-?[0-9]*$/, message: "只能包含整数，允许负数" },
+        { pattern: /^-?[0-9]*$/, message: "只能包含正负整数" },
       ],
     },
     props: {
